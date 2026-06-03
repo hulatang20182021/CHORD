@@ -10,22 +10,19 @@ __pycache__/
 .vscode/
 .idea/
 
-# Logs
+# Logs: keep generated experiment reports where explicitly unignored below
 *.log
 logs/
 
-# Data and generated results
-data/
+# Default generated outputs/checkpoints
 results/
 checkpoints/
 checkpoint/
 checkpoint_*/
-component_relation_sid/results/
 component_relation_sid/checkpoints/
-component_relation_sid/rqvae_supervision/results/
 component_relation_sid/rqvae_supervision/checkpoints/
 
-# Large ML files
+# Large ML files are ignored by default. Specific CR-LETTER inputs below are unignored.
 *.npy
 *.npz
 *.pt
@@ -48,3 +45,26 @@ sentence-t5-base/
 tmp/
 temp/
 *.tmp
+
+# CR-LETTER portable upload allowlist
+!data/
+!data/Beauty/
+!data/Beauty/**
+
+!component_relation_sid/results/
+!component_relation_sid/results/indices/
+!component_relation_sid/results/indices/Beauty_component_relation_sid_v0.index.json
+!component_relation_sid/results/indices/Beauty_component_relation_sid_v2_st5.index.json
+!component_relation_sid/results/indices/Beauty_component_relation_sid_v0_build_summary.json
+!component_relation_sid/results/indices/Beauty_component_relation_sid_v2_st5_build_summary.json
+
+!component_relation_sid/rqvae_supervision/results/
+!component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/
+!component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/
+!component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/**
+!component_relation_sid/rqvae_supervision/results/cf_embeddings/
+!component_relation_sid/rqvae_supervision/results/cf_embeddings/**
+!component_relation_sid/rqvae_supervision/results/labels/
+!component_relation_sid/rqvae_supervision/results/labels/**
+!component_relation_sid/rqvae_supervision/results/reports/
+!component_relation_sid/rqvae_supervision/results/reports/**

@@ -1,0 +1,7 @@
+section,name,count,unique_count,min_item_id,max_item_id,missing_count,extra_count,overlap_ratio,note
+letter,LETTER Beauty.index.json keys,12101,12101,0,12100,,,,Beauty.index.json keys
+letter_inter,LETTER Beauty.inter.json items,12101,12101,0,12100,,,,unique items in Beauty.inter.json
+sasrec,beauty.txt,12101,12101,1,12101,1,1,0.999917362201471,SASRec python/data/beauty.txt
+offset,identity,12101,12101,,,1,1,0.999917362201471,"duplicates=0, covers_all=False"
+offset,minus_one,12101,12101,,,0,0,1.0,"duplicates=0, covers_all=True"
+offset,plus_one,12101,12101,,,2,2,0.9998347244029419,"duplicates=0, covers_all=False"

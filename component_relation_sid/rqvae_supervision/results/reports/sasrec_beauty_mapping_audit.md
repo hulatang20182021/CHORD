@@ -1,0 +1,955 @@
+# SASRec Beauty Item Mapping Audit
+
+## File Discovery
+
+- SASRec root: /home/huangxin/llmNrec/sasrec
+- Mapping-like files found: 6
+- CF candidate: /home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/item_features/item_feature_matrix_cf.npy
+- Feature metadata: /home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/item_features/item_feature_metadata.csv
+
+## LETTER Item ID Stats
+
+- item_count: 12101
+- min/max: 0 / 12100
+- continuous 0..12100: True
+- all convertible to int: True
+- inter unique item count: 12101
+- inter/index match: True
+
+## SASRec beauty.txt Stats
+
+- unique item count: 12101
+- min/max: 1 / 12101
+- continuous 1..12101: True
+- contains 0: False
+- contains 12101: True
+
+## Missing / Extra
+
+- LETTER but not SASRec beauty.txt: ['0']
+- SASRec beauty.txt but not LETTER: ['12101']
+- missing frequencies: {'letter_missing_in_sasrec': {'0': {'letter_inter_frequency': 11, 'sasrec_beauty_frequency': 0}}, 'sasrec_extra_vs_letter': {'12101': {'letter_inter_frequency': 0, 'sasrec_beauty_frequency': 7}}}
+
+## Offset Tests
+
+- identity: valid=12100, missing=1, extra=1, overlap_ratio=0.999917, duplicates=0, covers_all=False
+- minus_one: valid=12101, missing=0, extra=0, overlap_ratio=1.000000, duplicates=0, covers_all=True
+- plus_one: valid=12099, missing=2, extra=2, overlap_ratio=0.999835, duplicates=0, covers_all=False
+
+## Row Order Evidence
+
+- source uses item_emb.weight[1:]: True
+- feature metadata item ids equal sorted SASRec ids: True
+- inferred source row order: sasrec_item_id_1_to_itemnum_after_dropping_padding_0
+- row0 source item id: 1
+
+## item_feature_matrix_cf.npy Check
+
+- shape: [12101, 50]
+- dtype: float32
+- has NaN/inf: False
+- row norm mean/median/min/max: 1.0 / 1.0 / 0.9999998211860657 / 1.0000001192092896
+- zero rows: 0
+- row0 norm: 1.0
+- last row norm: 0.9999999403953552
+
+## Title Alignment
+
+- unique exact title mapped count: 12026
+- ambiguous title match count: 68
+- missing title match count: 7
+- direct offset title matches: {'sasrec_id_minus_one_to_letter_id': 2, 'sasrec_id_identity_to_letter_id': 5, 'sasrec_id_plus_one_to_letter_id': 0}
+
+## Decision
+
+- mapping_status: need_mapping
+- row_order_confirmed: True
+- exported Beauty_sasrec_item_emb.npy: False
+- reason: SASRec beauty.txt ids can cover LETTER ids with minus_one, and source row order is known, but content/title alignment is not proven.
+- recommended_next_action: Do not hard-use item_feature_matrix_cf.npy; reconstruct mapping from raw item ids or export from SASRec with explicit LETTER order.
+
+## Full JSON
+
+```json
+{
+  "scope": {
+    "letter_root": "/home/huangxin/llmNrec/Letter/LETTER-master",
+    "sasrec_root": "/home/huangxin/llmNrec/sasrec",
+    "dataset": "Beauty",
+    "wrote_experiments": false,
+    "modified_sasrec_root": false,
+    "trained_rqvae": false,
+    "trained_letter_tiger": false,
+    "trained_sasrec": false
+  },
+  "mapping_file_search": {
+    "count": 6,
+    "files": [
+      {
+        "path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/clusters/beauty_cluster_overview.csv",
+        "relative_path": "python/experiments/beauty_semantic_funnel/results/clusters/beauty_cluster_overview.csv",
+        "size_bytes": 627
+      },
+      {
+        "path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/final_report/beauty_experiment_summary.csv",
+        "relative_path": "python/experiments/beauty_semantic_funnel/results/final_report/beauty_experiment_summary.csv",
+        "size_bytes": 232
+      },
+      {
+        "path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/final_report/beauty_full_selected_summary.csv",
+        "relative_path": "python/experiments/beauty_semantic_funnel/results/final_report/beauty_full_selected_summary.csv",
+        "size_bytes": 232
+      },
+      {
+        "path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/processed/beauty_default/item_map.csv",
+        "relative_path": "python/experiments/beauty_semantic_funnel/results/processed/beauty_default/item_map.csv",
+        "size_bytes": 194631
+      },
+      {
+        "path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/sasrec_baseline/beauty_sasrec_summary.csv",
+        "relative_path": "python/experiments/beauty_semantic_funnel/results/sasrec_baseline/beauty_sasrec_summary.csv",
+        "size_bytes": 369
+      },
+      {
+        "path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/sequential_diagnostic/beauty_sequential_signal_summary.csv",
+        "relative_path": "python/experiments/beauty_semantic_funnel/results/sequential_diagnostic/beauty_sequential_signal_summary.csv",
+        "size_bytes": 1622
+      }
+    ]
+  },
+  "letter_index_stats": {
+    "name": "LETTER Beauty.index.json keys",
+    "count": 12101,
+    "unique_count": 12101,
+    "all_unique": true,
+    "all_convertible_to_int": true,
+    "has_string_ids": false,
+    "min_item_id": 0,
+    "max_item_id": 12100,
+    "is_continuous_0_to_n_minus_1": true,
+    "is_continuous_1_to_n": false,
+    "contains_0": true,
+    "contains_12101": false,
+    "first_20": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19"
+    ],
+    "last_20": [
+      "12081",
+      "12082",
+      "12083",
+      "12084",
+      "12085",
+      "12086",
+      "12087",
+      "12088",
+      "12089",
+      "12090",
+      "12091",
+      "12092",
+      "12093",
+      "12094",
+      "12095",
+      "12096",
+      "12097",
+      "12098",
+      "12099",
+      "12100"
+    ]
+  },
+  "letter_inter_stats": {
+    "name": "LETTER Beauty.inter.json items",
+    "count": 12101,
+    "unique_count": 12101,
+    "all_unique": true,
+    "all_convertible_to_int": true,
+    "has_string_ids": false,
+    "min_item_id": 0,
+    "max_item_id": 12100,
+    "is_continuous_0_to_n_minus_1": true,
+    "is_continuous_1_to_n": false,
+    "contains_0": true,
+    "contains_12101": false,
+    "first_20": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19"
+    ],
+    "last_20": [
+      "12081",
+      "12082",
+      "12083",
+      "12084",
+      "12085",
+      "12086",
+      "12087",
+      "12088",
+      "12089",
+      "12090",
+      "12091",
+      "12092",
+      "12093",
+      "12094",
+      "12095",
+      "12096",
+      "12097",
+      "12098",
+      "12099",
+      "12100"
+    ]
+  },
+  "letter_inter_vs_index": {
+    "left_name": "LETTER index",
+    "right_name": "LETTER inter",
+    "left_count": 12101,
+    "right_count": 12101,
+    "overlap_count": 12101,
+    "overlap_ratio_left": 1.0,
+    "missing_count": 0,
+    "extra_count": 0,
+    "missing": [],
+    "extra": []
+  },
+  "sasrec_beauty_stats": {
+    "name": "beauty.txt",
+    "count": 12101,
+    "unique_count": 12101,
+    "all_unique": true,
+    "all_convertible_to_int": true,
+    "has_string_ids": false,
+    "min_item_id": 1,
+    "max_item_id": 12101,
+    "is_continuous_0_to_n_minus_1": false,
+    "is_continuous_1_to_n": true,
+    "contains_0": false,
+    "contains_12101": true,
+    "first_20": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20"
+    ],
+    "last_20": [
+      "12082",
+      "12083",
+      "12084",
+      "12085",
+      "12086",
+      "12087",
+      "12088",
+      "12089",
+      "12090",
+      "12091",
+      "12092",
+      "12093",
+      "12094",
+      "12095",
+      "12096",
+      "12097",
+      "12098",
+      "12099",
+      "12100",
+      "12101"
+    ],
+    "path": "/home/huangxin/llmNrec/sasrec/python/data/beauty.txt",
+    "relative_path": "python/data/beauty.txt",
+    "row_count": 198502,
+    "malformed_rows": 0,
+    "user_count": 22363,
+    "first_10_rows": [
+      [
+        "1",
+        "9450"
+      ],
+      [
+        "1",
+        "9840"
+      ],
+      [
+        "1",
+        "10077"
+      ],
+      [
+        "1",
+        "11156"
+      ],
+      [
+        "1",
+        "11753"
+      ],
+      [
+        "1",
+        "11864"
+      ],
+      [
+        "2",
+        "3310"
+      ],
+      [
+        "2",
+        "4573"
+      ],
+      [
+        "2",
+        "9080"
+      ],
+      [
+        "2",
+        "4137"
+      ]
+    ],
+    "item_frequency_for_special_ids": {
+      "0": 0,
+      "1": 8,
+      "12099": 9,
+      "12100": 10,
+      "12101": 7
+    }
+  },
+  "sasrec_Beauty_stats": {
+    "name": "Beauty.txt",
+    "count": 57289,
+    "unique_count": 57289,
+    "all_unique": true,
+    "all_convertible_to_int": true,
+    "has_string_ids": false,
+    "min_item_id": 1,
+    "max_item_id": 57289,
+    "is_continuous_0_to_n_minus_1": false,
+    "is_continuous_1_to_n": true,
+    "contains_0": false,
+    "contains_12101": true,
+    "first_20": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20"
+    ],
+    "last_20": [
+      "57270",
+      "57271",
+      "57272",
+      "57273",
+      "57274",
+      "57275",
+      "57276",
+      "57277",
+      "57278",
+      "57279",
+      "57280",
+      "57281",
+      "57282",
+      "57283",
+      "57284",
+      "57285",
+      "57286",
+      "57287",
+      "57288",
+      "57289"
+    ],
+    "path": "/home/huangxin/llmNrec/sasrec/python/data/Beauty.txt",
+    "relative_path": "python/data/Beauty.txt",
+    "row_count": 394908,
+    "malformed_rows": 0,
+    "user_count": 52204,
+    "first_10_rows": [
+      [
+        "1",
+        "12888"
+      ],
+      [
+        "1",
+        "49583"
+      ],
+      [
+        "1",
+        "1"
+      ],
+      [
+        "1",
+        "4733"
+      ],
+      [
+        "1",
+        "5761"
+      ],
+      [
+        "1",
+        "10845"
+      ],
+      [
+        "1",
+        "11210"
+      ],
+      [
+        "1",
+        "26875"
+      ],
+      [
+        "1",
+        "37882"
+      ],
+      [
+        "1",
+        "39167"
+      ]
+    ],
+    "item_frequency_for_special_ids": {
+      "0": 0,
+      "1": 2,
+      "12099": 10,
+      "12100": 2,
+      "12101": 7
+    }
+  },
+  "sasrec_vs_letter": {
+    "left_name": "LETTER index",
+    "right_name": "SASRec beauty.txt",
+    "left_count": 12101,
+    "right_count": 12101,
+    "overlap_count": 12100,
+    "overlap_ratio_left": 0.999917362201471,
+    "missing_count": 1,
+    "extra_count": 1,
+    "missing": [
+      "0"
+    ],
+    "extra": [
+      "12101"
+    ]
+  },
+  "missing_extra_frequency": {
+    "letter_missing_in_sasrec": {
+      "0": {
+        "letter_inter_frequency": 11,
+        "sasrec_beauty_frequency": 0
+      }
+    },
+    "sasrec_extra_vs_letter": {
+      "12101": {
+        "letter_inter_frequency": 0,
+        "sasrec_beauty_frequency": 7
+      }
+    }
+  },
+  "offset_tests": [
+    {
+      "mapping": "identity",
+      "mapped_item_count": 12101,
+      "unique_mapped_count": 12101,
+      "valid_mapped_count": 12100,
+      "missing_count": 1,
+      "extra_count": 1,
+      "overlap_ratio": 0.999917362201471,
+      "covers_all_12101_letter_items": false,
+      "duplicate_mapped_ids": 0,
+      "missing_sample": [
+        "0"
+      ],
+      "extra_sample": [
+        "12101"
+      ]
+    },
+    {
+      "mapping": "minus_one",
+      "mapped_item_count": 12101,
+      "unique_mapped_count": 12101,
+      "valid_mapped_count": 12101,
+      "missing_count": 0,
+      "extra_count": 0,
+      "overlap_ratio": 1.0,
+      "covers_all_12101_letter_items": true,
+      "duplicate_mapped_ids": 0,
+      "missing_sample": [],
+      "extra_sample": []
+    },
+    {
+      "mapping": "plus_one",
+      "mapped_item_count": 12101,
+      "unique_mapped_count": 12101,
+      "valid_mapped_count": 12099,
+      "missing_count": 2,
+      "extra_count": 2,
+      "overlap_ratio": 0.9998347244029419,
+      "covers_all_12101_letter_items": false,
+      "duplicate_mapped_ids": 0,
+      "missing_sample": [
+        "0",
+        "1"
+      ],
+      "extra_sample": [
+        "12101",
+        "12102"
+      ]
+    }
+  ],
+  "row_order_evidence": {
+    "feature_script_path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/build_beauty_item_features.py",
+    "source_uses_item_embedding_without_padding": true,
+    "source_sorts_metadata_by_item_id": true,
+    "feature_metadata_path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/item_features/item_feature_metadata.csv",
+    "feature_metadata_rows": 12101,
+    "feature_metadata_item_id_all_int": true,
+    "feature_metadata_item_id_min": 1,
+    "feature_metadata_item_id_max": 12101,
+    "feature_metadata_item_id_is_1_to_n": true,
+    "feature_metadata_item_ids_equal_sorted_sasrec_beauty_ids": true,
+    "embedding_rows_equal_feature_metadata_rows": true,
+    "inferred_source_row_order": "sasrec_item_id_1_to_itemnum_after_dropping_padding_0",
+    "row0_source_item_id": "1",
+    "last_row_source_item_id": "12101"
+  },
+  "embedding_stats": {
+    "path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/item_features/item_feature_matrix_cf.npy",
+    "shape": [
+      12101,
+      50
+    ],
+    "dtype": "float32",
+    "has_nan_or_inf": false,
+    "row_norm_mean": 1.0,
+    "row_norm_median": 1.0,
+    "row_norm_min": 0.9999998211860657,
+    "row_norm_max": 1.0000001192092896,
+    "zero_row_count": 0,
+    "zero_row_indices_first_20": [],
+    "row0_norm": 1.0,
+    "last_row_norm": 0.9999999403953552
+  },
+  "title_alignment": {
+    "letter_nonempty_titles": 12101,
+    "sasrec_nonempty_titles": 12094,
+    "letter_unique_title_count": 12033,
+    "sasrec_unique_title_count": 12026,
+    "unique_exact_title_mapped_count": 12026,
+    "ambiguous_title_match_count": 68,
+    "missing_title_match_count": 7,
+    "direct_offset_title_matches": {
+      "sasrec_id_minus_one_to_letter_id": 2,
+      "sasrec_id_identity_to_letter_id": 5,
+      "sasrec_id_plus_one_to_letter_id": 0
+    },
+    "sample_title_comparisons": [
+      {
+        "sasrec_item_id": "1",
+        "sasrec_title": "wawo 15 color professionl makeup eyeshadow camouflage facial concealer neutral palette",
+        "letter_minus_one_id": "0",
+        "letter_minus_one_title": "opi nail lacquer simmer and shimmer 0 5 fluid ounce",
+        "letter_identity_id": "1",
+        "letter_identity_title": "opi red shatter crackle nail polish e55 new"
+      },
+      {
+        "sasrec_item_id": "2",
+        "sasrec_title": "xtreme brite brightening gel 1oz",
+        "letter_minus_one_id": "1",
+        "letter_minus_one_title": "opi red shatter crackle nail polish e55 new",
+        "letter_identity_id": "2",
+        "letter_identity_title": "skin79 the prestige beblesh balm bb cream diamond collection"
+      },
+      {
+        "sasrec_item_id": "3",
+        "sasrec_title": "prada candy by prada eau de parfum spray 1 7 oz for women",
+        "letter_minus_one_id": "2",
+        "letter_minus_one_title": "skin79 the prestige beblesh balm bb cream diamond collection",
+        "letter_identity_id": "3",
+        "letter_identity_title": "wawo 15 color professionl makeup eyeshadow camouflage facial concealer neutral palette"
+      },
+      {
+        "sasrec_item_id": "4",
+        "sasrec_title": "versace bright crystal eau de toilette spray for women 3 ounce",
+        "letter_minus_one_id": "3",
+        "letter_minus_one_title": "wawo 15 color professionl makeup eyeshadow camouflage facial concealer neutral palette",
+        "letter_identity_id": "4",
+        "letter_identity_title": "dr scholl s quick heat paraffin spa bath"
+      },
+      {
+        "sasrec_item_id": "5",
+        "sasrec_title": "stella mccartney stella",
+        "letter_minus_one_id": "4",
+        "letter_minus_one_title": "dr scholl s quick heat paraffin spa bath",
+        "letter_identity_id": "5",
+        "letter_identity_title": "cococare coconut oil 100 pure 4 oz"
+      },
+      {
+        "sasrec_item_id": "6",
+        "sasrec_title": "avalon biotin b complex thickening conditioner 14 ounce",
+        "letter_minus_one_id": "5",
+        "letter_minus_one_title": "cococare coconut oil 100 pure 4 oz",
+        "letter_identity_id": "6",
+        "letter_identity_title": "vakind pack of 2 black fiber leopard long curling eye lashes mascara eyelash mascara set"
+      },
+      {
+        "sasrec_item_id": "7",
+        "sasrec_title": "better living classic two chamber dispenser white",
+        "letter_minus_one_id": "6",
+        "letter_minus_one_title": "vakind pack of 2 black fiber leopard long curling eye lashes mascara eyelash mascara set",
+        "letter_identity_id": "7",
+        "letter_identity_title": "freeman facial charcoal amp black sugar polish mask 6 oz"
+      },
+      {
+        "sasrec_item_id": "8",
+        "sasrec_title": "better living the ulti mate dispenser",
+        "letter_minus_one_id": "7",
+        "letter_minus_one_title": "freeman facial charcoal amp black sugar polish mask 6 oz",
+        "letter_identity_id": "8",
+        "letter_identity_title": "vitamin c serum for face 20 with vegan hyaluronic acid amp vitamin e best natural amp organic anti aging formula stimula"
+      },
+      {
+        "sasrec_item_id": "9",
+        "sasrec_title": "crabtree amp evelyn 2792 gardeners hand therapy 100ml 3 4 oz",
+        "letter_minus_one_id": "8",
+        "letter_minus_one_title": "vitamin c serum for face 20 with vegan hyaluronic acid amp vitamin e best natural amp organic anti aging formula stimula",
+        "letter_identity_id": "9",
+        "letter_identity_title": "my beauty diary facial mask caviar mask 10 pcs"
+      },
+      {
+        "sasrec_item_id": "10",
+        "sasrec_title": "crabtree amp evelyn gardener s ultra moisturising hand therapy pump 250g 8 8 oz",
+        "letter_minus_one_id": "9",
+        "letter_minus_one_title": "my beauty diary facial mask caviar mask 10 pcs",
+        "letter_identity_id": "10",
+        "letter_identity_title": "mebco tortoise shower detangler"
+      }
+    ],
+    "ambiguous_samples": [
+      {
+        "sasrec_item_id": "2",
+        "title": "xtreme brite brightening gel 1oz",
+        "letter_matches": [
+          "82",
+          "6962"
+        ]
+      },
+      {
+        "sasrec_item_id": "47",
+        "title": "cetaphil gentle skin cleanser 16 fl oz",
+        "letter_matches": [
+          "2303",
+          "4987"
+        ]
+      },
+      {
+        "sasrec_item_id": "389",
+        "title": "blinc kiss me mascara dark brown",
+        "letter_matches": [
+          "1096",
+          "4003"
+        ]
+      },
+      {
+        "sasrec_item_id": "746",
+        "title": "queen helene refreshing natural facial scrub mint julep 6 oz",
+        "letter_matches": [
+          "4794",
+          "8944"
+        ]
+      },
+      {
+        "sasrec_item_id": "820",
+        "title": "model in a bottle sensitive makeup setting spray 1 7 oz",
+        "letter_matches": [
+          "3571",
+          "7780"
+        ]
+      },
+      {
+        "sasrec_item_id": "941",
+        "title": "mason pearson detangling comb",
+        "letter_matches": [
+          "1657",
+          "9172"
+        ]
+      },
+      {
+        "sasrec_item_id": "1274",
+        "title": "cetaphil gentle skin cleanser 16 fl oz",
+        "letter_matches": [
+          "2303",
+          "4987"
+        ]
+      },
+      {
+        "sasrec_item_id": "1423",
+        "title": "euphoria by calvin klein for women eau de parfum spray 3 4 ounce",
+        "letter_matches": [
+          "318",
+          "8179"
+        ]
+      },
+      {
+        "sasrec_item_id": "1683",
+        "title": "blinc kiss me mascara dark brown",
+        "letter_matches": [
+          "1096",
+          "4003"
+        ]
+      },
+      {
+        "sasrec_item_id": "1835",
+        "title": "neutrogena healthy skin eye cream 0 5 ounce pack of 2",
+        "letter_matches": [
+          "779",
+          "6866"
+        ]
+      },
+      {
+        "sasrec_item_id": "1930",
+        "title": "oshima tsubaki camellia hair care oil 60ml",
+        "letter_matches": [
+          "5947",
+          "7408"
+        ]
+      },
+      {
+        "sasrec_item_id": "2083",
+        "title": "bare escentuals bareminerals matte spf 15 foundation medium beige",
+        "letter_matches": [
+          "5196",
+          "9934"
+        ]
+      },
+      {
+        "sasrec_item_id": "2251",
+        "title": "amlactin 12 moisturizing lotion 567 g 20 oz",
+        "letter_matches": [
+          "4529",
+          "6163"
+        ]
+      },
+      {
+        "sasrec_item_id": "2324",
+        "title": "peter thomas roth un wrinkle peel pads 60 count",
+        "letter_matches": [
+          "5964",
+          "5967"
+        ]
+      },
+      {
+        "sasrec_item_id": "2357",
+        "title": "model in a bottle sensitive makeup setting spray 1 7 oz",
+        "letter_matches": [
+          "3571",
+          "7780"
+        ]
+      },
+      {
+        "sasrec_item_id": "2538",
+        "title": "euphoria by calvin klein for women eau de parfum spray 3 4 ounce",
+        "letter_matches": [
+          "318",
+          "8179"
+        ]
+      },
+      {
+        "sasrec_item_id": "2648",
+        "title": "aztec secrets indian healing bentonite clay 2 lbs",
+        "letter_matches": [
+          "789",
+          "4498"
+        ]
+      },
+      {
+        "sasrec_item_id": "2894",
+        "title": "cnd treatments prep stickey base coat 0 33 oz",
+        "letter_matches": [
+          "6527",
+          "8188"
+        ]
+      },
+      {
+        "sasrec_item_id": "3232",
+        "title": "china glaze for audrey 0 5 oz",
+        "letter_matches": [
+          "7680",
+          "8377"
+        ]
+      },
+      {
+        "sasrec_item_id": "3316",
+        "title": "designer skin bombshell 100xxbronzer 13 5 ounce bottle",
+        "letter_matches": [
+          "1198",
+          "6412"
+        ]
+      }
+    ],
+    "missing_samples": [
+      {
+        "sasrec_item_id": "1461",
+        "title": ""
+      },
+      {
+        "sasrec_item_id": "3579",
+        "title": ""
+      },
+      {
+        "sasrec_item_id": "4209",
+        "title": ""
+      },
+      {
+        "sasrec_item_id": "4382",
+        "title": ""
+      },
+      {
+        "sasrec_item_id": "4399",
+        "title": ""
+      },
+      {
+        "sasrec_item_id": "10772",
+        "title": ""
+      },
+      {
+        "sasrec_item_id": "10991",
+        "title": ""
+      }
+    ]
+  },
+  "feature_config": {
+    "checkpoint": "/home/huangxin/llmNrec/sasrec/python/beauty_default/SASRec.epoch=40.lr=0.001.layer=2.head=1.hidden=50.maxlen=100.pth",
+    "cf_dim": 50,
+    "metadata_dim": 393,
+    "hybrid_dim": 443,
+    "category_vocab": 237,
+    "store_vocab": 100
+  },
+  "item_map_file": {
+    "path": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/processed/beauty_default/item_map.csv",
+    "exists": true,
+    "row_count": 12101,
+    "first_10_rows": [
+      {
+        "raw_item_id": "7806397051",
+        "item_id": "1"
+      },
+      {
+        "raw_item_id": "9759091062",
+        "item_id": "2"
+      },
+      {
+        "raw_item_id": "9788072216",
+        "item_id": "3"
+      },
+      {
+        "raw_item_id": "9790790961",
+        "item_id": "4"
+      },
+      {
+        "raw_item_id": "9790794231",
+        "item_id": "5"
+      },
+      {
+        "raw_item_id": "B00004TMFE",
+        "item_id": "6"
+      },
+      {
+        "raw_item_id": "B00004TUBL",
+        "item_id": "7"
+      },
+      {
+        "raw_item_id": "B00004TUBV",
+        "item_id": "8"
+      },
+      {
+        "raw_item_id": "B00004U9UY",
+        "item_id": "9"
+      },
+      {
+        "raw_item_id": "B00004U9V2",
+        "item_id": "10"
+      }
+    ]
+  },
+  "export_summary": {
+    "aligned": false,
+    "source_file": "/home/huangxin/llmNrec/sasrec/python/experiments/beauty_semantic_funnel/results/item_features/item_feature_matrix_cf.npy",
+    "source_row_order_assumption": "sasrec_item_id_1_to_itemnum_after_dropping_padding_0",
+    "mapping_method": "none",
+    "embedding_dim": 50,
+    "row_norm_stats": {
+      "row_norm_mean": 1.0,
+      "row_norm_median": 1.0,
+      "row_norm_min": 0.9999998211860657,
+      "row_norm_max": 1.0000001192092896,
+      "row0_norm": 1.0,
+      "last_row_norm": 0.9999999403953552
+    },
+    "warnings": [
+      "Unique exact title mapping covers 12026/12101 items."
+    ]
+  },
+  "decision": {
+    "mapping_status": "need_mapping",
+    "row_order_confirmed": true,
+    "exported_embedding": false,
+    "reason": "SASRec beauty.txt ids can cover LETTER ids with minus_one, and source row order is known, but content/title alignment is not proven.",
+    "recommended_next_action": "Do not hard-use item_feature_matrix_cf.npy; reconstruct mapping from raw item ids or export from SASRec with explicit LETTER order."
+  }
+}
+```

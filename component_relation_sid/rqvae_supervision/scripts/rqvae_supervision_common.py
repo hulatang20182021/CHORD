@@ -3,13 +3,14 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 from collections import Counter
 from pathlib import Path
 from typing import Any, Iterable
 
 
-ROOT = Path("/home/huangxin/llmNrec/Letter/LETTER-master")
+ROOT = Path(os.environ.get("CR_LETTER_ROOT", Path(__file__).resolve().parents[3])).resolve()
 BASE = ROOT / "component_relation_sid/rqvae_supervision"
 TOKEN_RE = re.compile(r"[a-z0-9]+(?:[-_][a-z0-9]+)*")
 NOISY_ATTR = {

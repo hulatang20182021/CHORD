@@ -1,0 +1,10 @@
+{
+  "num_items": 12101,
+  "embedding_dim": 768,
+  "dtype": "float32",
+  "emb_mean_norm": 1.0,
+  "emb_median_norm": 1.0,
+  "emb_min_norm": 0.9999998807907104,
+  "emb_max_norm": 1.0000001192092896,
+  "item_order_aligned": true
+}
