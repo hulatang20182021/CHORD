@@ -81,10 +81,12 @@ def single_label_alignment(codes: list[str], labels: list[int]) -> dict[str, flo
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--index", default=str(BASE / "results/indices/Beauty_cf_only_st5_rqvae.index.json"))
+    parser.add_argument("--method_name", default="cf_only_st5_rqvae")
+    parser.add_argument("--output_prefix", default="Beauty_cf_only_st5_rqvae")
     args = parser.parse_args()
-    audit_json = BASE / "results/audits/Beauty_cf_only_st5_rqvae_audit.json"
-    audit_csv = BASE / "results/audits/Beauty_cf_only_st5_rqvae_audit.csv"
-    report = BASE / "results/reports/Beauty_cf_only_st5_rqvae_audit_report.md"
+    audit_json = BASE / f"results/audits/{args.output_prefix}_audit.json"
+    audit_csv = BASE / f"results/audits/{args.output_prefix}_audit.csv"
+    report = BASE / f"results/reports/{args.output_prefix}_audit_report.md"
     ensure_no_existing([audit_json, audit_csv, report])
 
     exposure = compute_item_exposure(load_json(ROOT / "data/Beauty/Beauty.inter.json"))
@@ -95,7 +97,7 @@ def main() -> None:
         "cr_sid_v0": ROOT / "component_relation_sid/results/indices/Beauty_component_relation_sid_v0.index.json",
         "v2_st5": ROOT / "component_relation_sid/results/indices/Beauty_component_relation_sid_v2_st5.index.json",
         "plain_st5_rqvae": BASE / "results/indices/Beauty_plain_st5_rqvae.index.json",
-        "cf_only_st5_rqvae": Path(args.index),
+        args.method_name: Path(args.index),
     }
     refs_loaded = {name: load_json(path) for name, path in refs.items() if path.exists()}
     order = sorted(refs_loaded["original"], key=lambda x: int(x) if x.isdigit() else x)
@@ -114,6 +116,10 @@ def main() -> None:
         codes = [cf_only[item][pos] for item in order]
         align[f"{name}_vs_cf_cluster"] = single_label_alignment(codes, cf_cluster)
         align[f"{name}_vs_product_type"] = single_label_alignment(codes, product)
+        if "original" in refs_loaded:
+            align[f"{name}_vs_original_{name}"] = {
+                "nmi": float(normalized_mutual_info_score(codes, [refs_loaded["original"][item][pos] for item in order]))
+            }
 
     result = {"methods": rows, "cf_alignment": align}
     save_json(result, audit_json)

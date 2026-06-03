@@ -18,12 +18,13 @@ def main() -> None:
     parser.add_argument("--input", required=True)
     parser.add_argument("--item_order", required=True)
     parser.add_argument("--output_dir", required=True)
+    parser.add_argument("--output_prefix", default="Beauty_cf_only_st5_rqvae")
     parser.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
     out = Path(args.output_dir)
-    index_path = out / "Beauty_cf_only_st5_rqvae.index.json"
-    raw_path = out / "Beauty_cf_only_st5_rqvae_raw_codes.json"
-    summary_path = out / "Beauty_cf_only_st5_rqvae_build_summary.json"
+    index_path = out / f"{args.output_prefix}.index.json"
+    raw_path = out / f"{args.output_prefix}_raw_codes.json"
+    summary_path = out / f"{args.output_prefix}_build_summary.json"
     ensure_no_existing([index_path, raw_path, summary_path])
 
     order = [str(x) for x in load_json(Path(args.item_order))]

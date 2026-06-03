@@ -1,0 +1,210 @@
+{
+  "methods": [
+    {
+      "method": "original",
+      "full_sid_duplicate_count": 13,
+      "total_token_vocab_size": 965,
+      "c1_vocab_size": 197,
+      "c2_vocab_size": 256,
+      "c3_vocab_size": 256,
+      "c4_vocab_size": 256,
+      "compact_c4_vocab_size": 256,
+      "max_prefix3_bucket_size": 27,
+      "index_all_ratio_freq_le_5": 0.046632124352331605,
+      "exposure_all_ratio_freq_le_5": 0.007253886010362694,
+      "per_position_index_low_freq": [
+        0.22842639593908629,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_position_exposure_low_freq": [
+        0.03553299492385787,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "prefix1_mean_bucket_size": 61.4263959390863,
+      "prefix2_mean_bucket_size": 1.5257848947169335,
+      "prefix3_mean_bucket_size": 1.0346272229822162,
+      "c1c2_singleton_ratio": 0.7176900769133779,
+      "c1c2c3_singleton_ratio": 0.977000683994528,
+      "prefix1_lift": 10.826020719073735,
+      "prefix2_lift": 314.48148148148147,
+      "prefix3_lift": 1014.0
+    },
+    {
+      "method": "cr_sid_v0",
+      "full_sid_duplicate_count": 0,
+      "total_token_vocab_size": 846,
+      "c1_vocab_size": 256,
+      "c2_vocab_size": 256,
+      "c3_vocab_size": 256,
+      "c4_vocab_size": 78,
+      "compact_c4_vocab_size": 78,
+      "max_prefix3_bucket_size": 78,
+      "index_all_ratio_freq_le_5": 0.10047281323877069,
+      "exposure_all_ratio_freq_le_5": 0.001182033096926714,
+      "per_position_index_low_freq": [
+        0.01953125,
+        0.15625,
+        0.00390625,
+        0.5
+      ],
+      "per_position_exposure_low_freq": [
+        0.0,
+        0.0,
+        0.0,
+        0.01282051282051282
+      ],
+      "prefix1_mean_bucket_size": 47.26953125,
+      "prefix2_mean_bucket_size": 2.8928998326559885,
+      "prefix3_mean_bucket_size": 1.6337248548670178,
+      "c1c2_singleton_ratio": 0.6363853693521396,
+      "c1c2c3_singleton_ratio": 0.8150398271904955,
+      "prefix1_lift": 3.163560209424084,
+      "prefix2_lift": 4.241610738255034,
+      "prefix3_lift": 31.824742268041234
+    },
+    {
+      "method": "v2_st5",
+      "full_sid_duplicate_count": 0,
+      "total_token_vocab_size": 786,
+      "c1_vocab_size": 256,
+      "c2_vocab_size": 256,
+      "c3_vocab_size": 256,
+      "c4_vocab_size": 18,
+      "compact_c4_vocab_size": 18,
+      "max_prefix3_bucket_size": 18,
+      "index_all_ratio_freq_le_5": 0.1984732824427481,
+      "exposure_all_ratio_freq_le_5": 0.008905852417302799,
+      "per_position_index_low_freq": [
+        0.00390625,
+        0.5390625,
+        0.03125,
+        0.5
+      ],
+      "per_position_exposure_low_freq": [
+        0.0,
+        0.02734375,
+        0.0,
+        0.0
+      ],
+      "prefix1_mean_bucket_size": 47.26953125,
+      "prefix2_mean_bucket_size": 1.8503058103975536,
+      "prefix3_mean_bucket_size": 1.1470142180094787,
+      "c1c2_singleton_ratio": 0.5571865443425077,
+      "c1c2c3_singleton_ratio": 0.9014218009478673,
+      "prefix1_lift": 13.650406504065039,
+      "prefix2_lift": 102.83999999999999,
+      "prefix3_lift": 322.66666666666663
+    },
+    {
+      "method": "plain_st5_rqvae",
+      "full_sid_duplicate_count": 0,
+      "total_token_vocab_size": 377,
+      "c1_vocab_size": 105,
+      "c2_vocab_size": 167,
+      "c3_vocab_size": 90,
+      "c4_vocab_size": 15,
+      "compact_c4_vocab_size": 15,
+      "max_prefix3_bucket_size": 15,
+      "index_all_ratio_freq_le_5": 0.07161803713527852,
+      "exposure_all_ratio_freq_le_5": 0.002652519893899204,
+      "per_position_index_low_freq": [
+        0.0380952380952381,
+        0.03592814371257485,
+        0.15555555555555556,
+        0.2
+      ],
+      "per_position_exposure_low_freq": [
+        0.0,
+        0.0,
+        0.011111111111111112,
+        0.0
+      ],
+      "prefix1_mean_bucket_size": 115.24761904761905,
+      "prefix2_mean_bucket_size": 1.9795517749059381,
+      "prefix3_mean_bucket_size": 1.0928384358349137,
+      "c1c2_singleton_ratio": 0.572059545231474,
+      "c1c2c3_singleton_ratio": 0.9353382100605075,
+      "prefix1_lift": 8.056208053691275,
+      "prefix2_lift": 42.17857142857142,
+      "prefix3_lift": 70.66666666666666
+    },
+    {
+      "method": "Beauty_cf_only_lam001_st5_rqvae",
+      "full_sid_duplicate_count": 0,
+      "total_token_vocab_size": 677,
+      "c1_vocab_size": 152,
+      "c2_vocab_size": 256,
+      "c3_vocab_size": 256,
+      "c4_vocab_size": 13,
+      "compact_c4_vocab_size": 13,
+      "max_prefix3_bucket_size": 13,
+      "index_all_ratio_freq_le_5": 0.019202363367799114,
+      "exposure_all_ratio_freq_le_5": 0.0014771048744460858,
+      "per_position_index_low_freq": [
+        0.02631578947368421,
+        0.0,
+        0.0,
+        0.6923076923076923
+      ],
+      "per_position_exposure_low_freq": [
+        0.006578947368421052,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "prefix1_mean_bucket_size": 79.61184210526316,
+      "prefix2_mean_bucket_size": 1.3101992204417496,
+      "prefix3_mean_bucket_size": 1.0142485960942083,
+      "c1c2_singleton_ratio": 0.7928757037678649,
+      "c1c2c3_singleton_ratio": 0.9891040147514877,
+      "prefix1_lift": 26.699242424242424,
+      "prefix2_lift": 254.85714285714283,
+      "prefix3_lift": 159.0
+    }
+  ],
+  "cf_alignment": {
+    "c1_vs_cf_cluster": {
+      "nmi": 0.548018261228772,
+      "purity": 0.2835302867531609,
+      "entropy_mean": 2.6491633520054614
+    },
+    "c1_vs_product_type": {
+      "nmi": 0.28223274749700006,
+      "purity": 0.3194777291132964,
+      "entropy_mean": 2.319690447328089
+    },
+    "c1_vs_original_c1": {
+      "nmi": 0.45478688322953575
+    },
+    "c2_vs_cf_cluster": {
+      "nmi": 0.34553507297115116,
+      "purity": 0.08115031815552434,
+      "entropy_mean": 3.5042626338156166
+    },
+    "c2_vs_product_type": {
+      "nmi": 0.17751725693328388,
+      "purity": 0.24287248987686968,
+      "entropy_mean": 2.6773499543334545
+    },
+    "c2_vs_original_c2": {
+      "nmi": 0.33110904269351815
+    },
+    "c3_vs_cf_cluster": {
+      "nmi": 0.3232481154312458,
+      "purity": 0.05735063217915875,
+      "entropy_mean": 3.62823242905308
+    },
+    "c3_vs_product_type": {
+      "nmi": 0.16382349496761217,
+      "purity": 0.23948434013717876,
+      "entropy_mean": 2.7339275360948605
+    },
+    "c3_vs_original_c3": {
+      "nmi": 0.3188603857215779
+    }
+  }
+}

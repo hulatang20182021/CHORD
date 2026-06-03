@@ -1,0 +1,16 @@
+{
+  "num_items": 12101,
+  "full_sid_duplicate_count": 0,
+  "total_token_vocab_size": 499,
+  "c1_vocab_size": 61,
+  "c2_vocab_size": 170,
+  "c3_vocab_size": 256,
+  "c4_vocab_size": 12,
+  "compact_c4_vocab_size": 12,
+  "max_prefix3_bucket_size": 12,
+  "prefix1_mean_bucket_size": 198.37704918032787,
+  "prefix2_mean_bucket_size": 2.23471837488458,
+  "prefix3_mean_bucket_size": 1.037999656887974,
+  "valid": true,
+  "checkpoint": "component_relation_sid\\rqvae_supervision\\checkpoints\\Beauty\\cf_only_st5_rqvae_lam010_seed2024\\best_model.pt"
+}

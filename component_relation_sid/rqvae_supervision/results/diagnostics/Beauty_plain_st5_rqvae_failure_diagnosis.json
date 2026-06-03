@@ -1,0 +1,508 @@
+{
+  "paths": {
+    "checkpoint": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\checkpoints\\Beauty\\plain_st5_rqvae_seed2024\\best_model.pt",
+    "training_summary": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\checkpoints\\Beauty\\plain_st5_rqvae_seed2024\\training_summary.json",
+    "raw_codes": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\results\\indices\\Beauty_plain_st5_rqvae_raw_codes.json",
+    "index": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\results\\indices\\Beauty_plain_st5_rqvae.index.json",
+    "audit": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\results\\audits\\Beauty_plain_st5_rqvae_audit.json",
+    "st5": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\results\\plain_st5_rqvae\\input\\Beauty_st5_rqvae_input_embeddings.npy",
+    "item_order": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\results\\plain_st5_rqvae\\input\\Beauty_st5_rqvae_item_id_order.json",
+    "cf": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\results\\cf_embeddings\\Beauty_cf_svd_item_emb.npy",
+    "cf_cluster": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\results\\cf_embeddings\\Beauty_cf_svd_cluster_labels.npy",
+    "beauty_index": "E:\\CR_LETTER\\CR_LETTER\\data\\Beauty\\Beauty.index.json",
+    "beauty_inter": "E:\\CR_LETTER\\CR_LETTER\\data\\Beauty\\Beauty.inter.json",
+    "beauty_item": "E:\\CR_LETTER\\CR_LETTER\\data\\Beauty\\Beauty.item.json",
+    "labels_npz": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\results\\labels\\Beauty_component_labels.npz",
+    "labels_json": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\rqvae_supervision\\results\\labels\\Beauty_component_labels.json",
+    "original": "E:\\CR_LETTER\\CR_LETTER\\data\\Beauty\\Beauty.index.json",
+    "v2_st5": "E:\\CR_LETTER\\CR_LETTER\\component_relation_sid\\results\\indices\\Beauty_component_relation_sid_v2_st5.index.json"
+  },
+  "training_summary": {
+    "final_loss": 0.0004720273120055952,
+    "final_reconstruction_loss": 0.0002609961989890076,
+    "best_loss": 0.00040029191647382814,
+    "epochs": 200,
+    "codebook_usage": [
+      {
+        "level": 1,
+        "used_codes": 232,
+        "total_codes": 256
+      },
+      {
+        "level": 2,
+        "used_codes": 250,
+        "total_codes": 256
+      },
+      {
+        "level": 3,
+        "used_codes": 242,
+        "total_codes": 256
+      }
+    ]
+  },
+  "vocab_consistency": {
+    "raw_c1_unique": 105,
+    "raw_c2_unique": 167,
+    "raw_c3_unique": 90,
+    "index_c4_unique": 15,
+    "token_namespace_layered": true,
+    "total_vocab_recomputed": 377,
+    "total_vocab_sum_of_layers": 377,
+    "audit_total_vocab": 377,
+    "audit_total_vocab_reasonable": true,
+    "token_name_collision": false,
+    "raw_index_prefix_mismatch_count_sampled": 0,
+    "raw_index_prefix_mismatch_examples": []
+  },
+  "prefix_bucket_distribution": {
+    "prefix1": {
+      "num_buckets": 105,
+      "mean": 115.24761904761905,
+      "median": 101.0,
+      "p90": 208.60000000000002,
+      "p95": 254.2,
+      "p99": 338.3199999999997,
+      "max": 353,
+      "singleton_ratio": 0.02857142857142857,
+      "largest_examples": [
+        {
+          "prefix": [
+            "<a_22>"
+          ],
+          "size": 353
+        },
+        {
+          "prefix": [
+            "<a_166>"
+          ],
+          "size": 340
+        },
+        {
+          "prefix": [
+            "<a_36>"
+          ],
+          "size": 298
+        },
+        {
+          "prefix": [
+            "<a_201>"
+          ],
+          "size": 294
+        },
+        {
+          "prefix": [
+            "<a_79>"
+          ],
+          "size": 284
+        },
+        {
+          "prefix": [
+            "<a_72>"
+          ],
+          "size": 255
+        },
+        {
+          "prefix": [
+            "<a_84>"
+          ],
+          "size": 251
+        },
+        {
+          "prefix": [
+            "<a_34>"
+          ],
+          "size": 231
+        },
+        {
+          "prefix": [
+            "<a_96>"
+          ],
+          "size": 215
+        },
+        {
+          "prefix": [
+            "<a_77>"
+          ],
+          "size": 214
+        }
+      ]
+    },
+    "prefix2": {
+      "num_buckets": 6113,
+      "mean": 1.9795517749059381,
+      "median": 1.0,
+      "p90": 4.0,
+      "p95": 5.0,
+      "p99": 10.0,
+      "max": 79,
+      "singleton_ratio": 0.572059545231474,
+      "largest_examples": [
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_117>"
+          ],
+          "size": 79
+        },
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_198>"
+          ],
+          "size": 63
+        },
+        {
+          "prefix": [
+            "<a_72>",
+            "<b_131>"
+          ],
+          "size": 48
+        },
+        {
+          "prefix": [
+            "<a_166>",
+            "<b_138>"
+          ],
+          "size": 29
+        },
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_106>"
+          ],
+          "size": 26
+        },
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_247>"
+          ],
+          "size": 25
+        },
+        {
+          "prefix": [
+            "<a_92>",
+            "<b_62>"
+          ],
+          "size": 24
+        },
+        {
+          "prefix": [
+            "<a_246>",
+            "<b_37>"
+          ],
+          "size": 24
+        },
+        {
+          "prefix": [
+            "<a_89>",
+            "<b_117>"
+          ],
+          "size": 23
+        },
+        {
+          "prefix": [
+            "<a_166>",
+            "<b_1>"
+          ],
+          "size": 23
+        }
+      ]
+    },
+    "prefix3": {
+      "num_buckets": 11073,
+      "mean": 1.0928384358349137,
+      "median": 1.0,
+      "p90": 1.0,
+      "p95": 2.0,
+      "p99": 3.0,
+      "max": 15,
+      "singleton_ratio": 0.9353382100605075,
+      "largest_examples": [
+        {
+          "prefix": [
+            "<a_79>",
+            "<b_87>",
+            "<c_6>"
+          ],
+          "size": 15
+        },
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_198>",
+            "<c_144>"
+          ],
+          "size": 14
+        },
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_198>",
+            "<c_188>"
+          ],
+          "size": 14
+        },
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_117>",
+            "<c_62>"
+          ],
+          "size": 12
+        },
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_117>",
+            "<c_193>"
+          ],
+          "size": 12
+        },
+        {
+          "prefix": [
+            "<a_72>",
+            "<b_131>",
+            "<c_240>"
+          ],
+          "size": 12
+        },
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_117>",
+            "<c_188>"
+          ],
+          "size": 10
+        },
+        {
+          "prefix": [
+            "<a_246>",
+            "<b_37>",
+            "<c_61>"
+          ],
+          "size": 9
+        },
+        {
+          "prefix": [
+            "<a_22>",
+            "<b_117>",
+            "<c_61>"
+          ],
+          "size": 8
+        },
+        {
+          "prefix": [
+            "<a_36>",
+            "<b_59>",
+            "<c_63>"
+          ],
+          "size": 7
+        }
+      ]
+    }
+  },
+  "behavior_neighbor_structure": {
+    "prefix": {
+      "prefix1_lift": 8.056208053691275,
+      "prefix2_lift": 42.17857142857142,
+      "prefix3_lift": 70.66666666666666
+    },
+    "single_code": {
+      "c1_only_lift": 8.056208053691275,
+      "c2_only_lift": 2.8889679715302488,
+      "c3_only_lift": 1.1281208935611038
+    },
+    "cf_cluster_lift": 55.99348109517601,
+    "product_type_lift": 1.8716735659373154
+  },
+  "embedding_neighbor_preservation": {
+    "top10": [
+      {
+        "name": "raw_st5",
+        "sample_size": 2048,
+        "top10_behavior_overlap_mean": 0.07797851562500001,
+        "top10_cooccurrence_strength_mean": 0.15131835937500002,
+        "embedding_count": 12101
+      },
+      {
+        "name": "q1",
+        "sample_size": 2048,
+        "top10_behavior_overlap_mean": 0.013134765625,
+        "top10_cooccurrence_strength_mean": 0.019335937500000004,
+        "embedding_count": 12101
+      },
+      {
+        "name": "q1_q2",
+        "sample_size": 2048,
+        "top10_behavior_overlap_mean": 0.030322265625,
+        "top10_cooccurrence_strength_mean": 0.052880859375000006,
+        "embedding_count": 12101
+      },
+      {
+        "name": "q1_q2_q3",
+        "sample_size": 2048,
+        "top10_behavior_overlap_mean": 0.035986328124999994,
+        "top10_cooccurrence_strength_mean": 0.0638671875,
+        "embedding_count": 12101
+      },
+      {
+        "name": "cf_svd",
+        "sample_size": 2048,
+        "top10_behavior_overlap_mean": 0.33955078125,
+        "top10_cooccurrence_strength_mean": 0.5577148437499999,
+        "embedding_count": 12101
+      }
+    ],
+    "spearman_vs_cf": {
+      "raw_st5": {
+        "sample_pairs": 99993,
+        "spearman": 0.07302123957182281
+      },
+      "q1": {
+        "sample_pairs": 99995,
+        "spearman": 0.16508392620263906
+      },
+      "q1_q2": {
+        "sample_pairs": 99989,
+        "spearman": 0.16605030856396316
+      },
+      "q1_q2_q3": {
+        "sample_pairs": 99987,
+        "spearman": 0.16897244676831968
+      }
+    }
+  },
+  "method_comparison": [
+    {
+      "method": "original",
+      "full_sid_duplicate_count": 13,
+      "total_token_vocab_size": 965,
+      "c1_vocab_size": 197,
+      "c2_vocab_size": 256,
+      "c3_vocab_size": 256,
+      "c4_vocab_size": 256,
+      "compact_c4_vocab_size": 256,
+      "max_prefix3_bucket_size": 27,
+      "index_all_ratio_freq_le_5": 0.046632124352331605,
+      "exposure_all_ratio_freq_le_5": 0.007253886010362694,
+      "prefix1_mean_bucket_size": 61.4263959390863,
+      "prefix2_mean_bucket_size": 1.5257848947169335,
+      "prefix3_mean_bucket_size": 1.0346272229822162,
+      "prefix1_singleton_ratio": 0.08121827411167512,
+      "prefix2_singleton_ratio": 0.7176900769133779,
+      "prefix3_singleton_ratio": 0.977000683994528,
+      "prefix1_lift": 10.826020719073735,
+      "prefix1_observed_share": 0.20172136778339833,
+      "prefix1_random_share": 0.0186330114284741,
+      "prefix2_lift": 314.48148148148147,
+      "prefix2_observed_share": 0.048206246203282635,
+      "prefix2_random_share": 0.0001532880282049972,
+      "prefix3_lift": 1014.0,
+      "prefix3_observed_share": 0.011513634118508679,
+      "prefix3_random_share": 1.1354668755925718e-05
+    },
+    {
+      "method": "v2_st5",
+      "full_sid_duplicate_count": 0,
+      "total_token_vocab_size": 786,
+      "c1_vocab_size": 256,
+      "c2_vocab_size": 256,
+      "c3_vocab_size": 256,
+      "c4_vocab_size": 18,
+      "compact_c4_vocab_size": 18,
+      "max_prefix3_bucket_size": 18,
+      "index_all_ratio_freq_le_5": 0.1984732824427481,
+      "exposure_all_ratio_freq_le_5": 0.008905852417302799,
+      "prefix1_mean_bucket_size": 47.26953125,
+      "prefix2_mean_bucket_size": 1.8503058103975536,
+      "prefix3_mean_bucket_size": 1.1470142180094787,
+      "prefix1_singleton_ratio": 0.0,
+      "prefix2_singleton_ratio": 0.5571865443425077,
+      "prefix3_singleton_ratio": 0.9014218009478673,
+      "prefix1_lift": 13.650406504065039,
+      "prefix1_observed_share": 0.06672571094419748,
+      "prefix1_random_share": 0.004888184899426022,
+      "prefix2_lift": 102.83999999999999,
+      "prefix2_observed_share": 0.01459642668574251,
+      "prefix2_random_share": 0.00014193335944907148,
+      "prefix3_lift": 322.66666666666663,
+      "prefix3_observed_share": 0.010991319355736094,
+      "prefix3_random_share": 3.4064006267777155e-05
+    },
+    {
+      "method": "plain_st5_rqvae",
+      "full_sid_duplicate_count": 0,
+      "total_token_vocab_size": 377,
+      "c1_vocab_size": 105,
+      "c2_vocab_size": 167,
+      "c3_vocab_size": 90,
+      "c4_vocab_size": 15,
+      "compact_c4_vocab_size": 15,
+      "max_prefix3_bucket_size": 15,
+      "index_all_ratio_freq_le_5": 0.07161803713527852,
+      "exposure_all_ratio_freq_le_5": 0.002652519893899204,
+      "prefix1_mean_bucket_size": 115.24761904761905,
+      "prefix2_mean_bucket_size": 1.9795517749059381,
+      "prefix3_mean_bucket_size": 1.0928384358349137,
+      "prefix1_singleton_ratio": 0.02857142857142857,
+      "prefix2_singleton_ratio": 0.572059545231474,
+      "prefix3_singleton_ratio": 0.9353382100605075,
+      "prefix1_lift": 8.056208053691275,
+      "prefix1_observed_share": 0.10903888406315466,
+      "prefix1_random_share": 0.013534765157063455,
+      "prefix2_lift": 42.17857142857142,
+      "prefix2_observed_share": 0.013409863800748273,
+      "prefix2_random_share": 0.0003179307251659201,
+      "prefix3_lift": 70.66666666666666,
+      "prefix3_observed_share": 0.002407189776256252,
+      "prefix3_random_share": 3.4064006267777155e-05
+    }
+  ],
+  "plain_metrics": {
+    "method": "plain_st5_rqvae",
+    "full_sid_duplicate_count": 0,
+    "total_token_vocab_size": 377,
+    "c1_vocab_size": 105,
+    "c2_vocab_size": 167,
+    "c3_vocab_size": 90,
+    "c4_vocab_size": 15,
+    "compact_c4_vocab_size": 15,
+    "max_prefix3_bucket_size": 15,
+    "index_all_ratio_freq_le_5": 0.07161803713527852,
+    "exposure_all_ratio_freq_le_5": 0.002652519893899204,
+    "prefix1_mean_bucket_size": 115.24761904761905,
+    "prefix2_mean_bucket_size": 1.9795517749059381,
+    "prefix3_mean_bucket_size": 1.0928384358349137,
+    "prefix1_singleton_ratio": 0.02857142857142857,
+    "prefix2_singleton_ratio": 0.572059545231474,
+    "prefix3_singleton_ratio": 0.9353382100605075,
+    "prefix1_lift": 8.056208053691275,
+    "prefix1_observed_share": 0.10903888406315466,
+    "prefix1_random_share": 0.013534765157063455,
+    "prefix2_lift": 42.17857142857142,
+    "prefix2_observed_share": 0.013409863800748273,
+    "prefix2_random_share": 0.0003179307251659201,
+    "prefix3_lift": 70.66666666666666,
+    "prefix3_observed_share": 0.002407189776256252,
+    "prefix3_random_share": 3.4064006267777155e-05
+  },
+  "plain_vs_original_code_nmi": {
+    "c1": 0.5239515275550283,
+    "c2": 0.26662267449810545,
+    "c3": 0.15957662865851363
+  },
+  "existing_audit_gate": {
+    "duplicate_ok": true,
+    "vocab_ok": true,
+    "exposure_ok": true,
+    "prefix2_mean_ok": true,
+    "prefix_lift_ok": false,
+    "recommend_next_supervised_rqvae": false
+  },
+  "failure_classification": {
+    "class": "embedding_source_problem",
+    "implementation_bug": false,
+    "reason": "Raw ST5 cosine has very low rank correlation with CF-SVD cosine."
+  }
+}
