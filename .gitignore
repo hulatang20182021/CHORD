@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Data and generated results
+data/
+results/
+checkpoints/
+checkpoint/
+checkpoint_*/
+component_relation_sid/results/
+component_relation_sid/checkpoints/
+component_relation_sid/rqvae_supervision/results/
+component_relation_sid/rqvae_supervision/checkpoints/
+
+# Large ML files
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+*.onnx
+*.pkl
+*.pickle
+
+# Local models
+models/
+Qwen*/
+Llama*/
+Sentence-T5/
+sentence-t5-base/
+
+# Temporary
+tmp/
+temp/
+*.tmp

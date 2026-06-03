@@ -1,0 +1,13 @@
+{
+  "dataset": "Beauty",
+  "input_dim": 768,
+  "num_items": 12101,
+  "num_quantizers": 3,
+  "codebook_size": 256,
+  "latent_dim": 64,
+  "epochs": 200,
+  "batch_size": 512,
+  "learning_rate": 0.001,
+  "seed": 2024,
+  "notes": "Plain ST5-RQ-VAE P0 tokenizer rebuild. No LETTER-TIGER downstream training."
+}
