@@ -1,0 +1,29 @@
+{
+  "copied_at": "2026-06-15T00:00:00+08:00",
+  "files": [
+    {
+      "source": "component_relation_sid/rqvae_supervision/res/train_only_cf_rebuild/scripts/modeling_matched_curriculum_letter.py",
+      "target": "scripts/modeling_matched_curriculum_letter.py"
+    },
+    {
+      "source": "component_relation_sid/rqvae_supervision/res/train_only_cf_rebuild/scripts/finetune_train_only.py",
+      "target": "scripts/finetune_all1_trainonly.py"
+    },
+    {
+      "source": "component_relation_sid/rqvae_supervision/res/train_only_cf_rebuild/scripts/train_cf_prefix_semres_c3_tokenizer.py",
+      "target": "scripts/tokenizer_core.py"
+    },
+    {
+      "source": "component_relation_sid/rqvae_supervision/res/train_only_cf_rebuild/scripts/generate_cf_prefix_semres_c3_index.py",
+      "target": "scripts/generate_index_core.py"
+    },
+    {
+      "source": "component_relation_sid/rqvae_supervision/res/train_only_cf_rebuild/scripts/build_dataset_alias.py",
+      "target": "scripts/alias_core.py"
+    },
+    {
+      "source": "component_relation_sid/rqvae_supervision/scripts/train_rqvae_cf_prefix2_c2residual.py",
+      "target": "scripts/train_rqvae_cf_prefix2_c2residual.py"
+    }
+  ]
+}
