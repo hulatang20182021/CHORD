@@ -10,3 +10,6 @@ pyyaml
 threadpoolctl
 # Optional if using SentenceTransformer wrappers
 sentence-transformers
+accelerate>=1.1.0
+sentencepiece
+protobuf
