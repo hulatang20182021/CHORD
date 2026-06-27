@@ -1,0 +1,513 @@
+{
+  "generated_at": "2026-06-27T16:43:34.027921",
+  "expected_hashes": {
+    "c12": "c12ec06fe5ba1ca190a38ce4379a65244ae7566198dc204758fbbe12b1e70c72",
+    "ece8": "ece8d063b70002c8955706c123bbf81403a8c046eb041f85c08421d3ffa3a13f",
+    "703": "703530eec9a2517875663c386b0631c7bba564a7019d273290af48978878c798",
+    "item_order": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb"
+  },
+  "artifacts": [
+    {
+      "path": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_embedding_meta.json",
+      "sha256": "2dbe68f53d8d608deb5c0ce8c1f372b8b62d75cf9ef7584c27fd9d5a7f874031",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_embedding_meta.json",
+      "is_symlink": false,
+      "symlink_target": null,
+      "mtime": "2026-06-25T14:55:37.722929",
+      "size": 833,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": [
+        "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_embedding_meta.json"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "sha256": "ece8d063b70002c8955706c123bbf81403a8c046eb041f85c08421d3ffa3a13f",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "is_symlink": false,
+      "symlink_target": null,
+      "mtime": "2026-06-25T14:55:37.719175",
+      "size": 37174400,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": [
+        "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_embedding_meta.json"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "is_symlink": false,
+      "symlink_target": null,
+      "mtime": "2026-06-25T14:55:37.722929",
+      "size": 122004,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": [
+        "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_embedding_meta.json"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_embeddings.npy",
+      "sha256": "703530eec9a2517875663c386b0631c7bba564a7019d273290af48978878c798",
+      "realpath": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_embeddings.npy",
+      "is_symlink": false,
+      "symlink_target": null,
+      "mtime": "2026-06-27T16:19:15.773208",
+      "size": 37174400,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": [
+        "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_summary.json"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_summary.json",
+      "sha256": "1315e83890dc0725c9710ff7956caf759204f8da53a4206de722c30a7814e6d1",
+      "realpath": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_summary.json",
+      "is_symlink": false,
+      "symlink_target": null,
+      "mtime": "2026-06-27T16:19:15.784008",
+      "size": 1197,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": [
+        "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_summary.json"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_item_id_order.json",
+      "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "realpath": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_item_id_order.json",
+      "is_symlink": false,
+      "symlink_target": null,
+      "mtime": "2026-06-27T16:19:15.776808",
+      "size": 122004,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": [
+        "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_summary.json"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "sha256": "c12ec06fe5ba1ca190a38ce4379a65244ae7566198dc204758fbbe12b1e70c72",
+      "realpath": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "is_symlink": false,
+      "symlink_target": null,
+      "mtime": "2026-06-27T00:43:27.860052",
+      "size": 37174400,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": [
+        "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_input_summary.json"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_input_summary.json",
+      "sha256": "300197cb5d3ec6efe47ae55e75d2e8af23a0f82ed6f84f3b0e82f7bfb5b2fbc0",
+      "realpath": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_input_summary.json",
+      "is_symlink": false,
+      "symlink_target": null,
+      "mtime": "2026-06-27T00:42:24.003464",
+      "size": 227,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": [
+        "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_input_summary.json"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "realpath": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "is_symlink": false,
+      "symlink_target": null,
+      "mtime": "2026-06-27T00:42:24.007064",
+      "size": 122004,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": [
+        "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_input_summary.json"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "sha256": "ece8d063b70002c8955706c123bbf81403a8c046eb041f85c08421d3ffa3a13f",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "is_symlink": true,
+      "symlink_target": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "mtime": "2026-06-25T14:55:52.916690",
+      "size": 37174400,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": []
+    },
+    {
+      "path": "/home/huangxin/llmNrec/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "is_symlink": true,
+      "symlink_target": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "mtime": "2026-06-25T14:55:52.916690",
+      "size": 122004,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": []
+    },
+    {
+      "path": "/home/huangxin/llmNrec/Letter/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "sha256": "ece8d063b70002c8955706c123bbf81403a8c046eb041f85c08421d3ffa3a13f",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "is_symlink": true,
+      "symlink_target": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "mtime": "2026-06-25T14:55:52.916690",
+      "size": 37174400,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": []
+    },
+    {
+      "path": "/home/huangxin/llmNrec/Letter/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "is_symlink": true,
+      "symlink_target": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "mtime": "2026-06-25T14:55:52.916690",
+      "size": 122004,
+      "sibling_item_order_hash": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sibling_summary_meta_files": []
+    }
+  ],
+  "paths_by_hash": {
+    "c12": [
+      "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy"
+    ],
+    "ece8": [
+      "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "/home/huangxin/llmNrec/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "/home/huangxin/llmNrec/Letter/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy"
+    ],
+    "703": [
+      "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_embeddings.npy"
+    ]
+  },
+  "active_symlink_candidates": [
+    {
+      "path": "/home/huangxin/llmNrec/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "sha256": "ece8d063b70002c8955706c123bbf81403a8c046eb041f85c08421d3ffa3a13f",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "is_symlink": true,
+      "symlink_target": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "mtime": "2026-06-25T14:55:52.916690",
+      "size": 37174400
+    },
+    {
+      "path": "/home/huangxin/llmNrec/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "is_symlink": true,
+      "symlink_target": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "mtime": "2026-06-25T14:55:52.916690",
+      "size": 122004
+    },
+    {
+      "path": "/home/huangxin/llmNrec/Letter/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "sha256": "ece8d063b70002c8955706c123bbf81403a8c046eb041f85c08421d3ffa3a13f",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "is_symlink": true,
+      "symlink_target": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "mtime": "2026-06-25T14:55:52.916690",
+      "size": 37174400
+    },
+    {
+      "path": "/home/huangxin/llmNrec/Letter/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "realpath": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "is_symlink": true,
+      "symlink_target": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "mtime": "2026-06-25T14:55:52.916690",
+      "size": 122004
+    }
+  ],
+  "metadata_records": [
+    {
+      "path": "/home/huangxin/llmNrec/reference/pls_sd128_dpos_pcsc/base/pls_sd128_base/base_config.json",
+      "has_st5": false,
+      "has_c12": false,
+      "has_ece8": false,
+      "has_703": false,
+      "snippets": []
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/pls_sd128_dpos_pcsc/base/pls_sd128_base/base_build_summary.json",
+      "has_st5": false,
+      "has_c12": false,
+      "has_ece8": false,
+      "has_703": false,
+      "snippets": []
+    },
+    {
+      "path": "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline/results/resources/Beauty/resource_summary.json",
+      "has_st5": true,
+      "has_c12": false,
+      "has_ece8": false,
+      "has_703": false,
+      "snippets": [
+        "  \"st5_embedding\": \"/home/huangxin/llmNrec/Letter/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy\",",
+        "  \"st5_order\": \"/home/huangxin/llmNrec/Letter/LETTER-master/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json\",",
+        "  \"st5_order_aligned\": true,"
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline/results/chord/base/pls_sd128_base/base_config.json",
+      "has_st5": false,
+      "has_c12": false,
+      "has_ece8": false,
+      "has_703": false,
+      "snippets": []
+    },
+    {
+      "path": "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline/results/chord/base/pls_sd128_base/base_build_summary.json",
+      "has_st5": false,
+      "has_c12": false,
+      "has_ece8": false,
+      "has_703": false,
+      "snippets": []
+    },
+    {
+      "path": "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline/results/pls_sd128_dpos_pcsc/base/pls_sd128_base/base_config.json",
+      "has_st5": false,
+      "has_c12": false,
+      "has_ece8": false,
+      "has_703": false,
+      "snippets": []
+    },
+    {
+      "path": "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline/results/pls_sd128_dpos_pcsc/base/pls_sd128_base/base_build_summary.json",
+      "has_st5": false,
+      "has_c12": false,
+      "has_ece8": false,
+      "has_703": false,
+      "snippets": []
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_step1_report.json",
+      "has_st5": true,
+      "has_c12": true,
+      "has_ece8": false,
+      "has_703": true,
+      "snippets": [
+        "  \"status\": \"ST5_REGENERATED_BUT_HASH_DIFFERS\",",
+        "  \"entry_script_used\": \"code/01_st5_text_embedding/prepare_generic_st5_rqvae_input.py\",",
+        "ry_script_note\": \"Used the Beauty.item.json -> Sentence-T5 local T5EncoderModel mean-pooling logic from prepare_generic_st5_rqvae_input.py, with output redirected to the isolated requested directory.\",",
+        "  \"output_dir\": \"/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty\",",
+        "    \"embedding\": \"/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_embeddings.npy\","
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_divergence_audit.json",
+      "has_st5": true,
+      "has_c12": true,
+      "has_ece8": false,
+      "has_703": true,
+      "snippets": [
+        "  \"status_before_audit\": \"ST5_REGENERATED_BUT_HASH_DIFFERS\",",
+        "  \"old_expected_embedding_sha256\": \"c12ec06fe5ba1ca190a38ce4379a65244ae7566198dc204758fbbe12b1e70c72\",",
+        "  \"st5_candidate_scripts_found\": [",
+        "      \"path\": \"code/01_st5_text_embedding/encode_beauty_with_sentence_t5.py\",",
+        "      \"path\": \"code/01_st5_text_embedding/prepare_beauty_st5_rqvae_input.py\","
+      ]
+    },
+    {
+      "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_text_construction_audit.json",
+      "has_st5": true,
+      "has_c12": false,
+      "has_ece8": false,
+      "has_703": false,
+      "snippets": [
+        "      \"path\": \"code/01_st5_text_embedding/encode_beauty_with_sentence_t5.py\",",
+        "      \"path\": \"code/01_st5_text_embedding/prepare_beauty_st5_rqvae_input.py\",",
+        "      \"path\": \"code/01_st5_text_embedding/prepare_generic_st5_rqvae_input.py\",",
+        "      \"path\": \"code/01_st5_text_embedding/run_prepare_st5.sh\",",
+        "      \"candidate_name\": \"prepare_generic_st5_rqvae_input.item_text\","
+      ]
+    }
+  ],
+  "old_base_resource_records_st5_hash": false,
+  "base_st5_hash_recorded": false,
+  "resource_st5_hash_recorded": false,
+  "likely_source_script": {
+    "exists": true,
+    "path": "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline/scripts/local_5060/build_beauty_st5_embeddings_local.py",
+    "sha256": "d8e61ebdbcf7d5ffa50abd662348c32e01a785dcf7611c0ec6d5f4522754e737",
+    "text_construction_rule": "preferred fields [title, brand, category, categories, description]; clean_text collapses whitespace/newlines; dict/list recursive; output text prefixes field names; fallback sorted metadata fields then item_id.",
+    "default_output_dir": "/home/huangxin/llmNrec/plain_st5_rqvae/input",
+    "writes_meta": true,
+    "explains_ece8": true,
+    "explains_c12": false,
+    "active_meta": {
+      "dataset": "Beauty",
+      "model_name": "sentence-transformers/sentence-t5-base",
+      "item_count": 12101,
+      "dim": 768,
+      "shape": [
+        12101,
+        768
+      ],
+      "dtype": "float32",
+      "item_path": "/home/huangxin/llmNrec/LETTER-master/data/Beauty/Beauty.item.json",
+      "order_path": "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline/results/resources/Beauty/Beauty_item_id_order.json",
+      "output_path": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "order_output_path": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "preferred_fields": [
+        "title",
+        "brand",
+        "category",
+        "categories",
+        "description"
+      ],
+      "used_fields": {
+        "title": 12101,
+        "description": 11367
+      },
+      "batch_size": 32,
+      "max_length": 256,
+      "device": "cuda"
+    },
+    "c12_summary": {
+      "num_items": 12101,
+      "embedding_dim": 768,
+      "dtype": "float32",
+      "emb_mean_norm": 1.0,
+      "emb_median_norm": 1.0,
+      "emb_min_norm": 0.9999998807907104,
+      "emb_max_norm": 1.0000001192092896,
+      "item_order_aligned": true
+    }
+  },
+  "fingerprint": {
+    "c12": {
+      "exists": true,
+      "shape": [
+        12101,
+        768
+      ],
+      "dtype": "float32",
+      "finite_sample": true
+    },
+    "ece8": {
+      "exists": true,
+      "shape": [
+        12101,
+        768
+      ],
+      "dtype": "float32",
+      "finite_sample": true
+    },
+    "regenerated_703": {
+      "exists": true,
+      "shape": [
+        12101,
+        768
+      ],
+      "dtype": "float32",
+      "finite_sample": true
+    },
+    "c12_vs_ece8": {
+      "same_shape": true,
+      "cosine_mean": 0.9818955659866333,
+      "cosine_min": 0.8390300869941711,
+      "cosine_max": 0.9996376633644104,
+      "l2_mean": 0.4411284029483795,
+      "l2_min": 0.1709737777709961,
+      "l2_max": 1.6992121934890747
+    },
+    "orders": [
+      {
+        "path": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+        "exists": true,
+        "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb"
+      },
+      {
+        "path": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+        "exists": true,
+        "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb"
+      },
+      {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_item_id_order.json",
+        "exists": true,
+        "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb"
+      }
+    ],
+    "old_base_arrays": {
+      "z_shared.npy": {
+        "exists": true,
+        "shape": [
+          12101,
+          128
+        ],
+        "dtype": "float32",
+        "finite_sample": true,
+        "sha256": "6aa3be65df8dec35e4cf583dfd29be707d81b78cd56a25ada6a87e116512c249"
+      },
+      "z_semres.npy": {
+        "exists": true,
+        "shape": [
+          12101,
+          64
+        ],
+        "dtype": "float32",
+        "finite_sample": true,
+        "sha256": "e39ed5a1fceaeb83d59d7e99d455ca8f0b7fb63fca2b5832e9549ff97a2bc606"
+      },
+      "z_cfres.npy": {
+        "exists": true,
+        "shape": [
+          12101,
+          64
+        ],
+        "dtype": "float32",
+        "finite_sample": true,
+        "sha256": "6893f2ab747cf4fbe99ee99a862f72fed67f4199c76a3c90203297377b52424e"
+      },
+      "c1.npy": {
+        "exists": true,
+        "shape": [
+          12101
+        ],
+        "dtype": "int64",
+        "finite_sample": true,
+        "sha256": "356ce2c81cf7d73d2c8648d0d748230f36787159640a66ac43a5fb2694896b7a"
+      },
+      "c2.npy": {
+        "exists": true,
+        "shape": [
+          12101
+        ],
+        "dtype": "int64",
+        "finite_sample": true,
+        "sha256": "53c7535a697e223e0bb914911cb90e919349dea279f4ccdaf390024c665c633d"
+      },
+      "c3.npy": {
+        "exists": true,
+        "shape": [
+          12101
+        ],
+        "dtype": "int64",
+        "finite_sample": true,
+        "sha256": "63ed992e8e6aff758d3a123393238c456809b54da6f72daa7df13726d3af9a57"
+      }
+    }
+  },
+  "historical_main_likely_used": "unknown",
+  "classification": [
+    "ACTIVE_ST5_ECE8_CONFIRMED",
+    "MULTIPLE_ST5_ARTIFACTS_FOUND",
+    "OLD_BASE_ST5_HASH_NOT_RECORDED",
+    "OLD_BASE_ST5_INPUT_NOT_INFERABLE_FROM_EXISTING_METADATA",
+    "ECE8_SOURCE_SCRIPT_CONFIRMED",
+    "C12_SOURCE_SCRIPT_NOT_CONFIRMED",
+    "ST5_ARTIFACT_AMBIGUOUS"
+  ],
+  "reasoning": [
+    "reference/plain_st5_rqvae contains c12 embedding with matching item order, but its sibling summary records only norm/order statistics and not source script/text construction/hash provenance.",
+    "active plain_st5 and LETTER/Letter symlinks resolve to ece8; active sibling meta matches build_beauty_st5_embeddings_local.py output schema and text construction.",
+    "old reference base_config/base_build_summary do not record ST5 path or hash. Current resource_summary records an ST5 path but no hash, so it cannot bind old base/main to c12 or ece8.",
+    "c12/ece8 share shape and item order but are numerically different; existing old base arrays cannot be mapped to one ST5 input without rebuilding or stronger metadata."
+  ],
+  "reports": {
+    "json": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_artifact_reconciliation_audit.json",
+    "markdown": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_artifact_reconciliation_audit.md"
+  }
+}

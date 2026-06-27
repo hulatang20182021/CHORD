@@ -1,0 +1,2 @@
+/home/huangxin/llmNrec/repro_bundles/Beauty_new_machine_full_pipeline/models/Sentence-T5/sentence-t5-base/rust_model.ot
+-rw-r--r-- 1 huangxin huangxin 513M Jun  2 22:00 /home/huangxin/llmNrec/repro_bundles/Beauty_new_machine_full_pipeline/models/Sentence-T5/sentence-t5-base/rust_model.ot

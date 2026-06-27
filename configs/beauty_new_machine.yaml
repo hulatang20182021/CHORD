@@ -1,0 +1,26 @@
+dataset: Beauty
+seed: 42
+
+paths:
+  data_root: /home/huangxin/llmNrec/data
+  output_root: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline
+  model_path: /home/huangxin/llmNrec/chord_new_machine_repro/models/Sentence-T5/sentence-t5-base
+
+st5:
+  batch_size: 32
+  max_length: 256
+  normalize: true
+  device: cuda:0
+
+legacy_cf:
+  window_size: 5
+  svd_dim: 128
+  ridge_alpha: 10.0
+  random_state: 42
+
+pls:
+  shared_dim: 128
+  private_dim: 64
+  k1: 256
+  k2: 256
+  k3: 256

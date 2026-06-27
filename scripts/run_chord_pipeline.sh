@@ -1,0 +1,302 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT=${PROJECT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}
+PY=${PY:-python}
+RESULT_BASE=${RESULT_BASE:-$PROJECT/results/chord}
+DATA_ROOT=${DATA_ROOT:-$PROJECT/data}
+DATASET=${DATASET:-Beauty}
+SEED=${SEED:-42}
+MODEL_PATH=${MODEL_PATH:-$PROJECT/models/Sentence-T5/sentence-t5-base}
+
+RUN_VERIFY=${RUN_VERIFY:-1}
+RUN_ST5=${RUN_ST5:-1}
+RUN_CF=${RUN_CF:-1}
+RUN_RESIDUAL=${RUN_RESIDUAL:-1}
+RUN_PLS=${RUN_PLS:-1}
+RUN_SID=${RUN_SID:-1}
+RUN_DOWNSTREAM=${RUN_DOWNSTREAM:-0}
+RUN_AUDIT=${RUN_AUDIT:-1}
+FORCE=${FORCE:-0}
+DRY_RUN=${DRY_RUN:-0}
+
+ST5_BATCH_SIZE=${ST5_BATCH_SIZE:-32}
+ST5_MAX_LENGTH=${ST5_MAX_LENGTH:-256}
+ST5_NORMALIZE=${ST5_NORMALIZE:-1}
+ST5_DEVICE=${ST5_DEVICE:-cuda}
+
+RESOURCE_MODE=${RESOURCE_MODE:-legacy_biview}
+RESOURCE_WINDOW_SIZE=${RESOURCE_WINDOW_SIZE:-5}
+RESOURCE_SVD_DIM=${RESOURCE_SVD_DIM:-128}
+RESOURCE_RIDGE_ALPHA=${RESOURCE_RIDGE_ALPHA:-10.0}
+RESOURCE_RANDOM_STATE=${RESOURCE_RANDOM_STATE:-42}
+
+PLS_SHARED_DIM=${PLS_SHARED_DIM:-128}
+PLS_PRIVATE_DIM=${PLS_PRIVATE_DIM:-64}
+K1=${K1:-256}
+K2=${K2:-256}
+K3=${K3:-256}
+
+GPU=${GPU:-0}
+EPOCHS=${EPOCHS:-1}
+NUM_BEAMS=${NUM_BEAMS:-5}
+RUN_SUFFIX=${RUN_SUFFIX:-smoke}
+TRAIN_BATCH_SIZE=${TRAIN_BATCH_SIZE:-256}
+TEST_BATCH_SIZE=${TEST_BATCH_SIZE:-32}
+LEARNING_RATE=${LEARNING_RATE:-5e-4}
+TEMPERATURE=${TEMPERATURE:-1.0}
+GRAD_ACCUM=${GRAD_ACCUM:-1}
+LOGGING_STEPS=${LOGGING_STEPS:-50}
+PCSC_MAX_FACTOR=${PCSC_MAX_FACTOR:-1.0}
+PCSC_SCHEDULE_TYPE=${PCSC_SCHEDULE_TYPE:-warmup_hold_decay}
+LAMBDA_CF=${LAMBDA_CF:-1.0}
+LAMBDA_CFRES=${LAMBDA_CFRES:-1.0}
+LAMBDA_BASE=${LAMBDA_BASE:-1.0}
+LAMBDA_RES=${LAMBDA_RES:-1.0}
+LAMBDA_COMP=${LAMBDA_COMP:-1.0}
+
+USE_WANDB=${USE_WANDB:-0}
+WANDB_PROJECT=${WANDB_PROJECT:-chord-new-machine}
+WANDB_ENTITY=${WANDB_ENTITY:-}
+WANDB_RUN_NAME=${WANDB_RUN_NAME:-}
+WANDB_MODE=${WANDB_MODE:-offline}
+WANDB_DIR=${WANDB_DIR:-$RESULT_BASE/wandb}
+
+RUN_NAME=${DATASET}_chord_seed${SEED}_new_machine_${RUN_SUFFIX}
+LOG_DIR=$RESULT_BASE/logs
+REPORT_DIR=$RESULT_BASE/reports
+RESOURCE_DIR=$RESULT_BASE/resources/$DATASET
+ST5_DIR=$RESULT_BASE/st5/$DATASET
+BASE_DIR=$RESULT_BASE/base/${DATASET}_chord_seed${SEED}
+INDEX_DIR=$RESULT_BASE/index/${DATASET}_chord_seed${SEED}
+DATA_DIR=$RESULT_BASE/data/$RUN_NAME
+RUN_DIR=$RESULT_BASE/runs/$RUN_NAME
+PIPELINE_LOG=$LOG_DIR/${RUN_NAME}.pipeline.log
+RUNTIME_CONFIG=$REPORT_DIR/${RUN_NAME}.runtime_config.yaml
+AUDIT_JSON=$REPORT_DIR/${RUN_NAME}.audit.json
+AUDIT_MD=$REPORT_DIR/${RUN_NAME}.audit.md
+STAGE_STATUS=$REPORT_DIR/${RUN_NAME}.stage_status.tsv
+PIPELINE_RC=0
+
+mkdir -p "$LOG_DIR" "$REPORT_DIR" "$RESOURCE_DIR" "$ST5_DIR" "$BASE_DIR" "$INDEX_DIR" "$DATA_DIR" "$RUN_DIR" "$RESULT_BASE/wandb"
+: > "$STAGE_STATUS"
+
+exec > >(tee -a "$PIPELINE_LOG") 2>&1
+
+echo "[pipeline] RUN_NAME=$RUN_NAME"
+echo "[pipeline] RESULT_BASE=$RESULT_BASE"
+echo "[pipeline] DRY_RUN=$DRY_RUN FORCE=$FORCE"
+
+cat > "$RUNTIME_CONFIG" <<EOF
+dataset: $DATASET
+seed: $SEED
+run_name: $RUN_NAME
+force: $([[ "$FORCE" == "1" ]] && echo true || echo false)
+
+paths:
+  data_root: $DATA_ROOT
+  output_root: $RESULT_BASE
+  result_base: $RESULT_BASE
+  model_path: $MODEL_PATH
+
+st5:
+  batch_size: $ST5_BATCH_SIZE
+  max_length: $ST5_MAX_LENGTH
+  normalize: $ST5_NORMALIZE
+  device: $ST5_DEVICE
+
+legacy_cf:
+  mode: $RESOURCE_MODE
+  window_size: $RESOURCE_WINDOW_SIZE
+  svd_dim: $RESOURCE_SVD_DIM
+  ridge_alpha: $RESOURCE_RIDGE_ALPHA
+  random_state: $RESOURCE_RANDOM_STATE
+
+pls:
+  shared_dim: $PLS_SHARED_DIM
+  private_dim: $PLS_PRIVATE_DIM
+  k1: $K1
+  k2: $K2
+  k3: $K3
+EOF
+
+echo "[pipeline] runtime_config=$RUNTIME_CONFIG"
+
+stage() {
+  local name="$1"
+  shift
+  local log="$1"
+  shift
+  echo
+  echo "[stage] $name: START $(date -Is)"
+  echo "[run] $*"
+  echo "[log] $log"
+  mkdir -p "$(dirname "$log")"
+  if [[ "$DRY_RUN" == "1" ]]; then
+    echo -e "$name\tDRY_RUN\t$log" >> "$STAGE_STATUS"
+    echo "[stage] $name: DRY_RUN"
+    return 0
+  fi
+  if "$@" 2>&1 | tee "$log"; then
+    echo -e "$name\tDONE\t$log" >> "$STAGE_STATUS"
+    echo "[stage] $name: DONE $(date -Is)"
+  else
+    local rc=$?
+    echo -e "$name\tFAILED($rc)\t$log" >> "$STAGE_STATUS"
+    echo "[stage] $name: FAILED rc=$rc $(date -Is)" >&2
+    return "$rc"
+  fi
+}
+
+if [[ "$RUN_VERIFY" == "1" ]]; then
+  stage verify "$LOG_DIR/${RUN_NAME}.verify.log" "$PY" "$PROJECT/scripts/00_verify_inputs.py" --config "$RUNTIME_CONFIG" --output "$REPORT_DIR/${RUN_NAME}.verify.json"
+fi
+
+if [[ "$RUN_ST5" == "1" ]]; then
+  stage st5 "$LOG_DIR/${RUN_NAME}.st5.log" "$PY" "$PROJECT/scripts/01_build_st5_embeddings.py" --config "$RUNTIME_CONFIG" --run
+fi
+
+if [[ "$RUN_CF" == "1" ]]; then
+  stage cf "$LOG_DIR/${RUN_NAME}.cf.log" "$PY" "$PROJECT/scripts/02_build_legacy_cf_ppmi_svd.py" --config "$RUNTIME_CONFIG" --run
+fi
+
+if [[ "$RUN_RESIDUAL" == "1" ]]; then
+  echo
+  echo "[stage] residual: START $(date -Is)"
+  RES_LOG="$LOG_DIR/${RUN_NAME}.residual.log"
+  echo "[log] $RES_LOG"
+  if [[ "$DRY_RUN" == "1" ]]; then
+    echo -e "residual\tDRY_RUN\t$RES_LOG" >> "$STAGE_STATUS"
+    echo "[stage] residual: DRY_RUN"
+  else
+    missing=0
+    for f in "$RESOURCE_DIR/${DATASET}_cf_residual.npy" "$RESOURCE_DIR/${DATASET}_semantic_base.npy" "$RESOURCE_DIR/${DATASET}_semantic_residual.npy"; do
+      if [[ ! -f "$f" ]]; then echo "MISSING $f" | tee -a "$RES_LOG"; missing=1; fi
+    done
+    if [[ "$missing" == "0" ]]; then echo "residual resources present" | tee -a "$RES_LOG"; echo -e "residual\tDONE\t$RES_LOG" >> "$STAGE_STATUS"; else echo -e "residual\tFAILED\t$RES_LOG" >> "$STAGE_STATUS"; exit 4; fi
+  fi
+fi
+
+if [[ "$RUN_PLS" == "1" ]]; then
+  stage pls "$LOG_DIR/${RUN_NAME}.pls.log" "$PY" "$PROJECT/scripts/04_build_pls_shared_private.py" --config "$RUNTIME_CONFIG" --run
+fi
+
+SID_STATUS=SKIPPED
+if [[ "$RUN_SID" == "1" ]]; then
+  if stage sid "$LOG_DIR/${RUN_NAME}.sid.log" "$PY" "$PROJECT/scripts/05_optional_build_sid_index.py" --config "$RUNTIME_CONFIG" --run; then
+    if [[ "$DRY_RUN" == "1" ]]; then SID_STATUS=DRY_RUN; else SID_STATUS=DONE; fi
+  else
+    SID_STATUS=FAILED
+    exit 6
+  fi
+else
+  echo -e "sid\tSKIPPED\t" >> "$STAGE_STATUS"
+fi
+
+DOWNSTREAM_STATUS=SKIPPED
+BUILD_DATA_STATUS=SKIPPED
+TRAIN_STATUS=SKIPPED
+EVAL_STATUS=SKIPPED
+if [[ "$RUN_DOWNSTREAM" == "1" ]]; then
+  INDEX_JSON="$INDEX_DIR/${DATASET}_chord_seed${SEED}.index.json"
+  missing_downstream=0
+  for f in \
+    "$INDEX_JSON" \
+    "$RESOURCE_DIR/${DATASET}_item_id_order.json" \
+    "$RESOURCE_DIR/${DATASET}_trainonly_cf_svd.npy" \
+    "$ST5_DIR/${DATASET}_st5_rqvae_input_embeddings.npy" \
+    "$RESOURCE_DIR/${DATASET}_cf_residual.npy" \
+    "$RESOURCE_DIR/${DATASET}_semantic_base.npy" \
+    "$RESOURCE_DIR/${DATASET}_semantic_residual.npy"; do
+    if [[ "$DRY_RUN" != "1" && ! -s "$f" ]]; then
+      echo "DOWNSTREAM_PORTABLE_FAILED missing input: $f" >&2
+      missing_downstream=1
+    fi
+  done
+  if [[ "$missing_downstream" == "1" ]]; then
+    DOWNSTREAM_STATUS=FAILED
+    PIPELINE_RC=1
+  else
+    if stage build_data "$LOG_DIR/${RUN_NAME}.build_data.log" "$PY" "$PROJECT/scripts/06_build_downstream_data.py" --dataset "$DATASET" --run_name "$RUN_NAME" --data_root "$DATA_ROOT" --index_json "$INDEX_JSON" --output_dir "$DATA_DIR" --summary "$REPORT_DIR/${RUN_NAME}.data_summary.json"; then
+      if [[ "$DRY_RUN" == "1" ]]; then BUILD_DATA_STATUS=DRY_RUN; else BUILD_DATA_STATUS=DONE; fi
+    else
+      BUILD_DATA_STATUS=FAILED; DOWNSTREAM_STATUS=FAILED; PIPELINE_RC=1
+    fi
+    if [[ "$PIPELINE_RC" == "0" ]] && stage train "$LOG_DIR/${RUN_NAME}.train.log" env CUDA_VISIBLE_DEVICES="$GPU" "$PY" -m chord.downstream.train_portable --data_path "$RESULT_BASE/data" --dataset "$RUN_NAME" --run_dir "$RUN_DIR" --epochs "$EPOCHS" --learning_rate "$LEARNING_RATE" --train_batch_size "$TRAIN_BATCH_SIZE" --grad_accum "$GRAD_ACCUM" --seed "$SEED" --pcsc_max_factor "$PCSC_MAX_FACTOR" --pcsc_schedule_type "$PCSC_SCHEDULE_TYPE" --lambda_cf "$LAMBDA_CF" --lambda_cfres "$LAMBDA_CFRES" --lambda_base "$LAMBDA_BASE" --lambda_res "$LAMBDA_RES" --lambda_comp "$LAMBDA_COMP"; then
+      if [[ "$DRY_RUN" == "1" ]]; then TRAIN_STATUS=DRY_RUN; else TRAIN_STATUS=DONE; fi
+    elif [[ "$PIPELINE_RC" == "0" ]]; then
+      TRAIN_STATUS=FAILED; DOWNSTREAM_STATUS=FAILED; PIPELINE_RC=1
+    fi
+    if [[ "$PIPELINE_RC" == "0" ]] && stage eval "$LOG_DIR/${RUN_NAME}.eval.log" "$PY" "$PROJECT/scripts/07_eval_downstream.py" --run_dir "$RUN_DIR" --data_path "$RESULT_BASE/data" --dataset "$RUN_NAME" --index "$INDEX_JSON" --num_beams "$NUM_BEAMS" --test_batch_size "$TEST_BATCH_SIZE" --reports_dir "$REPORT_DIR"; then
+      if [[ "$DRY_RUN" == "1" ]]; then EVAL_STATUS=DRY_RUN; DOWNSTREAM_STATUS=DRY_RUN; else EVAL_STATUS=DONE; DOWNSTREAM_STATUS=DONE; fi
+    elif [[ "$PIPELINE_RC" == "0" ]]; then
+      EVAL_STATUS=FAILED; DOWNSTREAM_STATUS=FAILED; PIPELINE_RC=1
+    fi
+  fi
+else
+  DOWNSTREAM_STATUS=SKIPPED_BY_USER
+  echo -e "build_data\tSKIPPED\t" >> "$STAGE_STATUS"
+  echo -e "train\tSKIPPED\t" >> "$STAGE_STATUS"
+  echo -e "eval\tSKIPPED\t" >> "$STAGE_STATUS"
+fi
+
+if [[ "$RUN_AUDIT" == "1" ]]; then
+  stage audit "$LOG_DIR/${RUN_NAME}.audit.log" "$PY" "$PROJECT/scripts/audit_reproduction.py" --config "$RUNTIME_CONFIG"
+fi
+
+if [[ "$DOWNSTREAM_STATUS" == "FAILED" ]]; then
+  CLASSIFICATION=CHORD_PIPELINE_RUNNER_INCOMPLETE
+else
+  CLASSIFICATION=CHORD_PIPELINE_RUNNER_READY
+fi
+
+cat > "$AUDIT_JSON" <<EOF
+{
+  "result_base": "$RESULT_BASE",
+  "run_name": "$RUN_NAME",
+  "runtime_config": "$RUNTIME_CONFIG",
+  "stage_status_tsv": "$STAGE_STATUS",
+  "output_dirs": {
+    "logs": "$LOG_DIR",
+    "reports": "$REPORT_DIR",
+    "st5": "$ST5_DIR",
+    "resources": "$RESOURCE_DIR",
+    "base": "$BASE_DIR",
+    "index": "$INDEX_DIR",
+    "data": "$DATA_DIR",
+    "runs": "$RUN_DIR",
+    "wandb": "$WANDB_DIR"
+  },
+  "sid_status": "$SID_STATUS",
+  "build_data_status": "$BUILD_DATA_STATUS",
+  "train_status": "$TRAIN_STATUS",
+  "eval_status": "$EVAL_STATUS",
+  "downstream_status": "$DOWNSTREAM_STATUS",
+  "classification": "$CLASSIFICATION"
+}
+EOF
+cat > "$AUDIT_MD" <<EOF
+# CHORD Pipeline Runner Audit
+
+- result_base: \`$RESULT_BASE\`
+- run_name: \`$RUN_NAME\`
+- runtime_config: \`$RUNTIME_CONFIG\`
+- logs: \`$LOG_DIR\`
+- reports: \`$REPORT_DIR\`
+- resources: \`$RESOURCE_DIR\`
+- base: \`$BASE_DIR\`
+- index: \`$INDEX_DIR\`
+- SID status: \`$SID_STATUS\`
+- build_data status: \`$BUILD_DATA_STATUS\`
+- train status: \`$TRAIN_STATUS\`
+- eval status: \`$EVAL_STATUS\`
+- downstream status: \`$DOWNSTREAM_STATUS\`
+- classification: \`$CLASSIFICATION\`
+EOF
+
+echo
+cat "$AUDIT_MD"
+
+if [[ "$PIPELINE_RC" != "0" ]]; then
+  exit "$PIPELINE_RC"
+fi

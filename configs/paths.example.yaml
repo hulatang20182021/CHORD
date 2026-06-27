@@ -1,0 +1,4 @@
+paths:
+  data_root: /path/to/llmNrec/data
+  output_root: /path/to/repro_outputs/Beauty_new_machine_full_pipeline
+  model_path: /path/to/models/Sentence-T5/sentence-t5-base

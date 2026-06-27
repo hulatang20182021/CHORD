@@ -1,0 +1,48 @@
+{
+  "audit_name": "st5_runner_dir_fix_audit",
+  "timestamp_local": "2026-06-27T21:22:22+08:00",
+  "project": "/home/huangxin/llmNrec/chord_new_machine_repro",
+  "modified_files": [
+    "scripts/01_build_st5_embeddings.py"
+  ],
+  "bug": {
+    "stage": "ST5",
+    "failure": "FileNotFoundError while prepare_generic_st5_rqvae_input.py writes legacy report",
+    "missing_path": "$RESULT_BASE/runtime_root/component_relation_sid/rqvae_supervision/results/reports/${DATASET}_st5_rqvae_input_report.md",
+    "root_cause": "The wrapper prepared the legacy plain_st5_rqvae/input path but did not create the legacy results/reports directory before invoking the copied legacy script."
+  },
+  "fix": {
+    "wrapper": "scripts/01_build_st5_embeddings.py",
+    "created_or_expected_dirs": [
+      "$RESULT_BASE/st5/$DATASET/",
+      "$RESULT_BASE/reports/",
+      "$RESULT_BASE/reports/st5_runner/",
+      "$RESULT_BASE/runtime_root/",
+      "$RESULT_BASE/runtime_root/component_relation_sid/rqvae_supervision/results/",
+      "$RESULT_BASE/runtime_root/component_relation_sid/rqvae_supervision/results/reports/",
+      "$RESULT_BASE/runtime_root/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/",
+      "$RESULT_BASE/runtime_root/component_relation_sid/rqvae_supervision/results/plain_st5_rqvae/input/"
+    ],
+    "legacy_report": "$RESULT_BASE/runtime_root/component_relation_sid/rqvae_supervision/results/reports/${DATASET}_st5_rqvae_input_report.md",
+    "synced_report": "$RESULT_BASE/reports/${DATASET}_st5_rqvae_input_report.md",
+    "embedding_output": "$RESULT_BASE/st5/$DATASET/",
+    "notes": [
+      "The input path is created as a symlink to $RESULT_BASE/st5/$DATASET during real wrapper execution, preserving the requested embedding output location.",
+      "The synced report is copied only after the legacy ST5 script succeeds."
+    ]
+  },
+  "checks": {
+    "py_compile_scripts_01_build_st5_embeddings_py": "PASS",
+    "bash_n_scripts_run_chord_pipeline_sh": "PASS",
+    "dry_run_command": "DRY_RUN=1 RUN_SUFFIX=smoke bash scripts/run_chord_pipeline.sh",
+    "dry_run_status": "PASS"
+  },
+  "execution_scope": {
+    "real_st5_executed": false,
+    "training_executed": false,
+    "downstream_eval_executed": false,
+    "full_pipeline_executed": false
+  },
+  "missing_directory_fixed": true,
+  "final_classification": "ST5_RUNNER_DIR_FIX_READY"
+}

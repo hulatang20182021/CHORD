@@ -1,0 +1,55 @@
+[example] PROJECT=/home/huangxin/llmNrec/chord_new_machine_repro
+[example] CONFIG=/home/huangxin/llmNrec/chord_new_machine_repro/configs/beauty_new_machine.yaml
+[example] DATA_ROOT=/home/huangxin/llmNrec/data DATASET=Beauty
+[example] MODEL_PATH=/home/huangxin/llmNrec/chord_new_machine_repro/models/Sentence-T5/sentence-t5-base
+[example] OUTPUT_ROOT=/home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline
+[example] stages verify=1 st5=1 cf=1 residual=1 pls=1 sid=0 downstream=0 audit=1
+[example] ST5 batch=32 max_length=256 device=cuda normalize=1
+[example] CF window=5 svd_dim=128 ridge_alpha=10.0 random_state=42
+[example] PLS shared_dim=128 private_dim=64 k=256/256/256
+[example] FORCE=0 DRY_RUN=1
+[config] base=/home/huangxin/llmNrec/chord_new_machine_repro/configs/beauty_new_machine.yaml
+[config] runtime=/home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/runtime_config.yaml
+[config] output_root=/home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline
+[config] dry_run=1 force=0
+
+========== Stage 0: verify inputs ==========
+[run] /home/huangxin/miniconda3/envs/emotion_ml1m/bin/python /home/huangxin/llmNrec/chord_new_machine_repro/scripts/00_verify_inputs.py --config /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/runtime_config.yaml
+[done] verify report: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/verify_inputs_report.json
+
+========== Stage 1: ST5 embeddings ==========
+[run] /home/huangxin/miniconda3/envs/emotion_ml1m/bin/python /home/huangxin/llmNrec/chord_new_machine_repro/scripts/01_build_st5_embeddings.py --config /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/runtime_config.yaml --run
+[done] st5: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/st5/Beauty/
+
+========== Stage 2: legacy CF/PPMI/SVD ==========
+[run] /home/huangxin/miniconda3/envs/emotion_ml1m/bin/python /home/huangxin/llmNrec/chord_new_machine_repro/scripts/02_build_legacy_cf_ppmi_svd.py --config /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/runtime_config.yaml --run
+[done] resources: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/resources/Beauty/
+
+========== Stage 3: residual resources ==========
+[run] /home/huangxin/miniconda3/envs/emotion_ml1m/bin/python /home/huangxin/llmNrec/chord_new_machine_repro/scripts/03_build_residual_resources.py --config /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/runtime_config.yaml
+[done] residual resources are produced by Stage 2 legacy builder
+
+========== Stage 4: PLS shared/private ==========
+[run] /home/huangxin/miniconda3/envs/emotion_ml1m/bin/python /home/huangxin/llmNrec/chord_new_machine_repro/scripts/04_build_pls_shared_private.py --config /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/runtime_config.yaml
+[done] pls plan/output: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/pls_shared_private/Beauty/
+
+========== Stage 7: audit outputs ==========
+[run] /home/huangxin/miniconda3/envs/emotion_ml1m/bin/python /home/huangxin/llmNrec/chord_new_machine_repro/scripts/audit_reproduction.py --config /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/runtime_config.yaml
+[done] audit: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/audit_report.md
+
+[done] CHORD new-machine pipeline wrapper completed.
+[outputs]
+  st5:       /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/st5/Beauty/
+  resources: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/resources/Beauty/
+  pls:       /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/pls_shared_private/Beauty/
+  sid/index: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/index/Beauty/
+  reports:   /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/reports/
+  audit:     /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/audit_report.md
+
+[example] Outputs:
+  st5:       /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/st5/Beauty/
+  resources: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/resources/Beauty/
+  pls:       /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/pls_shared_private/Beauty/
+  sid/index: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/index/Beauty/
+  reports:   /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/reports/
+  audit:     /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline/audit_report.md

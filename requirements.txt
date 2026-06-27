@@ -1,0 +1,12 @@
+numpy
+scipy
+scikit-learn
+torch
+transformers
+tokenizers
+safetensors
+tqdm
+pyyaml
+threadpoolctl
+# Optional if using SentenceTransformer wrappers
+sentence-transformers

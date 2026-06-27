@@ -1,0 +1,86 @@
+{
+  "run_name": "F_arpack",
+  "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/F_arpack/Beauty_trainonly_cf_svd.npy",
+  "env_thread_vars": {
+    "OMP_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null,
+    "MKL_NUM_THREADS": null,
+    "NUMEXPR_NUM_THREADS": null
+  },
+  "versions": {
+    "sklearn": "1.7.2",
+    "scipy": "1.15.3",
+    "numpy": "2.2.6",
+    "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+  },
+  "threadpoolctl_info": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 12,
+      "prefix": "libscipy_openblas",
+      "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+      "version": "0.3.29",
+      "threading_layer": "pthreads",
+      "architecture": "Haswell"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 12,
+      "prefix": "libscipy_openblas",
+      "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+      "version": "0.3.28",
+      "threading_layer": "pthreads",
+      "architecture": "Haswell"
+    },
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 12,
+      "prefix": "libgomp",
+      "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+      "version": null
+    }
+  ],
+  "svd_params_requested": {
+    "n_components": 128,
+    "algorithm": "arpack",
+    "random_state": 42
+  },
+  "svd_params_fitted": {
+    "algorithm": "arpack",
+    "n_components": 128,
+    "n_iter": 5,
+    "n_oversamples": 10,
+    "power_iteration_normalizer": "auto",
+    "tol": 0.0,
+    "random_state": 42
+  },
+  "output_npy_sha256": "112bdeb4606d977380f5545bf1106903fcd29ce2320296b1a2daae84fbb4a76d",
+  "output_raw_array_sha256": "facc511f9e7f18d884b9cdefe61001dccead182e160fbf0c4858f0bc6333d30e",
+  "output_npy_memory_sha256": "112bdeb4606d977380f5545bf1106903fcd29ce2320296b1a2daae84fbb4a76d",
+  "sha16": "112bdeb4606d9773",
+  "shape": [
+    12101,
+    128
+  ],
+  "dtype": "float32",
+  "finite": true,
+  "first_row_sha256": "71f8832a1dda031a5f2f0c62d6654ff82f7c5f17e7c19a02eb606d5a511a95ce",
+  "first_8_values": [
+    0.14094436168670654,
+    -0.12209970504045486,
+    0.16116732358932495,
+    -0.039505187422037125,
+    0.0013524399837478995,
+    -0.043315257877111435,
+    -0.10396122932434082,
+    -0.05681885778903961
+  ],
+  "first_row_sum": 1.774395227432251,
+  "first_row_mean": 0.01386246271431446,
+  "first_row_l2": 1.000000238418579,
+  "matches_expected_6d75": false
+}

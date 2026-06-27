@@ -1,0 +1,30 @@
+{
+  "python_version": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+  "executable": "/home/huangxin/miniconda3/envs/emotion_ml1m/bin/python",
+  "env": {
+    "CUBLAS_WORKSPACE_CONFIG": null,
+    "CUDA_VISIBLE_DEVICES": null,
+    "PYTHONHASHSEED": null,
+    "TRANSFORMERS_OFFLINE": null,
+    "HF_HUB_OFFLINE": null
+  },
+  "numpy_version": "2.2.6",
+  "scipy_version": "1.15.3",
+  "sklearn_version": "1.7.2",
+  "torch_version": "2.11.0+cu128",
+  "torch_cuda_version": "12.8",
+  "cuda_available": true,
+  "cudnn_version": 91900,
+  "cudnn_deterministic": false,
+  "cudnn_benchmark": false,
+  "torch_are_deterministic_algorithms_enabled": false,
+  "device_used": "cuda:0",
+  "gpu_name": "NVIDIA GeForce RTX 5060",
+  "gpu_capability": [
+    12,
+    0
+  ],
+  "transformers_version": "4.46.3",
+  "sentence_transformers_error": "No module named 'sentence_transformers'",
+  "tokenizers_version": "0.20.3"
+}

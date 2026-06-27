@@ -1,0 +1,299 @@
+{
+  "input_item_json": "/home/huangxin/llmNrec/data/Beauty/Beauty.item.json",
+  "input_index_json": "/home/huangxin/llmNrec/data/Beauty/Beauty.index.json",
+  "candidate_scripts": [
+    {
+      "path": "code/01_st5_text_embedding/encode_beauty_with_sentence_t5.py",
+      "sha256": "cef206f755fca2765bdb584ea3027cceca50ba1971a2d5e8898abb4d6f50837e"
+    },
+    {
+      "path": "code/01_st5_text_embedding/prepare_beauty_st5_rqvae_input.py",
+      "sha256": "82447577801d45d24228afa5bec6880ea83af80a9707364af29378f88afe10d5"
+    },
+    {
+      "path": "code/01_st5_text_embedding/prepare_generic_st5_rqvae_input.py",
+      "sha256": "64b602b30cacdf2c30c731ded71d7dab96856c791519f6ce192488a65d5b37b1"
+    },
+    {
+      "path": "code/01_st5_text_embedding/run_prepare_st5.sh",
+      "sha256": "5711e07e6eb35eb787715b96d481af2a578c9a09b12af4349b91cbfdbdcb5f92"
+    }
+  ],
+  "text_construction_candidates": [
+    {
+      "candidate_name": "prepare_generic_st5_rqvae_input.item_text",
+      "source_script": "code/01_st5_text_embedding/prepare_generic_st5_rqvae_input.py",
+      "item_order_hash": "df49cbb002c20898412db0964e01758280304c25e04b8f4c03a4082ef834035f",
+      "num_items": 12101,
+      "text_list_sha256": "dd8957b0018a6136b552b2e2bd7cd80ebb6cc936fbf821bfafc0a81713eb4cfb",
+      "joined_text_sha256": "893e2ed324c2ffcf544b24f446a22b997558a0665ec6041593b803c3da073f8d",
+      "first_10_item_ids": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "first_10_texts": [
+        "title: OPI Nail Lacquer, Simmer and Shimmer, 0.5-Fluid Ounce description: OPI Burlesque Colors",
+        "title: OPI Red Shatter Crackle Nail Polish E55 New description: Red Shatter Nail Polish\nFull Size :15ML",
+        "title: SKIN79 The Prestige Beblesh Balm BB Cream Diamond Collection description: It is 3 effects function beblesh balm. By Adenosine and Arbutin ingredients which are effective in whitening wrinkles improvement cultivate more bright and elastic skin. Intercept ultraviolet rays UV A and UV B at the same time and protect your skin exposed from this sun more thoroughly. Diamond Powder and Jewel COmplex Powder of Ruby, Amethyst and Pearl make skin all the more radiant. A patent ingredient containing Natural Complex extract ingredients help improvement and care of skin trouble. How to Use: Apply an appreciate amount on the area of your face like patting at the last step of skin care.",
+        "title: WAWO 15 Color Professionl Makeup Eyeshadow Camouflage Facial Concealer Neutral Palette description: An extensive range of 15 multiple vibrant long wear concealer colour with different skin tones to create more than 10,000 amazing looks. Using the most commonly applied shades, ensures the best skin colour match and guarantees a traceless and natural finish. Enabling layering and mixing, provides total camouflage for almost any skin problem including blemishes, scars, birthmarks and black circles. It is also suitable to use as bronzer. The light colour is suitable for redness, acne and so on. The medium colour is perfect for dark shadows in the under-eye area. The dark colour provides exceptional camouflage and adheres well to the skin. Silky glossy colour and high quality ingredients together to care skin around and can last for all day long. It is perfect for Professional Salon, Wedding, Party and Home use. Size: 15.4 x 10.2 x 1.3cm. Each Diameter: 2.6cm. Concealer: 15 Color Concealer.",
+        "title: Dr. Scholl's Quick Heat Paraffin Spa Bath description: Paraffin bath for pain relief and removing dry skin. Dial with multiple heat settings provides a full range of heat comfort levels. Provides thermal relief, useful for symptomatic relief of pain caused by arthritis, bursitis, and chronic joint inflammation. Indicator light glows when unit is operating. The paraffin wax smoothens and softens skin on hands, elbows, and feet- the unit is full size, and big enough to fit most hands, feet, or elbows. Gently melts wax in 60 minutes for faster relief and results without getting dangerously hot. Includes 3 pounds of wax, 2 thermal mitts, and 30 glove liners.",
+        "title: Cococare Coconut Oil 100% Pure 4 Oz description: Cococare Coconut Oil 100% Pure 4 Oz Essential & Body Message Oils at HerbsCity store.",
+        "title: Vakind Pack of 2 Black Fiber Leopard Long Curling Eye Lashes Mascara Eyelash Mascara Set description: Color: Black 2 Pcs Black Mascara GelHow to Use:\nApply the Mascara Gel on Eye Lash, and then Apply the Fiber from Eye Lash Root until End before the Gel Dry\nYou Will Realize Your Eye Lash Extended 150% and Two Times Thicker. Continue Applying the Fiber at Eye Lash One Third End Area. Apply The Transplanting Gel To Completely Color The Fiber And Eye Lash. See the Amazing Result.Method to remove the make-up: \nApply some warm water on the eye-lash and wait for a few minutes for the water to infiltrate the eyelash. When the gel has softened, the eyelash can be taken off. No make-up removal product is required and no traces of removal can be seen around the vicinity of the eyes. There will also be no impact on the natural eyelash.",
+        "title: Freeman Facial Charcoal &amp; Black Sugar Polish Mask 6 oz. description: Charcoal Helps Absorb Oil And Impurities Purifying Mask & Smoothing Exfoliant Black Sugar Helps With Exfoliation Perfect For All Skin Types Dual Action Formula",
+        "title: Vitamin C Serum for Face 20% - With Vegan Hyaluronic Acid &amp; Vitamin E - Best Natural &amp; Organic Anti Aging Formula Stimulates Collagen, Repairs Wrinkles &amp; Fades Age Spots - Gives Skin a Radiant &amp; Youthful Glow - Guaranteed Results description: Drop A Decade From Your FaceEnjoy radiant, youthful skin again with our potent blend of ingredients, professionally formulated using the highest quality Vitamin C, E, and Hyaluronic Acid available.Forget the facelift, lasers, and chemical peels! Vitamin C has been shown to be just as effective at reversing the effects of time and environmental damage to the skin.Notice brighter, smoother skin! As the serum penetrates deep into your skin, you can feel confident knowing you are reversing skin aging and preventing further damage at the same time.You deserve to have young, beautiful skin at any age, and now you can!The Anti-Aging Power Of Vitamin COur Vitamin C Serum replenishes your skin's vitamin C levels to give you these benefits:- Increases the production of collagen to bring back skin's natural elasticity and counteract fine lines and wrinkles- Powerful antioxidant properties neutralize free radicals to reverse damage caused by the sun, pollutants, and cigarette smoke- Protects your skin from UV damage such as age spots, discoloration, and fine lines- Improves skin texture to give you a smoother, brighter complexion- Combined with Vitamin E and Hyaluronic Acid for extra powerful anti-aging effects&#x2605; WORKS OR YOUR MONEY BACK &#x2605; Manufacturer's Guarantee: We back our products up with a 365-day hassle-free money back guarantee, no matter where you buy our product. If you are not completely satisfied, simply contact us and we will give you a full refund, no questions asked (you do not even need to return the bottle).Order Your Bottle Of Vitamin C Serum Now While It's Still In Stock!",
+        "title: My Beauty Diary Facial Mask - Caviar Mask (10 Pcs) description: My Beauty Diary Caviar Mask contains sturgeon roe essence, luxury repair elements and nourished essence. It can activate the energy of skin, accelerate the regeneration and repair,improve the power of defense, and rebuild the skin texture and density. Combined with a variety of plant extracts, such as Fucus Extract(bladder-wrack), Pure m pithy extract and ginkgo extract. It can provide the both lift and stretch functions."
+      ],
+      "last_10_item_ids": [
+        "12091",
+        "12092",
+        "12093",
+        "12094",
+        "12095",
+        "12096",
+        "12097",
+        "12098",
+        "12099",
+        "12100"
+      ],
+      "empty_text_count": 0,
+      "mean_text_length": 529.7844806214363,
+      "max_text_length": 19263,
+      "fields_used": {
+        "uses_title": true,
+        "uses_brand": true,
+        "uses_categories": true,
+        "uses_category": true,
+        "uses_description": true,
+        "uses_category_text": false,
+        "uses_price": false,
+        "field_order": [
+          "title",
+          "brand",
+          "categories",
+          "category",
+          "description"
+        ],
+        "adds_field_names": true,
+        "strip": true,
+        "lower": false,
+        "missing_handling": "json.dumps(value, sort_keys=True) if no selected field; empty text rejected before encoding",
+        "text_truncation": "tokenizer truncation max_length=256 during embedding, not in text list"
+      }
+    },
+    {
+      "candidate_name": "encode_beauty.full_texts",
+      "source_script": "code/01_st5_text_embedding/encode_beauty_with_sentence_t5.py",
+      "item_order_hash": "df49cbb002c20898412db0964e01758280304c25e04b8f4c03a4082ef834035f",
+      "num_items": 12101,
+      "text_list_sha256": "f6a56f827971677116f86315cd91f8faab9f56fe8989fc31f2603f19d2734f4b",
+      "joined_text_sha256": "825e31f5bd374c023c8ef985329827b0a00f552315f47ad95a3e983e541cbe80",
+      "first_10_item_ids": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "first_10_texts": [
+        "OPI Nail Lacquer, Simmer and Shimmer, 0.5-Fluid Ounce OPI Burlesque Colors",
+        "OPI Red Shatter Crackle Nail Polish E55 New Red Shatter Nail Polish\nFull Size :15ML",
+        "SKIN79 The Prestige Beblesh Balm BB Cream Diamond Collection It is 3 effects function beblesh balm. By Adenosine and Arbutin ingredients which are effective in whitening wrinkles improvement cultivate more bright and elastic skin. Intercept ultraviolet rays UV A and UV B at the same time and protect your skin exposed from this sun more thoroughly. Diamond Powder and Jewel COmplex Powder of Ruby, Amethyst and Pearl make skin all the more radiant. A patent ingredient containing Natural Complex extract ingredients help improvement and care of skin trouble. How to Use: Apply an appreciate amount on the area of your face like patting at the last step of skin care.",
+        "WAWO 15 Color Professionl Makeup Eyeshadow Camouflage Facial Concealer Neutral Palette An extensive range of 15 multiple vibrant long wear concealer colour with different skin tones to create more than 10,000 amazing looks. Using the most commonly applied shades, ensures the best skin colour match and guarantees a traceless and natural finish. Enabling layering and mixing, provides total camouflage for almost any skin problem including blemishes, scars, birthmarks and black circles. It is also suitable to use as bronzer. The light colour is suitable for redness, acne and so on. The medium colour is perfect for dark shadows in the under-eye area. The dark colour provides exceptional camouflage and adheres well to the skin. Silky glossy colour and high quality ingredients together to care skin around and can last for all day long. It is perfect for Professional Salon, Wedding, Party and Home use. Size: 15.4 x 10.2 x 1.3cm. Each Diameter: 2.6cm. Concealer: 15 Color Concealer.",
+        "Dr. Scholl's Quick Heat Paraffin Spa Bath Paraffin bath for pain relief and removing dry skin. Dial with multiple heat settings provides a full range of heat comfort levels. Provides thermal relief, useful for symptomatic relief of pain caused by arthritis, bursitis, and chronic joint inflammation. Indicator light glows when unit is operating. The paraffin wax smoothens and softens skin on hands, elbows, and feet- the unit is full size, and big enough to fit most hands, feet, or elbows. Gently melts wax in 60 minutes for faster relief and results without getting dangerously hot. Includes 3 pounds of wax, 2 thermal mitts, and 30 glove liners.",
+        "Cococare Coconut Oil 100% Pure 4 Oz Cococare Coconut Oil 100% Pure 4 Oz Essential & Body Message Oils at HerbsCity store.",
+        "Vakind Pack of 2 Black Fiber Leopard Long Curling Eye Lashes Mascara Eyelash Mascara Set Color: Black 2 Pcs Black Mascara GelHow to Use:\nApply the Mascara Gel on Eye Lash, and then Apply the Fiber from Eye Lash Root until End before the Gel Dry\nYou Will Realize Your Eye Lash Extended 150% and Two Times Thicker. Continue Applying the Fiber at Eye Lash One Third End Area. Apply The Transplanting Gel To Completely Color The Fiber And Eye Lash. See the Amazing Result.Method to remove the make-up: \nApply some warm water on the eye-lash and wait for a few minutes for the water to infiltrate the eyelash. When the gel has softened, the eyelash can be taken off. No make-up removal product is required and no traces of removal can be seen around the vicinity of the eyes. There will also be no impact on the natural eyelash.",
+        "Freeman Facial Charcoal &amp; Black Sugar Polish Mask 6 oz. Charcoal Helps Absorb Oil And Impurities Purifying Mask & Smoothing Exfoliant Black Sugar Helps With Exfoliation Perfect For All Skin Types Dual Action Formula",
+        "Vitamin C Serum for Face 20% - With Vegan Hyaluronic Acid &amp; Vitamin E - Best Natural &amp; Organic Anti Aging Formula Stimulates Collagen, Repairs Wrinkles &amp; Fades Age Spots - Gives Skin a Radiant &amp; Youthful Glow - Guaranteed Results Drop A Decade From Your FaceEnjoy radiant, youthful skin again with our potent blend of ingredients, professionally formulated using the highest quality Vitamin C, E, and Hyaluronic Acid available.Forget the facelift, lasers, and chemical peels! Vitamin C has been shown to be just as effective at reversing the effects of time and environmental damage to the skin.Notice brighter, smoother skin! As the serum penetrates deep into your skin, you can feel confident knowing you are reversing skin aging and preventing further damage at the same time.You deserve to have young, beautiful skin at any age, and now you can!The Anti-Aging Power Of Vitamin COur Vitamin C Serum replenishes your skin's vitamin C levels to give you these benefits:- Increases the production of collagen to bring back skin's natural elasticity and counteract fine lines and wrinkles- Powerful antioxidant properties neutralize free radicals to reverse damage caused by the sun, pollutants, and cigarette smoke- Protects your skin from UV damage such as age spots, discoloration, and fine lines- Improves skin texture to give you a smoother, brighter complexion- Combined with Vitamin E and Hyaluronic Acid for extra powerful anti-aging effects&#x2605; WORKS OR YOUR MONEY BACK &#x2605; Manufacturer's Guarantee: We back our products up with a 365-day hassle-free money back guarantee, no matter where you buy our product. If you are not completely satisfied, simply contact us and we will give you a full refund, no questions asked (you do not even need to return the bottle).Order Your Bottle Of Vitamin C Serum Now While It's Still In Stock!",
+        "My Beauty Diary Facial Mask - Caviar Mask (10 Pcs) My Beauty Diary Caviar Mask contains sturgeon roe essence, luxury repair elements and nourished essence. It can activate the energy of skin, accelerate the regeneration and repair,improve the power of defense, and rebuild the skin texture and density. Combined with a variety of plant extracts, such as Fucus Extract(bladder-wrack), Pure m pithy extract and ginkgo extract. It can provide the both lift and stretch functions."
+      ],
+      "last_10_item_ids": [
+        "12091",
+        "12092",
+        "12093",
+        "12094",
+        "12095",
+        "12096",
+        "12097",
+        "12098",
+        "12099",
+        "12100"
+      ],
+      "empty_text_count": 0,
+      "mean_text_length": 510.5730104950004,
+      "max_text_length": 19243,
+      "fields_used": {
+        "source_script": "code/01_st5_text_embedding/encode_beauty_with_sentence_t5.py",
+        "details_path": "/home/huangxin/llmNrec/component_relation_sid/results/coverage/Beauty_component_relation_item_details.csv",
+        "details_file_exists": false,
+        "uses_sentence_transformers_if_installed": true,
+        "fallback_fields_order": [
+          "title",
+          "brand",
+          "category_text",
+          "description",
+          "price"
+        ],
+        "adds_field_names": false,
+        "strip": true,
+        "lower": false,
+        "text_truncation": "encoder/tokenizer truncation max_length=256 during embedding, not in text list",
+        "text_kind": "full",
+        "coverage_fields": [
+          "item_text"
+        ]
+      }
+    },
+    {
+      "candidate_name": "encode_beauty.component_texts",
+      "source_script": "code/01_st5_text_embedding/encode_beauty_with_sentence_t5.py",
+      "item_order_hash": "df49cbb002c20898412db0964e01758280304c25e04b8f4c03a4082ef834035f",
+      "num_items": 12101,
+      "text_list_sha256": "f6a56f827971677116f86315cd91f8faab9f56fe8989fc31f2603f19d2734f4b",
+      "joined_text_sha256": "825e31f5bd374c023c8ef985329827b0a00f552315f47ad95a3e983e541cbe80",
+      "first_10_item_ids": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "first_10_texts": [
+        "OPI Nail Lacquer, Simmer and Shimmer, 0.5-Fluid Ounce OPI Burlesque Colors",
+        "OPI Red Shatter Crackle Nail Polish E55 New Red Shatter Nail Polish\nFull Size :15ML",
+        "SKIN79 The Prestige Beblesh Balm BB Cream Diamond Collection It is 3 effects function beblesh balm. By Adenosine and Arbutin ingredients which are effective in whitening wrinkles improvement cultivate more bright and elastic skin. Intercept ultraviolet rays UV A and UV B at the same time and protect your skin exposed from this sun more thoroughly. Diamond Powder and Jewel COmplex Powder of Ruby, Amethyst and Pearl make skin all the more radiant. A patent ingredient containing Natural Complex extract ingredients help improvement and care of skin trouble. How to Use: Apply an appreciate amount on the area of your face like patting at the last step of skin care.",
+        "WAWO 15 Color Professionl Makeup Eyeshadow Camouflage Facial Concealer Neutral Palette An extensive range of 15 multiple vibrant long wear concealer colour with different skin tones to create more than 10,000 amazing looks. Using the most commonly applied shades, ensures the best skin colour match and guarantees a traceless and natural finish. Enabling layering and mixing, provides total camouflage for almost any skin problem including blemishes, scars, birthmarks and black circles. It is also suitable to use as bronzer. The light colour is suitable for redness, acne and so on. The medium colour is perfect for dark shadows in the under-eye area. The dark colour provides exceptional camouflage and adheres well to the skin. Silky glossy colour and high quality ingredients together to care skin around and can last for all day long. It is perfect for Professional Salon, Wedding, Party and Home use. Size: 15.4 x 10.2 x 1.3cm. Each Diameter: 2.6cm. Concealer: 15 Color Concealer.",
+        "Dr. Scholl's Quick Heat Paraffin Spa Bath Paraffin bath for pain relief and removing dry skin. Dial with multiple heat settings provides a full range of heat comfort levels. Provides thermal relief, useful for symptomatic relief of pain caused by arthritis, bursitis, and chronic joint inflammation. Indicator light glows when unit is operating. The paraffin wax smoothens and softens skin on hands, elbows, and feet- the unit is full size, and big enough to fit most hands, feet, or elbows. Gently melts wax in 60 minutes for faster relief and results without getting dangerously hot. Includes 3 pounds of wax, 2 thermal mitts, and 30 glove liners.",
+        "Cococare Coconut Oil 100% Pure 4 Oz Cococare Coconut Oil 100% Pure 4 Oz Essential & Body Message Oils at HerbsCity store.",
+        "Vakind Pack of 2 Black Fiber Leopard Long Curling Eye Lashes Mascara Eyelash Mascara Set Color: Black 2 Pcs Black Mascara GelHow to Use:\nApply the Mascara Gel on Eye Lash, and then Apply the Fiber from Eye Lash Root until End before the Gel Dry\nYou Will Realize Your Eye Lash Extended 150% and Two Times Thicker. Continue Applying the Fiber at Eye Lash One Third End Area. Apply The Transplanting Gel To Completely Color The Fiber And Eye Lash. See the Amazing Result.Method to remove the make-up: \nApply some warm water on the eye-lash and wait for a few minutes for the water to infiltrate the eyelash. When the gel has softened, the eyelash can be taken off. No make-up removal product is required and no traces of removal can be seen around the vicinity of the eyes. There will also be no impact on the natural eyelash.",
+        "Freeman Facial Charcoal &amp; Black Sugar Polish Mask 6 oz. Charcoal Helps Absorb Oil And Impurities Purifying Mask & Smoothing Exfoliant Black Sugar Helps With Exfoliation Perfect For All Skin Types Dual Action Formula",
+        "Vitamin C Serum for Face 20% - With Vegan Hyaluronic Acid &amp; Vitamin E - Best Natural &amp; Organic Anti Aging Formula Stimulates Collagen, Repairs Wrinkles &amp; Fades Age Spots - Gives Skin a Radiant &amp; Youthful Glow - Guaranteed Results Drop A Decade From Your FaceEnjoy radiant, youthful skin again with our potent blend of ingredients, professionally formulated using the highest quality Vitamin C, E, and Hyaluronic Acid available.Forget the facelift, lasers, and chemical peels! Vitamin C has been shown to be just as effective at reversing the effects of time and environmental damage to the skin.Notice brighter, smoother skin! As the serum penetrates deep into your skin, you can feel confident knowing you are reversing skin aging and preventing further damage at the same time.You deserve to have young, beautiful skin at any age, and now you can!The Anti-Aging Power Of Vitamin COur Vitamin C Serum replenishes your skin's vitamin C levels to give you these benefits:- Increases the production of collagen to bring back skin's natural elasticity and counteract fine lines and wrinkles- Powerful antioxidant properties neutralize free radicals to reverse damage caused by the sun, pollutants, and cigarette smoke- Protects your skin from UV damage such as age spots, discoloration, and fine lines- Improves skin texture to give you a smoother, brighter complexion- Combined with Vitamin E and Hyaluronic Acid for extra powerful anti-aging effects&#x2605; WORKS OR YOUR MONEY BACK &#x2605; Manufacturer's Guarantee: We back our products up with a 365-day hassle-free money back guarantee, no matter where you buy our product. If you are not completely satisfied, simply contact us and we will give you a full refund, no questions asked (you do not even need to return the bottle).Order Your Bottle Of Vitamin C Serum Now While It's Still In Stock!",
+        "My Beauty Diary Facial Mask - Caviar Mask (10 Pcs) My Beauty Diary Caviar Mask contains sturgeon roe essence, luxury repair elements and nourished essence. It can activate the energy of skin, accelerate the regeneration and repair,improve the power of defense, and rebuild the skin texture and density. Combined with a variety of plant extracts, such as Fucus Extract(bladder-wrack), Pure m pithy extract and ginkgo extract. It can provide the both lift and stretch functions."
+      ],
+      "last_10_item_ids": [
+        "12091",
+        "12092",
+        "12093",
+        "12094",
+        "12095",
+        "12096",
+        "12097",
+        "12098",
+        "12099",
+        "12100"
+      ],
+      "empty_text_count": 0,
+      "mean_text_length": 510.5730104950004,
+      "max_text_length": 19243,
+      "fields_used": {
+        "source_script": "code/01_st5_text_embedding/encode_beauty_with_sentence_t5.py",
+        "details_path": "/home/huangxin/llmNrec/component_relation_sid/results/coverage/Beauty_component_relation_item_details.csv",
+        "details_file_exists": false,
+        "uses_sentence_transformers_if_installed": true,
+        "fallback_fields_order": [
+          "title",
+          "brand",
+          "category_text",
+          "description",
+          "price"
+        ],
+        "adds_field_names": false,
+        "strip": true,
+        "lower": false,
+        "text_truncation": "encoder/tokenizer truncation max_length=256 during embedding, not in text list",
+        "text_kind": "component",
+        "coverage_fields": [
+          "head_component",
+          "attribute_components"
+        ],
+        "fallback": "full or __missing_component__"
+      }
+    },
+    {
+      "candidate_name": "encode_beauty.relation_texts",
+      "source_script": "code/01_st5_text_embedding/encode_beauty_with_sentence_t5.py",
+      "item_order_hash": "df49cbb002c20898412db0964e01758280304c25e04b8f4c03a4082ef834035f",
+      "num_items": 12101,
+      "text_list_sha256": "f6a56f827971677116f86315cd91f8faab9f56fe8989fc31f2603f19d2734f4b",
+      "joined_text_sha256": "825e31f5bd374c023c8ef985329827b0a00f552315f47ad95a3e983e541cbe80",
+      "first_10_item_ids": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "first_10_texts": [
+        "OPI Nail Lacquer, Simmer and Shimmer, 0.5-Fluid Ounce OPI Burlesque Colors",
+        "OPI Red Shatter Crackle Nail Polish E55 New Red Shatter Nail Polish\nFull Size :15ML",
+        "SKIN79 The Prestige Beblesh Balm BB Cream Diamond Collection It is 3 effects function beblesh balm. By Adenosine and Arbutin ingredients which are effective in whitening wrinkles improvement cultivate more bright and elastic skin. Intercept ultraviolet rays UV A and UV B at the same time and protect your skin exposed from this sun more thoroughly. Diamond Powder and Jewel COmplex Powder of Ruby, Amethyst and Pearl make skin all the more radiant. A patent ingredient containing Natural Complex extract ingredients help improvement and care of skin trouble. How to Use: Apply an appreciate amount on the area of your face like patting at the last step of skin care.",
+        "WAWO 15 Color Professionl Makeup Eyeshadow Camouflage Facial Concealer Neutral Palette An extensive range of 15 multiple vibrant long wear concealer colour with different skin tones to create more than 10,000 amazing looks. Using the most commonly applied shades, ensures the best skin colour match and guarantees a traceless and natural finish. Enabling layering and mixing, provides total camouflage for almost any skin problem including blemishes, scars, birthmarks and black circles. It is also suitable to use as bronzer. The light colour is suitable for redness, acne and so on. The medium colour is perfect for dark shadows in the under-eye area. The dark colour provides exceptional camouflage and adheres well to the skin. Silky glossy colour and high quality ingredients together to care skin around and can last for all day long. It is perfect for Professional Salon, Wedding, Party and Home use. Size: 15.4 x 10.2 x 1.3cm. Each Diameter: 2.6cm. Concealer: 15 Color Concealer.",
+        "Dr. Scholl's Quick Heat Paraffin Spa Bath Paraffin bath for pain relief and removing dry skin. Dial with multiple heat settings provides a full range of heat comfort levels. Provides thermal relief, useful for symptomatic relief of pain caused by arthritis, bursitis, and chronic joint inflammation. Indicator light glows when unit is operating. The paraffin wax smoothens and softens skin on hands, elbows, and feet- the unit is full size, and big enough to fit most hands, feet, or elbows. Gently melts wax in 60 minutes for faster relief and results without getting dangerously hot. Includes 3 pounds of wax, 2 thermal mitts, and 30 glove liners.",
+        "Cococare Coconut Oil 100% Pure 4 Oz Cococare Coconut Oil 100% Pure 4 Oz Essential & Body Message Oils at HerbsCity store.",
+        "Vakind Pack of 2 Black Fiber Leopard Long Curling Eye Lashes Mascara Eyelash Mascara Set Color: Black 2 Pcs Black Mascara GelHow to Use:\nApply the Mascara Gel on Eye Lash, and then Apply the Fiber from Eye Lash Root until End before the Gel Dry\nYou Will Realize Your Eye Lash Extended 150% and Two Times Thicker. Continue Applying the Fiber at Eye Lash One Third End Area. Apply The Transplanting Gel To Completely Color The Fiber And Eye Lash. See the Amazing Result.Method to remove the make-up: \nApply some warm water on the eye-lash and wait for a few minutes for the water to infiltrate the eyelash. When the gel has softened, the eyelash can be taken off. No make-up removal product is required and no traces of removal can be seen around the vicinity of the eyes. There will also be no impact on the natural eyelash.",
+        "Freeman Facial Charcoal &amp; Black Sugar Polish Mask 6 oz. Charcoal Helps Absorb Oil And Impurities Purifying Mask & Smoothing Exfoliant Black Sugar Helps With Exfoliation Perfect For All Skin Types Dual Action Formula",
+        "Vitamin C Serum for Face 20% - With Vegan Hyaluronic Acid &amp; Vitamin E - Best Natural &amp; Organic Anti Aging Formula Stimulates Collagen, Repairs Wrinkles &amp; Fades Age Spots - Gives Skin a Radiant &amp; Youthful Glow - Guaranteed Results Drop A Decade From Your FaceEnjoy radiant, youthful skin again with our potent blend of ingredients, professionally formulated using the highest quality Vitamin C, E, and Hyaluronic Acid available.Forget the facelift, lasers, and chemical peels! Vitamin C has been shown to be just as effective at reversing the effects of time and environmental damage to the skin.Notice brighter, smoother skin! As the serum penetrates deep into your skin, you can feel confident knowing you are reversing skin aging and preventing further damage at the same time.You deserve to have young, beautiful skin at any age, and now you can!The Anti-Aging Power Of Vitamin COur Vitamin C Serum replenishes your skin's vitamin C levels to give you these benefits:- Increases the production of collagen to bring back skin's natural elasticity and counteract fine lines and wrinkles- Powerful antioxidant properties neutralize free radicals to reverse damage caused by the sun, pollutants, and cigarette smoke- Protects your skin from UV damage such as age spots, discoloration, and fine lines- Improves skin texture to give you a smoother, brighter complexion- Combined with Vitamin E and Hyaluronic Acid for extra powerful anti-aging effects&#x2605; WORKS OR YOUR MONEY BACK &#x2605; Manufacturer's Guarantee: We back our products up with a 365-day hassle-free money back guarantee, no matter where you buy our product. If you are not completely satisfied, simply contact us and we will give you a full refund, no questions asked (you do not even need to return the bottle).Order Your Bottle Of Vitamin C Serum Now While It's Still In Stock!",
+        "My Beauty Diary Facial Mask - Caviar Mask (10 Pcs) My Beauty Diary Caviar Mask contains sturgeon roe essence, luxury repair elements and nourished essence. It can activate the energy of skin, accelerate the regeneration and repair,improve the power of defense, and rebuild the skin texture and density. Combined with a variety of plant extracts, such as Fucus Extract(bladder-wrack), Pure m pithy extract and ginkgo extract. It can provide the both lift and stretch functions."
+      ],
+      "last_10_item_ids": [
+        "12091",
+        "12092",
+        "12093",
+        "12094",
+        "12095",
+        "12096",
+        "12097",
+        "12098",
+        "12099",
+        "12100"
+      ],
+      "empty_text_count": 0,
+      "mean_text_length": 510.5730104950004,
+      "max_text_length": 19243,
+      "fields_used": {
+        "source_script": "code/01_st5_text_embedding/encode_beauty_with_sentence_t5.py",
+        "details_path": "/home/huangxin/llmNrec/component_relation_sid/results/coverage/Beauty_component_relation_item_details.csv",
+        "details_file_exists": false,
+        "uses_sentence_transformers_if_installed": true,
+        "fallback_fields_order": [
+          "title",
+          "brand",
+          "category_text",
+          "description",
+          "price"
+        ],
+        "adds_field_names": false,
+        "strip": true,
+        "lower": false,
+        "text_truncation": "encoder/tokenizer truncation max_length=256 during embedding, not in text list",
+        "text_kind": "relation",
+        "coverage_fields": [
+          "relation_pairs"
+        ],
+        "fallback": "component or full or __missing_relation__"
+      }
+    }
+  ]
+}

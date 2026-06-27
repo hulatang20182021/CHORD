@@ -1,0 +1,383 @@
+{
+  "generated_at": "2026-06-27T16:49:54.736611",
+  "constraints": [
+    "no training",
+    "no downstream eval",
+    "no SID index",
+    "no formal artifact overwrite"
+  ],
+  "input_audit": {
+    "data_inter": {
+      "path": "/home/huangxin/llmNrec/data/Beauty/Beauty.inter.json",
+      "exists": true,
+      "sha256": "8809584b8b78fa6561771c88911ed65bd716fc9926fca1e581e6a1ab578ccfd5",
+      "sha16": "8809584b8b78fa65",
+      "size": 3212008,
+      "mtime": "2026-06-26T01:23:22.830141"
+    },
+    "data_index": {
+      "path": "/home/huangxin/llmNrec/data/Beauty/Beauty.index.json",
+      "exists": true,
+      "sha256": "be3fb890e59b5443824cdebc560ef349191b97f20d3aecad4727de2d6b212c82",
+      "sha16": "be3fb890e59b5443",
+      "size": 634238,
+      "mtime": "2026-06-26T01:22:57.571486"
+    },
+    "data_item": {
+      "path": "/home/huangxin/llmNrec/data/Beauty/Beauty.item.json",
+      "exists": true,
+      "sha256": "74aeddf911548aadfcd1dab326c16678ed4ac74457e874da300d63a94bdb2330",
+      "sha16": "74aeddf911548aad",
+      "size": 6855739,
+      "mtime": "2026-06-26T01:23:43.830780"
+    },
+    "c12_st5": {
+      "path": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "exists": true,
+      "sha256": "c12ec06fe5ba1ca190a38ce4379a65244ae7566198dc204758fbbe12b1e70c72",
+      "sha16": "c12ec06fe5ba1ca1",
+      "size": 37174400,
+      "mtime": "2026-06-27T00:43:27.860052"
+    },
+    "c12_order": {
+      "path": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "exists": true,
+      "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sha16": "ea319a99bde96331",
+      "size": 122004,
+      "mtime": "2026-06-27T00:42:24.007064"
+    },
+    "ece8_st5": {
+      "path": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_input_embeddings.npy",
+      "exists": true,
+      "sha256": "ece8d063b70002c8955706c123bbf81403a8c046eb041f85c08421d3ffa3a13f",
+      "sha16": "ece8d063b70002c8",
+      "size": 37174400,
+      "mtime": "2026-06-25T14:55:37.719175"
+    },
+    "ece8_order": {
+      "path": "/home/huangxin/llmNrec/plain_st5_rqvae/input/Beauty_st5_rqvae_item_id_order.json",
+      "exists": true,
+      "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+      "sha16": "ea319a99bde96331",
+      "size": 122004,
+      "mtime": "2026-06-25T14:55:37.722929"
+    }
+  },
+  "item_order_ok": true,
+  "legacy_builder": {
+    "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/Beauty_embedding_pipeline_minimal/code/02_legacy_biview_trainonly_cf/legacy_backup_20260620_050517/build_biview_resources.py",
+    "exists": true,
+    "sha256": "753d4eeb902f28deb621fa7f7cf3eb31f5fc8a334f741e8ce179da50057b6bff",
+    "sha16": "753d4eeb902f28de",
+    "size": 7610,
+    "mtime": "2026-06-19T13:45:20"
+  },
+  "legacy_project_paths_original": {
+    "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/Beauty_embedding_pipeline_minimal/code/02_legacy_biview_trainonly_cf/project_paths.py",
+    "exists": true,
+    "sha256": "96014dc9079b83c72d04961d2e47de9a3119f9911fd0d21482958409f43166f2",
+    "sha16": "96014dc9079b83c7",
+    "size": 4916,
+    "mtime": "2026-06-19T15:24:00",
+    "expected_sha256": "96014dc9079b83c72d04961d2e47de9a3119f9911fd0d21482958409f43166f2",
+    "matches_expected": true
+  },
+  "shim": {
+    "c12": {
+      "bundle": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/bundle_c12",
+      "project_paths": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/bundle_c12/project_paths.py",
+        "exists": true,
+        "sha256": "506394ac573eea9ece44e09fe042a48a2eddf1d2ac5f919d0b0a8ee8186510a4",
+        "sha16": "506394ac573eea9e",
+        "size": 4922,
+        "mtime": "2026-06-27T16:48:05.415051"
+      },
+      "st5_dir": "/home/huangxin/llmNrec/reference/plain_st5_rqvae/input",
+      "output_base": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12"
+    },
+    "ece8": {
+      "bundle": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/bundle_ece8",
+      "project_paths": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/bundle_ece8/project_paths.py",
+        "exists": true,
+        "sha256": "8974884b2685727a5404e2ff9d7a2e9cd0668f3029d1e00c43d6cc9e25708379",
+        "sha16": "8974884b2685727a",
+        "size": 4913,
+        "mtime": "2026-06-27T16:48:05.415051"
+      },
+      "st5_dir": "/home/huangxin/llmNrec/plain_st5_rqvae/input",
+      "output_base": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8"
+    }
+  },
+  "params": {
+    "dataset": "Beauty",
+    "seed": 42,
+    "svd_dim": 128,
+    "window_size": 5,
+    "ridge_alpha": 10.0,
+    "overwrite": "isolated outputs only"
+  },
+  "expected_old_sha16": {
+    "Beauty_trainonly_cf_svd.npy": "6d75cfbe18dc5aa8",
+    "Beauty_cf_residual.npy": "c1ea473a7eb3b566",
+    "Beauty_semantic_base.npy": "966fb6eea6c8ce19",
+    "Beauty_semantic_residual.npy": "cb780d13243238a6"
+  },
+  "c12_outputs": {
+    "resource_dir": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty",
+    "hashes": {
+      "Beauty_trainonly_cf_svd.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty/Beauty_trainonly_cf_svd.npy",
+        "exists": true,
+        "sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+        "sha16": "4ac176b0e1291413",
+        "size": 6195840,
+        "mtime": "2026-06-27T16:48:18.771050",
+        "expected_sha16": "6d75cfbe18dc5aa8",
+        "matches_expected": false
+      },
+      "Beauty_cf_base.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty/Beauty_cf_base.npy",
+        "exists": true,
+        "sha256": "e8a58e0bfe392d3d8d60f924aa841a4fb9b5a1dada5fda0ca99b28200e4cc02a",
+        "sha16": "e8a58e0bfe392d3d",
+        "size": 6195840,
+        "mtime": "2026-06-27T16:48:18.774650"
+      },
+      "Beauty_cf_residual.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty/Beauty_cf_residual.npy",
+        "exists": true,
+        "sha256": "7c5fb7e5dec6fe29b8bc2812f0d5f9f547703a290c2df23c29f140473432db49",
+        "sha16": "7c5fb7e5dec6fe29",
+        "size": 6195840,
+        "mtime": "2026-06-27T16:48:18.774650",
+        "expected_sha16": "c1ea473a7eb3b566",
+        "matches_expected": false
+      },
+      "Beauty_semantic_base.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty/Beauty_semantic_base.npy",
+        "exists": true,
+        "sha256": "267de927f12160b91cfe7ee1f3d403e9805c2ea703d1a71d5031dad744da2283",
+        "sha16": "267de927f12160b9",
+        "size": 37174400,
+        "mtime": "2026-06-27T16:48:18.796250",
+        "expected_sha16": "966fb6eea6c8ce19",
+        "matches_expected": false
+      },
+      "Beauty_semantic_residual.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty/Beauty_semantic_residual.npy",
+        "exists": true,
+        "sha256": "a90a8eb66ee2e403aba85374278fa824b1876c6341573a80f3ebceca2f42d896",
+        "sha16": "a90a8eb66ee2e403",
+        "size": 37174400,
+        "mtime": "2026-06-27T16:48:18.810650",
+        "expected_sha16": "cb780d13243238a6",
+        "matches_expected": false
+      },
+      "Beauty.trainonly.inter.json": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty/Beauty.trainonly.inter.json",
+        "exists": true,
+        "sha256": "0b965f926b278042af4bb0ee2dfa736841360472bbda9201497da0a60be017a3",
+        "sha16": "0b965f926b278042",
+        "size": 2192504,
+        "mtime": "2026-06-27T16:48:18.767450"
+      },
+      "Beauty_item_id_order.json": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty/Beauty_item_id_order.json",
+        "exists": true,
+        "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+        "sha16": "ea319a99bde96331",
+        "size": 122004,
+        "mtime": "2026-06-27T16:48:18.771050"
+      },
+      "Beauty.split_audit.json": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty/Beauty.split_audit.json",
+        "exists": true,
+        "sha256": "d828e0aa3c49a7b74fbb6b7430b4aa73ff348976c994e0a37d7d4a9cb27b868f",
+        "sha16": "d828e0aa3c49a7b7",
+        "size": 234,
+        "mtime": "2026-06-27T16:48:18.767450"
+      },
+      "resource_summary.json": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_c12/results/resources/Beauty/resource_summary.json",
+        "exists": true,
+        "sha256": "cdc68cfd949ac2730bb9e1eb0b2067bbc83adbeec9851bac574709f23d2ba5ab",
+        "sha16": "cdc68cfd949ac273",
+        "size": 731,
+        "mtime": "2026-06-27T16:48:18.925850"
+      },
+      "_summary_json": {
+        "dataset": "Beauty",
+        "split_policy": "per-user sequence[:-2] only",
+        "validation_item_policy": "excluded: sequence[-2]",
+        "test_item_policy": "excluded: sequence[-1]",
+        "item_count": 12101,
+        "user_count": 22363,
+        "full_event_count": 198502,
+        "train_event_count": 153776,
+        "excluded_event_count": 44726,
+        "expected_excluded_event_count": 44726,
+        "svd_dim": 128,
+        "window_size": 5,
+        "ridge_alpha": 10.0,
+        "sem2cf_train_R2": 0.10809165239334106,
+        "sem2cf_val_R2": 0.08565749228000641,
+        "cf2sem_train_R2": 0.14832282066345215,
+        "cf2sem_val_R2": 0.13112717866897583,
+        "cf_residual_norm_mean": 0.9089989066123962,
+        "semantic_residual_norm_mean": 0.6115802526473999,
+        "finite": true,
+        "st5_order_aligned": true
+      }
+    },
+    "core_match_status": {
+      "Beauty_trainonly_cf_svd.npy": false,
+      "Beauty_cf_residual.npy": false,
+      "Beauty_semantic_base.npy": false,
+      "Beauty_semantic_residual.npy": false
+    },
+    "status_text": "Beauty_trainonly_cf_svd.npy:4ac176b0e1291413->6d75cfbe18dc5aa8:DIFF; Beauty_cf_residual.npy:7c5fb7e5dec6fe29->c1ea473a7eb3b566:DIFF; Beauty_semantic_base.npy:267de927f12160b9->966fb6eea6c8ce19:DIFF; Beauty_semantic_residual.npy:a90a8eb66ee2e403->cb780d13243238a6:DIFF"
+  },
+  "ece8_outputs": {
+    "resource_dir": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty",
+    "hashes": {
+      "Beauty_trainonly_cf_svd.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty/Beauty_trainonly_cf_svd.npy",
+        "exists": true,
+        "sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+        "sha16": "4ac176b0e1291413",
+        "size": 6195840,
+        "mtime": "2026-06-27T16:48:31.161078",
+        "expected_sha16": "6d75cfbe18dc5aa8",
+        "matches_expected": false
+      },
+      "Beauty_cf_base.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty/Beauty_cf_base.npy",
+        "exists": true,
+        "sha256": "1cf7d79e4cbb22146e502f887a4a1f301c88aafcc3eee85368bd9a38584359db",
+        "sha16": "1cf7d79e4cbb2214",
+        "size": 6195840,
+        "mtime": "2026-06-27T16:48:31.161078"
+      },
+      "Beauty_cf_residual.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty/Beauty_cf_residual.npy",
+        "exists": true,
+        "sha256": "4dd9701326b124939b094cff50d8fcca856d258067913e668c7646379a460c62",
+        "sha16": "4dd9701326b12493",
+        "size": 6195840,
+        "mtime": "2026-06-27T16:48:31.164678",
+        "expected_sha16": "c1ea473a7eb3b566",
+        "matches_expected": false
+      },
+      "Beauty_semantic_base.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty/Beauty_semantic_base.npy",
+        "exists": true,
+        "sha256": "41bc833586ac9f76ab91304bc7f49bc62ab7520964a60db9dfc3e308b5ad5f36",
+        "sha16": "41bc833586ac9f76",
+        "size": 37174400,
+        "mtime": "2026-06-27T16:48:31.186278",
+        "expected_sha16": "966fb6eea6c8ce19",
+        "matches_expected": false
+      },
+      "Beauty_semantic_residual.npy": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty/Beauty_semantic_residual.npy",
+        "exists": true,
+        "sha256": "a82c09cae65b9bcef05c00cea961d285e89a4e4753f47af5aa117cd4a72a6137",
+        "sha16": "a82c09cae65b9bce",
+        "size": 37174400,
+        "mtime": "2026-06-27T16:48:31.207878",
+        "expected_sha16": "cb780d13243238a6",
+        "matches_expected": false
+      },
+      "Beauty.trainonly.inter.json": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty/Beauty.trainonly.inter.json",
+        "exists": true,
+        "sha256": "0b965f926b278042af4bb0ee2dfa736841360472bbda9201497da0a60be017a3",
+        "sha16": "0b965f926b278042",
+        "size": 2192504,
+        "mtime": "2026-06-27T16:48:31.153878"
+      },
+      "Beauty_item_id_order.json": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty/Beauty_item_id_order.json",
+        "exists": true,
+        "sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+        "sha16": "ea319a99bde96331",
+        "size": 122004,
+        "mtime": "2026-06-27T16:48:31.153878"
+      },
+      "Beauty.split_audit.json": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty/Beauty.split_audit.json",
+        "exists": true,
+        "sha256": "d828e0aa3c49a7b74fbb6b7430b4aa73ff348976c994e0a37d7d4a9cb27b868f",
+        "sha16": "d828e0aa3c49a7b7",
+        "size": 234,
+        "mtime": "2026-06-27T16:48:31.153878"
+      },
+      "resource_summary.json": {
+        "path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5_resource_attribution/results_ece8/results/resources/Beauty/resource_summary.json",
+        "exists": true,
+        "sha256": "23144dae095460cbda89246fc95146e9477cd451d2f669719ae7ca00bc2e70ad",
+        "sha16": "23144dae095460cb",
+        "size": 729,
+        "mtime": "2026-06-27T16:48:31.330278"
+      },
+      "_summary_json": {
+        "dataset": "Beauty",
+        "split_policy": "per-user sequence[:-2] only",
+        "validation_item_policy": "excluded: sequence[-2]",
+        "test_item_policy": "excluded: sequence[-1]",
+        "item_count": 12101,
+        "user_count": 22363,
+        "full_event_count": 198502,
+        "train_event_count": 153776,
+        "excluded_event_count": 44726,
+        "expected_excluded_event_count": 44726,
+        "svd_dim": 128,
+        "window_size": 5,
+        "ridge_alpha": 10.0,
+        "sem2cf_train_R2": 0.0841413140296936,
+        "sem2cf_val_R2": 0.06670892238616943,
+        "cf2sem_train_R2": 0.12060239166021347,
+        "cf2sem_val_R2": 0.10448899120092392,
+        "cf_residual_norm_mean": 0.921535074710846,
+        "semantic_residual_norm_mean": 0.4496346116065979,
+        "finite": true,
+        "st5_order_aligned": true
+      }
+    },
+    "core_match_status": {
+      "Beauty_trainonly_cf_svd.npy": false,
+      "Beauty_cf_residual.npy": false,
+      "Beauty_semantic_base.npy": false,
+      "Beauty_semantic_residual.npy": false
+    },
+    "status_text": "Beauty_trainonly_cf_svd.npy:4ac176b0e1291413->6d75cfbe18dc5aa8:DIFF; Beauty_cf_residual.npy:4dd9701326b12493->c1ea473a7eb3b566:DIFF; Beauty_semantic_base.npy:41bc833586ac9f76->966fb6eea6c8ce19:DIFF; Beauty_semantic_residual.npy:a82c09cae65b9bce->cb780d13243238a6:DIFF"
+  },
+  "old_expected_files_found": {
+    "Beauty_trainonly_cf_svd.npy": [],
+    "Beauty_cf_residual.npy": [],
+    "Beauty_semantic_base.npy": [],
+    "Beauty_semantic_residual.npy": []
+  },
+  "similarity_to_old_expected": {
+    "Beauty_cf_residual.npy": {
+      "old_expected_file_found": false
+    },
+    "Beauty_semantic_base.npy": {
+      "old_expected_file_found": false
+    },
+    "Beauty_semantic_residual.npy": {
+      "old_expected_file_found": false
+    }
+  },
+  "earliest_divergence": "CF-SVD",
+  "historical_st5_attribution": "unknown",
+  "final_classification": "LEGACY_RESOURCE_CONTEXT_NOT_REPRODUCED_ON_NEW_MACHINE",
+  "notes": [
+    "Both c12 and ece8 isolated legacy runs produced identical CF-SVD sha16 4ac176b0e1291413, which differs from old expected 6d75cfbe18dc5aa8.",
+    "Because CF-SVD is independent of ST5 in this builder, the divergence occurs before ST5-specific residual attribution.",
+    "No local actual old expected resource arrays matching the provided expected sha16 were found in the requested search roots; similarity-to-old arrays could not be computed."
+  ]
+}

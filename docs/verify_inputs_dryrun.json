@@ -1,0 +1,49 @@
+{
+  "data": {
+    "Beauty.inter.json": {
+      "path": "/home/huangxin/llmNrec/data/Beauty/Beauty.inter.json",
+      "exists": true,
+      "sha256": "8809584b8b78fa6561771c88911ed65bd716fc9926fca1e581e6a1ab578ccfd5",
+      "expected_sha256": "8809584b8b78fa6561771c88911ed65bd716fc9926fca1e581e6a1ab578ccfd5",
+      "match": true
+    },
+    "Beauty.index.json": {
+      "path": "/home/huangxin/llmNrec/data/Beauty/Beauty.index.json",
+      "exists": true,
+      "sha256": "be3fb890e59b5443824cdebc560ef349191b97f20d3aecad4727de2d6b212c82",
+      "expected_sha256": "be3fb890e59b5443824cdebc560ef349191b97f20d3aecad4727de2d6b212c82",
+      "match": true
+    },
+    "Beauty.item.json": {
+      "path": "/home/huangxin/llmNrec/data/Beauty/Beauty.item.json",
+      "exists": true,
+      "sha256": "74aeddf911548aadfcd1dab326c16678ed4ac74457e874da300d63a94bdb2330",
+      "expected_sha256": "74aeddf911548aadfcd1dab326c16678ed4ac74457e874da300d63a94bdb2330",
+      "match": true
+    }
+  },
+  "model_path": "/home/huangxin/llmNrec/chord_new_machine_repro/models/Sentence-T5/sentence-t5-base",
+  "model_required": {
+    "config.json": true,
+    "modules.json": true,
+    "tokenizer.json": true,
+    "tokenizer_config.json": true,
+    "special_tokens_map.json": true,
+    "model.safetensors": true,
+    "2_Dense/model.safetensors": true
+  },
+  "legacy_builder": {
+    "path": "/home/huangxin/llmNrec/chord_new_machine_repro/third_party/legacy_biview/legacy_backup_20260620_050517/build_biview_resources.py",
+    "sha256": "753d4eeb902f28deb621fa7f7cf3eb31f5fc8a334f741e8ce179da50057b6bff",
+    "match": true
+  },
+  "versions": {
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "sklearn": "1.7.2",
+    "torch": "2.11.0+cu128",
+    "transformers": "4.46.3",
+    "tokenizers": "0.20.3",
+    "yaml": "6.0.3"
+  }
+}

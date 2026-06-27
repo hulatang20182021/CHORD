@@ -1,0 +1,958 @@
+{
+  "generated_at": "2026-06-27T17:09:24.721570",
+  "scope": "isolated TruncatedSVD sensitivity only; no ST5, no PLS, no SID index, no training, no eval",
+  "ppmi_hash": "0627d0770a3f817011c861d3f1c63a294c76c33aa627f0a13c32fc8c3a46c63a",
+  "expected_ppmi_hash": "0627d0770a3f817011c861d3f1c63a294c76c33aa627f0a13c32fc8c3a46c63a",
+  "expected_cf_svd_sha16": "6d75cfbe18dc5aa8",
+  "number_of_svd_settings_tested": 11,
+  "any_setting_matches_6d75": false,
+  "best_matching_setting": null,
+  "runs": [
+    {
+      "run_name": "A_default",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/A_default/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "randomized",
+        "n_components": 128,
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "output_raw_array_sha256": "57ee66fdced918dc20e683d6879e9295aee31e9b170e1a1f64b27fabac25bfff",
+      "output_npy_memory_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "sha16": "4ac176b0e1291413",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "c18640a59d0ac2f4ee6e082a8e9796509d1c233f7f061141001f07655b21a0c9",
+      "first_8_values": [
+        0.14318989217281342,
+        -0.12404478341341019,
+        0.16373476386070251,
+        -0.040133822709321976,
+        0.0013735407264903188,
+        -0.04400114342570305,
+        -0.10562986135482788,
+        -0.05776644125580788
+      ],
+      "first_row_sum": 0.48983141779899597,
+      "first_row_mean": 0.003826807951554656,
+      "first_row_l2": 0.9999999403953552,
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "B_fixed_threads_default",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/B_fixed_threads_default/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "NUMEXPR_NUM_THREADS": "1"
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "randomized",
+        "n_components": 128,
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "ad01883f9b6dbbbe08b4705c72addf3d3e51493175acb455a77bcec3dd41b3aa",
+      "output_raw_array_sha256": "70aeeae6e82aa344391e8f7f3e58f63ab435de3cfde701e8b9b2dee1021cf295",
+      "output_npy_memory_sha256": "ad01883f9b6dbbbe08b4705c72addf3d3e51493175acb455a77bcec3dd41b3aa",
+      "sha16": "ad01883f9b6dbbbe",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "460004be16eefdad92687003ec18c50e9c9f79b41669b356e6c212f19a088a0c",
+      "first_8_values": [
+        0.143189936876297,
+        -0.12404485046863556,
+        0.1637348234653473,
+        -0.04013371840119362,
+        0.0013734293170273304,
+        -0.04400007054209709,
+        -0.10562979429960251,
+        -0.0577654205262661
+      ],
+      "first_row_sum": 0.4899439215660095,
+      "first_row_mean": 0.0038276868872344494,
+      "first_row_l2": 1.0,
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "C_explicit_randomized",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/C_explicit_randomized/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "algorithm": "randomized",
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "randomized",
+        "n_components": 128,
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "output_raw_array_sha256": "57ee66fdced918dc20e683d6879e9295aee31e9b170e1a1f64b27fabac25bfff",
+      "output_npy_memory_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "sha16": "4ac176b0e1291413",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "c18640a59d0ac2f4ee6e082a8e9796509d1c233f7f061141001f07655b21a0c9",
+      "first_8_values": [
+        0.14318989217281342,
+        -0.12404478341341019,
+        0.16373476386070251,
+        -0.040133822709321976,
+        0.0013735407264903188,
+        -0.04400114342570305,
+        -0.10562986135482788,
+        -0.05776644125580788
+      ],
+      "first_row_sum": 0.48983141779899597,
+      "first_row_mean": 0.003826807951554656,
+      "first_row_l2": 0.9999999403953552,
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "D_power_normalizer_auto",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/D_power_normalizer_auto/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "algorithm": "randomized",
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "randomized",
+        "n_components": 128,
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "output_raw_array_sha256": "57ee66fdced918dc20e683d6879e9295aee31e9b170e1a1f64b27fabac25bfff",
+      "output_npy_memory_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "sha16": "4ac176b0e1291413",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "c18640a59d0ac2f4ee6e082a8e9796509d1c233f7f061141001f07655b21a0c9",
+      "first_8_values": [
+        0.14318989217281342,
+        -0.12404478341341019,
+        0.16373476386070251,
+        -0.040133822709321976,
+        0.0013735407264903188,
+        -0.04400114342570305,
+        -0.10562986135482788,
+        -0.05776644125580788
+      ],
+      "first_row_sum": 0.48983141779899597,
+      "first_row_mean": 0.003826807951554656,
+      "first_row_l2": 0.9999999403953552,
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "D_power_normalizer_none",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/D_power_normalizer_none/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "algorithm": "randomized",
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "none",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "randomized",
+        "n_components": 128,
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "none",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "5db6c785414ac6ad126df6ec3bfe23fd96c8b34e66a3fcd42a9763fbf7563650",
+      "output_raw_array_sha256": "0bb382befbf0cddd623b909e5dda0d37d01fb9a17572e52135fbc372c8680cf5",
+      "output_npy_memory_sha256": "5db6c785414ac6ad126df6ec3bfe23fd96c8b34e66a3fcd42a9763fbf7563650",
+      "sha16": "5db6c785414ac6ad",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "d76a4442941e269dee589dd449fe767687478dbf5b6d8307b83ffc00bca0ea37",
+      "first_8_values": [
+        0.144852876663208,
+        -0.1254853904247284,
+        0.1656361073255539,
+        -0.04059941694140434,
+        0.0013898152392357588,
+        -0.04451701045036316,
+        -0.10684151947498322,
+        -0.0584648959338665
+      ],
+      "first_row_sum": 0.4582587480545044,
+      "first_row_mean": 0.0035801464691758156,
+      "first_row_l2": 0.9999999403953552,
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "D_power_normalizer_LU",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/D_power_normalizer_LU/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "algorithm": "randomized",
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "LU",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "randomized",
+        "n_components": 128,
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "LU",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "output_raw_array_sha256": "57ee66fdced918dc20e683d6879e9295aee31e9b170e1a1f64b27fabac25bfff",
+      "output_npy_memory_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "sha16": "4ac176b0e1291413",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "c18640a59d0ac2f4ee6e082a8e9796509d1c233f7f061141001f07655b21a0c9",
+      "first_8_values": [
+        0.14318989217281342,
+        -0.12404478341341019,
+        0.16373476386070251,
+        -0.040133822709321976,
+        0.0013735407264903188,
+        -0.04400114342570305,
+        -0.10562986135482788,
+        -0.05776644125580788
+      ],
+      "first_row_sum": 0.48983141779899597,
+      "first_row_mean": 0.003826807951554656,
+      "first_row_l2": 0.9999999403953552,
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "D_power_normalizer_QR",
+      "svd_params_requested": {
+        "n_components": 128,
+        "algorithm": "randomized",
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "QR",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "env_thread_vars": {
+        "fixed_threads": "False"
+      },
+      "error": "InvalidParameterError(\"The 'power_iteration_normalizer' parameter of TruncatedSVD must be a str among {'auto', 'LU', 'none', 'OR'}. Got 'QR' instead.\")",
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "E_n_iter_5",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/E_n_iter_5/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "algorithm": "randomized",
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "randomized",
+        "n_components": 128,
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "output_raw_array_sha256": "57ee66fdced918dc20e683d6879e9295aee31e9b170e1a1f64b27fabac25bfff",
+      "output_npy_memory_sha256": "4ac176b0e12914131c72ae32d3b9660b81ab70714d2e1a7ab0f3b0787eea063d",
+      "sha16": "4ac176b0e1291413",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "c18640a59d0ac2f4ee6e082a8e9796509d1c233f7f061141001f07655b21a0c9",
+      "first_8_values": [
+        0.14318989217281342,
+        -0.12404478341341019,
+        0.16373476386070251,
+        -0.040133822709321976,
+        0.0013735407264903188,
+        -0.04400114342570305,
+        -0.10562986135482788,
+        -0.05776644125580788
+      ],
+      "first_row_sum": 0.48983141779899597,
+      "first_row_mean": 0.003826807951554656,
+      "first_row_l2": 0.9999999403953552,
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "E_n_iter_7",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/E_n_iter_7/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "algorithm": "randomized",
+        "n_iter": 7,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "randomized",
+        "n_components": 128,
+        "n_iter": 7,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "4b025e2694013e966c1240cee18c4053f911a809664a68ad1e3b3d55c97450c8",
+      "output_raw_array_sha256": "b2b61c6b4b5829679d86349a0ec0941fd24c2e24d529de4555e5eeb0afb6e7e5",
+      "output_npy_memory_sha256": "4b025e2694013e966c1240cee18c4053f911a809664a68ad1e3b3d55c97450c8",
+      "sha16": "4b025e2694013e96",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "aa47d67c07ae63ca950035519c8b52c8dfaa032dbe8f88c194f495e50ae125ae",
+      "first_8_values": [
+        0.1427963674068451,
+        -0.12370383739471436,
+        0.16328473389148712,
+        -0.04002484306693077,
+        0.0013701990246772766,
+        -0.043883707374334335,
+        -0.10532765835523605,
+        -0.05756919085979462
+      ],
+      "first_row_sum": 1.2822647094726562,
+      "first_row_mean": 0.010017693042755127,
+      "first_row_l2": 1.0,
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "E_n_iter_10",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/E_n_iter_10/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "algorithm": "randomized",
+        "n_iter": 10,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "randomized",
+        "n_components": 128,
+        "n_iter": 10,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "8e2c4009b6223ba0f87f3aefb73484ac6c10b57aa2a46a7a6d7c2bdfff9a77b1",
+      "output_raw_array_sha256": "580f7f63f3eec71ff7e7ec050eef037d7ded8d29b520a4b71449e18cc2b53b12",
+      "output_npy_memory_sha256": "8e2c4009b6223ba0f87f3aefb73484ac6c10b57aa2a46a7a6d7c2bdfff9a77b1",
+      "sha16": "8e2c4009b6223ba0",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "76ddfadf4c47c8ad9cf3ce7719aff905d3f318842a25037dea51e5b1694931c8",
+      "first_8_values": [
+        0.14248192310333252,
+        -0.12343142181634903,
+        0.16292518377304077,
+        -0.039936091750860214,
+        0.0013670078478753567,
+        -0.0437866672873497,
+        -0.10509604215621948,
+        -0.057441070675849915
+      ],
+      "first_row_sum": 1.104759931564331,
+      "first_row_mean": 0.008630936965346336,
+      "first_row_l2": 1.0,
+      "matches_expected_6d75": false
+    },
+    {
+      "run_name": "F_arpack",
+      "output_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/F_arpack/Beauty_trainonly_cf_svd.npy",
+      "env_thread_vars": {
+        "OMP_NUM_THREADS": null,
+        "OPENBLAS_NUM_THREADS": null,
+        "MKL_NUM_THREADS": null,
+        "NUMEXPR_NUM_THREADS": null
+      },
+      "versions": {
+        "sklearn": "1.7.2",
+        "scipy": "1.15.3",
+        "numpy": "2.2.6",
+        "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+        "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35"
+      },
+      "threadpoolctl_info": [
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+          "version": "0.3.29",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "blas",
+          "internal_api": "openblas",
+          "num_threads": 12,
+          "prefix": "libscipy_openblas",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+          "version": "0.3.28",
+          "threading_layer": "pthreads",
+          "architecture": "Haswell"
+        },
+        {
+          "user_api": "openmp",
+          "internal_api": "openmp",
+          "num_threads": 12,
+          "prefix": "libgomp",
+          "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+          "version": null
+        }
+      ],
+      "svd_params_requested": {
+        "n_components": 128,
+        "algorithm": "arpack",
+        "random_state": 42
+      },
+      "svd_params_fitted": {
+        "algorithm": "arpack",
+        "n_components": 128,
+        "n_iter": 5,
+        "n_oversamples": 10,
+        "power_iteration_normalizer": "auto",
+        "tol": 0.0,
+        "random_state": 42
+      },
+      "output_npy_sha256": "112bdeb4606d977380f5545bf1106903fcd29ce2320296b1a2daae84fbb4a76d",
+      "output_raw_array_sha256": "facc511f9e7f18d884b9cdefe61001dccead182e160fbf0c4858f0bc6333d30e",
+      "output_npy_memory_sha256": "112bdeb4606d977380f5545bf1106903fcd29ce2320296b1a2daae84fbb4a76d",
+      "sha16": "112bdeb4606d9773",
+      "shape": [
+        12101,
+        128
+      ],
+      "dtype": "float32",
+      "finite": true,
+      "first_row_sha256": "71f8832a1dda031a5f2f0c62d6654ff82f7c5f17e7c19a02eb606d5a511a95ce",
+      "first_8_values": [
+        0.14094436168670654,
+        -0.12209970504045486,
+        0.16116732358932495,
+        -0.039505187422037125,
+        0.0013524399837478995,
+        -0.043315257877111435,
+        -0.10396122932434082,
+        -0.05681885778903961
+      ],
+      "first_row_sum": 1.774395227432251,
+      "first_row_mean": 0.01386246271431446,
+      "first_row_l2": 1.000000238418579,
+      "matches_expected_6d75": false
+    }
+  ],
+  "environment": {
+    "sklearn": "1.7.2",
+    "scipy": "1.15.3",
+    "numpy": "2.2.6",
+    "python": "3.10.20 (main, Mar 11 2026, 17:46:40) [GCC 14.3.0]",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "threadpoolctl_info_initial": [
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 12,
+        "prefix": "libscipy_openblas",
+        "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/numpy.libs/libscipy_openblas64_-56d6093b.so",
+        "version": "0.3.29",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      },
+      {
+        "user_api": "blas",
+        "internal_api": "openblas",
+        "num_threads": 12,
+        "prefix": "libscipy_openblas",
+        "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scipy.libs/libscipy_openblas-68440149.so",
+        "version": "0.3.28",
+        "threading_layer": "pthreads",
+        "architecture": "Haswell"
+      },
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 12,
+        "prefix": "libgomp",
+        "filepath": "/home/huangxin/miniconda3/envs/emotion_ml1m/lib/python3.10/site-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+        "version": null
+      }
+    ],
+    "numpy_show_config_head": "Build Dependencies:\n  blas:\n    detection method: pkgconfig\n    found: true\n    include directory: /opt/_internal/cpython-3.10.15/lib/python3.10/site-packages/scipy_openblas64/include\n    lib directory: /opt/_internal/cpython-3.10.15/lib/python3.10/site-packages/scipy_openblas64/lib\n    name: scipy-openblas\n    openblas configuration: OpenBLAS 0.3.29  USE64BITINT DYNAMIC_ARCH NO_AFFINITY\n      Haswell MAX_THREADS=64\n    pc file directory: /project/.openblas\n    version: 0.3.29\n  lapack:\n    detection method: pkgconfig\n    found: true\n    include directory: /opt/_internal/cpython-3.10.15/lib/python3.10/site-packages/scipy_openblas64/include\n    lib directory: /opt/_internal/cpython-3.10.15/lib/python3.10/site-packages/scipy_openblas64/lib\n    name: scipy-openblas\n    openblas configuration: OpenBLAS 0.3.29  USE64BITINT DYNAMIC_ARCH NO_AFFINITY\n      Haswell MAX_THREADS=64\n    pc file directory: /project/.openblas\n    version: 0.3.29\nCompilers:\n  c:\n    commands: cc\n    linker: ld.bfd\n    name: gcc\n    version: 10.2.1\n  c++:\n    commands: c++\n    linker: ld.bfd\n    name: gcc\n    version: 10.2.1\n  cython:\n    commands: cython\n    linker: cython\n    name: cython\n    version: 3.1.0\nMachine Information:\n  build:\n    cpu: x86_64\n    endian: little\n    family: x86_64\n    system: linux\n  host:\n    cpu: x86_64\n    endian: little\n    family: x86_64\n    system: linux\nPython Information:\n  path: /tmp/build-env-a8ncef9o/bin/python\n  version: '3.10'\nSIMD Extensions:\n  baseline:\n  - SSE\n  - SSE2\n  - SSE3\n  found:\n  - SSSE3\n  - SSE41\n  - POPCNT\n  - SSE42\n  - AVX\n  - F16C\n  - FMA3\n  - AVX2\n  not found:\n  - AVX512F\n  - AVX512CD\n  - AVX512_KNL\n  - AVX512_KNM\n  - AVX512_SKX\n  - AVX512_CLX\n  - AVX512_CNL\n  - AVX512_ICL\n"
+  },
+  "final_classification": "SVD_NUMERICAL_ENV_NOT_REPRODUCED",
+  "reports": {
+    "json": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/svd_sensitivity_report.json",
+    "markdown": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/cf_ppmi_svd_debug/svd_sensitivity/svd_sensitivity_report.md"
+  }
+}

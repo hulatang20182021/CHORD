@@ -1,0 +1,22 @@
+name: chord
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - scipy
+  - scikit-learn
+  - pyyaml
+  - tqdm
+  - threadpoolctl
+  - pytorch
+  - pytorch-cuda=12.1
+  - pip:
+      - transformers
+      - tokenizers
+      - safetensors
+      - sentence-transformers

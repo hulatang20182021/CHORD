@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+
+# Environments
+.venv/
+venv/
+env/
+conda-meta/
+
+# Outputs
+results/
+outputs/
+wandb/
+runs/
+checkpoints/
+logs/
+tmp/
+runtime_root/
+
+# Data
+data/*
+!data/README.md
+
+# Models
+models/*
+!models/README.md
+
+# Release local assets
+release_assets/
+
+# Large weights / arrays / artifacts
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.safetensors
+*.npy
+*.npz
+*.pkl
+*.joblib
+*.tar
+*.tar.gz
+*.zip
+
+# Backups
+backups/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,41 @@
+{
+  "audit_name": "github_release_model_audit",
+  "timestamp_local": "2026-06-27T22:16:13+08:00",
+  "repo_path": "/home/huangxin/llmNrec/chord_new_machine_repro",
+  "model_dir": "/home/huangxin/llmNrec/chord_new_machine_repro/models/Sentence-T5/sentence-t5-base",
+  "required_model_files_complete": true,
+  "required_model_files": [
+    "config.json",
+    "modules.json",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "special_tokens_map.json",
+    "model.safetensors",
+    "2_Dense/model.safetensors"
+  ],
+  "release_archive_path": "/home/huangxin/llmNrec/chord_new_machine_repro/release_assets/sentence-t5-base.tar.gz",
+  "release_archive_size_bytes": 594320228,
+  "release_archive_size_human": "567M",
+  "release_archive_sha256": "96cc211d6b6c6645840895811a61cbb402b021ea32ad464bdfe99b1cd0cb7058",
+  "release_sha256_path": "/home/huangxin/llmNrec/chord_new_machine_repro/release_assets/sentence-t5-base.tar.gz.sha256",
+  ".gitignore_updated": true,
+  "download_script_path": "/home/huangxin/llmNrec/chord_new_machine_repro/scripts/setup/download_sentence_t5.sh",
+  "download_script_uses_placeholder_release_url": true,
+  "example_sh_auto_download_integrated": true,
+  "cloud_deployment_doc_updated": true,
+  "readme_updated": true,
+  "github_ready_check_script_path": "/home/huangxin/llmNrec/chord_new_machine_repro/scripts/utils/check_github_ready.sh",
+  "checks": {
+    "bash_n_download_sentence_t5": "PASS",
+    "bash_n_example": "PASS",
+    "bash_n_check_github_ready": "PASS",
+    "bash_n_runner": "PASS",
+    "dry_run_command": "DRY_RUN=1 bash scripts/utils/example.sh",
+    "dry_run_status": "PASS",
+    "github_ready_check_status": "GITHUB_READY"
+  },
+  "warnings": [
+    "MODEL_URL and SHA256_URL still contain the documented YOUR_NAME/YOUR_REPO placeholder until the release asset is uploaded and URLs are known."
+  ],
+  "final_classification": "GITHUB_RELEASE_MODEL_READY_WITH_WARNINGS"
+}

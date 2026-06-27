@@ -1,0 +1,66 @@
+{
+  "status": "ST5_REGENERATED_BUT_HASH_DIFFERS",
+  "entry_script_used": "code/01_st5_text_embedding/prepare_generic_st5_rqvae_input.py",
+  "entry_script_note": "Used the Beauty.item.json -> Sentence-T5 local T5EncoderModel mean-pooling logic from prepare_generic_st5_rqvae_input.py, with output redirected to the isolated requested directory.",
+  "input_item_json": "/home/huangxin/llmNrec/data/Beauty/Beauty.item.json",
+  "model_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/Beauty_embedding_pipeline_minimal/models/Sentence-T5/sentence-t5-base",
+  "output_dir": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty",
+  "output_paths": {
+    "embedding": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_embeddings.npy",
+    "item_order": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_item_id_order.json",
+    "summary": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_summary.json"
+  },
+  "old_expected_embedding_sha256": "c12ec06fe5ba1ca190a38ce4379a65244ae7566198dc204758fbbe12b1e70c72",
+  "embedding_sha256": "703530eec9a2517875663c386b0631c7bba564a7019d273290af48978878c798",
+  "item_order_sha256": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
+  "matches_old_expected": false,
+  "shape": [
+    12101,
+    768
+  ],
+  "dtype": "float32",
+  "finite": true,
+  "first_row_small_checksum": {
+    "sha256_first_row_bytes": "bf812b4136fd004adf0bf15767816d273e44157895af749fa83a72bd96183f4d",
+    "sum": 0.12193405628204346,
+    "mean": 0.00015876830730121583,
+    "l2_norm": 1.0,
+    "first_8_values": [
+      0.0035263521131128073,
+      0.01818261295557022,
+      -0.002882953966036439,
+      0.06615033745765686,
+      0.03580108657479286,
+      0.024629324674606323,
+      0.029102381318807602,
+      -0.035380326211452484
+    ]
+  },
+  "script_summary": {
+    "dataset": "Beauty",
+    "entry_script_logic": "code/01_st5_text_embedding/prepare_generic_st5_rqvae_input.py",
+    "source": "/home/huangxin/llmNrec/data/Beauty/Beauty.item.json",
+    "encoder": "Sentence-T5 local T5EncoderModel attention-mask mean pooling",
+    "model_path": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/Beauty_embedding_pipeline_minimal/models/Sentence-T5/sentence-t5-base",
+    "num_items": 12101,
+    "embedding_dim": 768,
+    "shape": [
+      12101,
+      768
+    ],
+    "dtype": "float32",
+    "batch_size_used": 64,
+    "max_length": 256,
+    "item_order_aligned": true,
+    "finite": true,
+    "mean_norm": 1.0,
+    "median_norm": 1.0,
+    "min_norm": 0.9999998807907104,
+    "max_norm": 1.0000001192092896,
+    "outputs": {
+      "embedding": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_embeddings.npy",
+      "item_id_order": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_item_id_order.json",
+      "summary": "/home/huangxin/llmNrec/reference/legacy_embedding_pipeline_minimal/rebuild_outputs/st5/Beauty/Beauty_st5_rqvae_input_summary.json"
+    }
+  }
+}
