@@ -24,7 +24,7 @@ if [[ "$complete" == "1" ]]; then
   exit 0
 fi
 
-if [[ "$MODEL_URL" == *"hulatang20182021/CHORD"* || "$SHA256_URL" == *"hulatang20182021/CHORD"* ]]; then
+if [[ "$MODEL_URL" == *"YOUR_NAME/YOUR_REPO"* || "$SHA256_URL" == *"YOUR_NAME/YOUR_REPO"* || "$MODEL_URL" == *"<USER>/<REPO>"* || "$SHA256_URL" == *"<USER>/<REPO>"* ]]; then
   echo "MODEL_URL_PLACEHOLDER_NOT_REPLACED" >&2
   echo "Please set MODEL_URL and SHA256_URL or edit scripts/setup/download_sentence_t5.sh after creating a GitHub Release." >&2
   exit 1
