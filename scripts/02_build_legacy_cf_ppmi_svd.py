@@ -25,9 +25,13 @@ from chord.hash_utils import sha256_file
 from chord.io_utils import save_json
 from chord.paths import load_config
 
-EXPECTED_PPMI = "0627d0770a3f817011c861d3f1c63a294c76c33aa627f0a13c32fc8c3a46c63a"
-EXPECTED_NEW_CF_SHA16 = "4ac176b0e1291413"
-OLD_HISTORICAL_CF_SHA16 = "6d75cfbe18dc5aa8"
+EXPECTED_AUDIT = {
+    "Beauty": {
+        "expected_ppmi_csr_hash": "0627d0770a3f817011c861d3f1c63a294c76c33aa627f0a13c32fc8c3a46c63a",
+        "expected_new_machine_cf_svd_sha16": "4ac176b0e1291413",
+        "old_historical_cf_svd_sha16": "6d75cfbe18dc5aa8",
+    }
+}
 
 
 def load_json(path: Path) -> Any:
@@ -122,6 +126,7 @@ def main() -> None:
     legacy = cfg.raw.get("legacy_cf", {})
     force = bool(cfg.raw.get("force", False)) or os.environ.get("FORCE") == "1"
     dataset = cfg.dataset
+    expected = EXPECTED_AUDIT.get(dataset, {})
     data_dir = cfg.paths["data_root"] / dataset
     st5_dir = cfg.output_root / "st5" / dataset
     resource_dir = cfg.output_root / "resources" / dataset
@@ -135,10 +140,10 @@ def main() -> None:
         "data_dir": str(data_dir),
         "st5_dir": str(st5_dir),
         "resource_dir": str(resource_dir),
-        "expected_ppmi": EXPECTED_PPMI,
-        "expected_new_machine_cf_svd_sha16": EXPECTED_NEW_CF_SHA16,
-        "old_historical_cf_svd_sha16": OLD_HISTORICAL_CF_SHA16,
-        "svd_environment_note": "TruncatedSVD output is numerical-environment sensitive; old historical 6d75 was not reproduced on this new environment.",
+        "expected_ppmi": expected.get("expected_ppmi_csr_hash"),
+        "expected_new_machine_cf_svd_sha16": expected.get("expected_new_machine_cf_svd_sha16"),
+        "old_historical_cf_svd_sha16": expected.get("old_historical_cf_svd_sha16"),
+        "svd_environment_note": "TruncatedSVD output is numerical-environment sensitive; historical hashes are dataset-specific and only reported when known.",
         "force": force,
     }
     save_json(plan, report_dir / f"{dataset}_legacy_cf_plan.json")
@@ -238,11 +243,11 @@ def main() -> None:
         "ridge_alpha": ridge_alpha,
         "ppmi_nnz": int(ppmi.nnz),
         "ppmi_csr_hash": ppmi_hash,
-        "expected_ppmi_csr_hash": EXPECTED_PPMI,
+        "expected_ppmi_csr_hash": expected.get("expected_ppmi_csr_hash"),
         "cf_svd_sha16": cf_sha[:16],
-        "expected_new_machine_cf_svd_sha16": EXPECTED_NEW_CF_SHA16,
-        "old_historical_cf_svd_sha16": OLD_HISTORICAL_CF_SHA16,
-        "svd_environment_note": "New-machine TruncatedSVD may produce 4ac176..., while historical old-machine output was 6d75....",
+        "expected_new_machine_cf_svd_sha16": expected.get("expected_new_machine_cf_svd_sha16"),
+        "old_historical_cf_svd_sha16": expected.get("old_historical_cf_svd_sha16"),
+        "svd_environment_note": "New-machine TruncatedSVD may differ by sklearn/scipy/BLAS. Historical hashes are dataset-specific and only reported when known.",
         "sem2cf_train_R2": float(r2_score(cf[train_idx], sem2cf.predict(st5[train_idx]), multioutput="variance_weighted")),
         "sem2cf_val_R2": float(r2_score(cf[val_idx], sem2cf.predict(st5[val_idx]), multioutput="variance_weighted")),
         "cf2sem_train_R2": float(r2_score(st5[train_idx], cf2sem.predict(cf[train_idx]), multioutput="variance_weighted")),

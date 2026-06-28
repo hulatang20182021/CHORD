@@ -153,10 +153,16 @@ def main(args):
         config,
         order=args.order,
         pcsc_aux=args.pcsc_aux,
+        pcsc_mode=args.pcsc_mode,
         pcsc_h12_mode=args.pcsc_h12_mode,
         lambda_shared=args.lambda_shared,
         lambda_level2=args.lambda_level2,
         lambda_level3=args.lambda_level3,
+        lambda_cf=args.lambda_cf,
+        lambda_cfres=args.lambda_cfres,
+        lambda_base=args.lambda_base,
+        lambda_res=args.lambda_res,
+        lambda_comp=args.lambda_comp,
     )
     model.set_hyper(args.temperature)
     model.resize_token_embeddings(len(tokenizer))
@@ -167,6 +173,11 @@ def main(args):
         args.shared_emb,
         args.level2_emb,
         args.level3_emb,
+        cf_path=args.cf_emb,
+        sem_path=args.sem_emb,
+        cf_res_path=args.cf_res,
+        sem_base_path=args.sem_base,
+        sem_res_raw_path=args.sem_res_raw,
     )
     model.set_curriculum(1.0, force_soft=False)
     model.set_pcsc_schedule_factor(0.0)
@@ -229,6 +240,7 @@ def main(args):
             json.dumps(
                 {
                     "order": args.order,
+                    "pcsc_mode": args.pcsc_mode,
                     "pcsc_mapping": {
                         "shared_hidden": "shared_repr",
                         "level2_hidden": args.level2_name,
@@ -257,12 +269,23 @@ def parse_args():
     parser.add_argument("--level3_name", required=True)
     parser.add_argument("--order", choices=["sem_first", "cf_first"], required=True)
     parser.add_argument("--pcsc_aux", action="store_true")
+    parser.add_argument("--pcsc_mode", choices=["simple3", "legacy5"], default=os.environ.get("PCSC_MODE", "simple3"))
+    parser.add_argument("--cf_emb", default="")
+    parser.add_argument("--sem_emb", default="")
+    parser.add_argument("--cf_res", default="")
+    parser.add_argument("--sem_base", default="")
+    parser.add_argument("--sem_res_raw", default="")
     parser.add_argument("--pcsc_max_factor", type=float, default=1.0)
     parser.add_argument("--pcsc_schedule_type", choices=["warmup_hold", "warmup_hold_decay"], default="warmup_hold_decay")
     parser.add_argument("--pcsc_h12_mode", choices=["mean", "h2"], default="mean")
     parser.add_argument("--lambda_shared", type=float, default=1.0)
     parser.add_argument("--lambda_level2", type=float, default=1.0)
     parser.add_argument("--lambda_level3", type=float, default=1.0)
+    parser.add_argument("--lambda_cf", type=float, default=float(os.environ.get("LAMBDA_CF", "1.0")))
+    parser.add_argument("--lambda_cfres", type=float, default=float(os.environ.get("LAMBDA_CFRES", "1.0")))
+    parser.add_argument("--lambda_base", type=float, default=float(os.environ.get("LAMBDA_BASE", "1.0")))
+    parser.add_argument("--lambda_res", type=float, default=float(os.environ.get("LAMBDA_RES", "1.0")))
+    parser.add_argument("--lambda_comp", type=float, default=float(os.environ.get("LAMBDA_COMP", "1.0")))
     parser.add_argument("--training_metrics", required=True)
     parser.add_argument("--run_summary", default="")
     parser.add_argument("--load_best_model_at_end", action="store_true")

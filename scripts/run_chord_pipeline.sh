@@ -17,9 +17,10 @@ RUN_PLS=${RUN_PLS:-1}
 RUN_SID=${RUN_SID:-1}
 RUN_DOWNSTREAM=${RUN_DOWNSTREAM:-0}
 RUN_AUDIT=${RUN_AUDIT:-1}
-DOWNSTREAM_BACKEND=${DOWNSTREAM_BACKEND:-portable}
+DOWNSTREAM_BACKEND=${DOWNSTREAM_BACKEND:-formal_chord}
 FORCE=${FORCE:-0}
 DRY_RUN=${DRY_RUN:-0}
+C4_MODE=${C4_MODE:-dpos}
 
 ST5_BATCH_SIZE=${ST5_BATCH_SIZE:-32}
 ST5_MAX_LENGTH=${ST5_MAX_LENGTH:-256}
@@ -60,6 +61,10 @@ GRAD_ACCUM=${GRAD_ACCUM:-1}
 LOGGING_STEPS=${LOGGING_STEPS:-50}
 PCSC_MAX_FACTOR=${PCSC_MAX_FACTOR:-1.0}
 PCSC_SCHEDULE_TYPE=${PCSC_SCHEDULE_TYPE:-warmup_hold_decay}
+PCSC_MODE=${PCSC_MODE:-legacy5}
+LAMBDA_SHARED=${LAMBDA_SHARED:-1.0}
+LAMBDA_LEVEL2=${LAMBDA_LEVEL2:-1.0}
+LAMBDA_LEVEL3=${LAMBDA_LEVEL3:-1.0}
 LAMBDA_CF=${LAMBDA_CF:-1.0}
 LAMBDA_CFRES=${LAMBDA_CFRES:-1.0}
 LAMBDA_BASE=${LAMBDA_BASE:-1.0}
@@ -98,6 +103,7 @@ echo "[pipeline] RUN_NAME=$RUN_NAME"
 echo "[pipeline] RESULT_BASE=$RESULT_BASE"
 echo "[pipeline] DRY_RUN=$DRY_RUN FORCE=$FORCE"
 echo "[pipeline] DOWNSTREAM_BACKEND=$DOWNSTREAM_BACKEND"
+echo "[pipeline] C4_MODE=$C4_MODE PCSC_MODE=$PCSC_MODE"
 
 cat > "$RUNTIME_CONFIG" <<EOF
 dataset: $DATASET
@@ -131,6 +137,9 @@ pls:
   k1: $K1
   k2: $K2
   k3: $K3
+
+sid:
+  c4_mode: $C4_MODE
 EOF
 
 echo "[pipeline] runtime_config=$RUNTIME_CONFIG"
@@ -211,8 +220,8 @@ BUILD_DATA_STATUS=SKIPPED
 TRAIN_STATUS=SKIPPED
 EVAL_STATUS=SKIPPED
 if [[ "$RUN_DOWNSTREAM" == "1" ]]; then
-  if [[ "$DOWNSTREAM_BACKEND" != "portable" && "$DOWNSTREAM_BACKEND" != "formal_chord" ]]; then
-    echo "Unknown DOWNSTREAM_BACKEND=$DOWNSTREAM_BACKEND; expected portable or formal_chord" >&2
+  if [[ "$DOWNSTREAM_BACKEND" != "formal_chord" ]]; then
+    echo "Unsupported DOWNSTREAM_BACKEND=$DOWNSTREAM_BACKEND; CHORD reproduction requires formal_chord" >&2
     exit 7
   fi
   INDEX_JSON="$INDEX_DIR/${DATASET}_chord_seed${SEED}.index.json"
@@ -288,11 +297,22 @@ if [[ "$RUN_DOWNSTREAM" == "1" ]]; then
       --test_batch_size "$TEST_BATCH_SIZE"
       --learning_rate "$LEARNING_RATE"
       --run_suffix "$RUN_SUFFIX"
+      --pcsc_mode "$PCSC_MODE"
+      --pcsc_max_factor "$PCSC_MAX_FACTOR"
+      --pcsc_schedule_type "$PCSC_SCHEDULE_TYPE"
+      --lambda_shared "$LAMBDA_SHARED"
+      --lambda_level2 "$LAMBDA_LEVEL2"
+      --lambda_level3 "$LAMBDA_LEVEL3"
+      --lambda_cf "$LAMBDA_CF"
+      --lambda_cfres "$LAMBDA_CFRES"
+      --lambda_base "$LAMBDA_BASE"
+      --lambda_res "$LAMBDA_RES"
+      --lambda_comp "$LAMBDA_COMP"
     )
     if [[ "$FORCE" == "1" ]]; then FORMAL_ARGS+=(--force); fi
     if [[ "$FORMAL_STRICT_ENV_CHECK" == "1" ]]; then FORMAL_ARGS+=(--strict_env_check); fi
     if [[ "$FORMAL_SKIP_FINAL_EVAL" == "1" ]]; then FORMAL_ARGS+=(--skip_final_eval); fi
-    if stage formal_chord "$LOG_DIR/${RUN_NAME}.formal_chord.log" env PROJECT="$PROJECT" RESULT_BASE="$RESULT_BASE" DATA_ROOT="$DATA_ROOT" LETTER_ROOT="$LETTER_ROOT" TIGER="$TIGER" TEST_WRAPPER="$TEST_WRAPPER" FORMAL_SCRIPT_DIR="$FORMAL_SCRIPT_DIR" FORMAL_CONDA_ENV="$FORMAL_CONDA_ENV" "${FORMAL_ARGS[@]}"; then
+    if stage formal_chord "$LOG_DIR/${RUN_NAME}.formal_chord.log" env PROJECT="$PROJECT" RESULT_BASE="$RESULT_BASE" DATA_ROOT="$DATA_ROOT" LETTER_ROOT="$LETTER_ROOT" TIGER="$TIGER" TEST_WRAPPER="$TEST_WRAPPER" FORMAL_SCRIPT_DIR="$FORMAL_SCRIPT_DIR" FORMAL_CONDA_ENV="$FORMAL_CONDA_ENV" FORMAL_PYTHON="${FORMAL_PYTHON:-}" PCSC_MODE="$PCSC_MODE" "${FORMAL_ARGS[@]}"; then
       if [[ "$DRY_RUN" == "1" ]]; then
         BUILD_DATA_STATUS=DRY_RUN; TRAIN_STATUS=DRY_RUN; EVAL_STATUS=DRY_RUN; DOWNSTREAM_STATUS=DRY_RUN
       else

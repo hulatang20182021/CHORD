@@ -12,24 +12,43 @@ from modeling_matched_curriculum_letter import MatchedCurriculumLETTER
 
 
 class CHORDLETTER(MatchedCurriculumLETTER):
-    def __init__(self, config, order, pcsc_aux=False, pcsc_h12_mode="mean", lambda_shared=1.0, lambda_level2=1.0, lambda_level3=1.0):
+    def __init__(
+        self,
+        config,
+        order,
+        pcsc_aux=False,
+        pcsc_mode="simple3",
+        pcsc_h12_mode="mean",
+        lambda_shared=1.0,
+        lambda_level2=1.0,
+        lambda_level3=1.0,
+        lambda_cf=1.0,
+        lambda_cfres=1.0,
+        lambda_base=1.0,
+        lambda_res=1.0,
+        lambda_comp=1.0,
+    ):
         super().__init__(
             config,
             mode="zcf",
             pcsc_aux=pcsc_aux,
             pcsc_h12_mode=pcsc_h12_mode,
-            lambda_cf=lambda_shared,
-            lambda_cfres=lambda_level2,
-            lambda_base=0.0,
-            lambda_res=lambda_level3,
-            lambda_comp=0.0,
+            lambda_cf=lambda_cf,
+            lambda_cfres=lambda_cfres,
+            lambda_base=lambda_base,
+            lambda_res=lambda_res,
+            lambda_comp=lambda_comp,
         )
         self.order = order
-        self.pcsc_lambdas = {
-            "shared": float(lambda_shared),
-            "level2": float(lambda_level2),
-            "level3": float(lambda_level3),
-        }
+        self.pcsc_mode = pcsc_mode
+        if self.pcsc_mode not in {"simple3", "legacy5"}:
+            raise ValueError(f"Unknown pcsc_mode={pcsc_mode!r}")
+        if self.pcsc_mode == "simple3":
+            self.pcsc_lambdas = {
+                "shared": float(lambda_shared),
+                "level2": float(lambda_level2),
+                "level3": float(lambda_level3),
+            }
         self.register_buffer("_pcsc_shared", torch.empty(0, 1), persistent=False)
         self.register_buffer("_pcsc_level2", torch.empty(0, 1), persistent=False)
         self.register_buffer("_pcsc_level3", torch.empty(0, 1), persistent=False)
@@ -37,12 +56,44 @@ class CHORDLETTER(MatchedCurriculumLETTER):
         self.pcsc_level2_head = None
         self.pcsc_level3_head = None
 
-    def configure_pls_items(self, tokenizer, index_path, order_path, shared_path, level2_path, level3_path):
+    def configure_pls_items(
+        self,
+        tokenizer,
+        index_path,
+        order_path,
+        shared_path,
+        level2_path,
+        level3_path,
+        cf_path=None,
+        sem_path=None,
+        cf_res_path=None,
+        sem_base_path=None,
+        sem_res_raw_path=None,
+    ):
         index = json.loads(Path(index_path).read_text(encoding="utf-8"))
         order = [str(x) for x in json.loads(Path(order_path).read_text(encoding="utf-8"))]
         shared = np.load(shared_path).astype(np.float32)
         level2 = np.load(level2_path).astype(np.float32)
         level3 = np.load(level3_path).astype(np.float32)
+        if self.pcsc_mode == "legacy5":
+            for name, path in [
+                ("cf_path", cf_path),
+                ("sem_path", sem_path),
+                ("cf_res_path", cf_res_path),
+                ("sem_base_path", sem_base_path),
+                ("sem_res_raw_path", sem_res_raw_path),
+            ]:
+                if not path:
+                    raise ValueError(f"legacy5 PCSC requires {name}")
+            cf = np.load(cf_path).astype(np.float32)
+            sem = np.load(sem_path).astype(np.float32)
+            cf_res = np.load(cf_res_path).astype(np.float32)
+            sem_base = np.load(sem_base_path).astype(np.float32)
+            sem_res_raw = np.load(sem_res_raw_path).astype(np.float32)
+            if not (len(order) == len(cf) == len(sem) == len(cf_res) == len(sem_base) == len(sem_res_raw)):
+                raise ValueError("legacy5 PCSC target length mismatch")
+        else:
+            cf = sem = cf_res = sem_base = sem_res_raw = None
         if not (len(order) == len(shared) == len(level2) == len(level3)):
             raise ValueError("PLS target order mismatch")
         position = {item: row for row, item in enumerate(order)}
@@ -50,6 +101,7 @@ class CHORDLETTER(MatchedCurriculumLETTER):
             raise ValueError("item order and fixed SID index differ")
         base = len(tokenizer)
         hashes, shared_rows, level2_rows, level3_rows, sid_token_ids = [], [], [], [], []
+        cf_rows, sem_rows, cfres_rows, sembase_rows, semres_rows = [], [], [], [], []
         for item, sid in index.items():
             ids = []
             for token in sid:
@@ -65,6 +117,12 @@ class CHORDLETTER(MatchedCurriculumLETTER):
             shared_rows.append(shared[row])
             level2_rows.append(level2[row])
             level3_rows.append(level3[row])
+            if self.pcsc_mode == "legacy5":
+                cf_rows.append(cf[row])
+                sem_rows.append(sem[row])
+                cfres_rows.append(cf_res[row])
+                sembase_rows.append(sem_base[row])
+                semres_rows.append(sem_res_raw[row])
             sid_token_ids.extend(ids)
         if len(set(hashes)) != len(hashes):
             raise ValueError("Duplicate SID hash detected")
@@ -77,6 +135,12 @@ class CHORDLETTER(MatchedCurriculumLETTER):
         self._pcsc_level3 = torch.from_numpy(np.asarray(level3_rows, dtype=np.float32)[sort])
         self._pcsc_cfres = self._pcsc_level2
         self._pcsc_usem_raw = self._pcsc_level3
+        if self.pcsc_mode == "legacy5":
+            self._pcsc_zcf = torch.from_numpy(np.asarray(cf_rows, dtype=np.float32)[sort])
+            self._pcsc_zsem = torch.from_numpy(np.asarray(sem_rows, dtype=np.float32)[sort])
+            self._pcsc_cfres = torch.from_numpy(np.asarray(cfres_rows, dtype=np.float32)[sort])
+            self._pcsc_zsem_base = torch.from_numpy(np.asarray(sembase_rows, dtype=np.float32)[sort])
+            self._pcsc_usem_raw = torch.from_numpy(np.asarray(semres_rows, dtype=np.float32)[sort])
         self.pcsc_shared_head = nn.Sequential(nn.Linear(self.config.d_model, 256), nn.ReLU(), nn.Linear(256, self._pcsc_shared.shape[1]))
         self.pcsc_level2_head = nn.Sequential(nn.Linear(self.config.d_model, 512), nn.ReLU(), nn.Linear(512, self._pcsc_level2.shape[1]))
         self.pcsc_level3_head = nn.Sequential(nn.Linear(self.config.d_model, 512), nn.ReLU(), nn.Linear(512, self._pcsc_level3.shape[1]))
@@ -85,6 +149,8 @@ class CHORDLETTER(MatchedCurriculumLETTER):
             self._hard_norm_target = float(self.shared(unique_ids).norm(dim=1).mean())
 
     def _pcsc_loss(self, hidden):
+        if self.pcsc_mode == "legacy5":
+            return super()._pcsc_loss(hidden)
         hard_h1, hard_h2, hard_h3, target_rows = [], [], [], []
         soft_skipped = 0
         for batch_rows, start, rows, is_hard in self._last_item_records:

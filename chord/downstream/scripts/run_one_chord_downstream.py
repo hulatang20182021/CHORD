@@ -15,6 +15,7 @@ ROOT = Path(os.environ.get("LETTER_ROOT", "/home/huangxin/llmNrec/LETTER-master"
 CONDA = Path(os.environ.get("CONDA_EXE", "/home/huangxin/miniconda3/bin/conda"))
 TIGER = Path(os.environ.get("TIGER", str(ROOT / "LETTER-TIGER")))
 FORMAL_CONDA_ENV = os.environ.get("FORMAL_CONDA_ENV", "chord_formal_oldpipe")
+FORMAL_PYTHON = os.environ.get("FORMAL_PYTHON", "").strip()
 TEST_WRAPPER = Path(os.environ.get(
     "TEST_WRAPPER",
     "/home/huangxin/llmNrec/component_relation_sid/scripts/run_letter_script_patience_override.py",
@@ -54,6 +55,8 @@ def execute(cmd, log, env, cwd, quiet=False):
 
 
 def conda_python_cmd(*args):
+    if FORMAL_PYTHON:
+        return [FORMAL_PYTHON, *args]
     return [CONDA, "run", "--no-capture-output", "-n", FORMAL_CONDA_ENV, "python", *args]
 
 
@@ -126,6 +129,17 @@ def main():
     ap.add_argument("--test_batch_size", type=int, default=int(os.environ.get("TEST_BATCH_SIZE", "32")))
     ap.add_argument("--learning_rate", default="5e-4")
     ap.add_argument("--precision", choices=["fp32", "fb32", "tf32", "bf16", "fp16"], default=os.environ.get("PRECISION", "fp32"))
+    ap.add_argument("--pcsc_mode", choices=["simple3", "legacy5"], default=os.environ.get("PCSC_MODE", "simple3"))
+    ap.add_argument("--pcsc_max_factor", type=float, default=float(os.environ.get("PCSC_MAX_FACTOR", "1.0")))
+    ap.add_argument("--pcsc_schedule_type", choices=["warmup_hold", "warmup_hold_decay"], default=os.environ.get("PCSC_SCHEDULE_TYPE", "warmup_hold_decay"))
+    ap.add_argument("--lambda_shared", type=float, default=float(os.environ.get("LAMBDA_SHARED", "1.0")))
+    ap.add_argument("--lambda_level2", type=float, default=float(os.environ.get("LAMBDA_LEVEL2", "1.0")))
+    ap.add_argument("--lambda_level3", type=float, default=float(os.environ.get("LAMBDA_LEVEL3", "1.0")))
+    ap.add_argument("--lambda_cf", type=float, default=float(os.environ.get("LAMBDA_CF", "1.0")))
+    ap.add_argument("--lambda_cfres", type=float, default=float(os.environ.get("LAMBDA_CFRES", "1.0")))
+    ap.add_argument("--lambda_base", type=float, default=float(os.environ.get("LAMBDA_BASE", "1.0")))
+    ap.add_argument("--lambda_res", type=float, default=float(os.environ.get("LAMBDA_RES", "1.0")))
+    ap.add_argument("--lambda_comp", type=float, default=float(os.environ.get("LAMBDA_COMP", "1.0")))
     ap.add_argument("--dataloader_num_workers", type=int, default=int(os.environ.get("DATALOADER_NUM_WORKERS", "0")))
     ap.add_argument("--dataloader_pin_memory", default=os.environ.get("DATALOADER_PIN_MEMORY", "true"))
     ap.add_argument("--dataloader_persistent_workers", default=os.environ.get("DATALOADER_PERSISTENT_WORKERS", "false"))
@@ -215,6 +229,18 @@ def main():
         level2_path, level2_name = cf_res_path, "cf_residual"
         level3_path, level3_name = sem_res_path, "semantic_residual"
 
+    resource_dir = RESULT_BASE / "resources" / args.dataset
+    st5_dir = RESULT_BASE / "st5" / args.dataset
+    cf_emb_path = resource_dir / f"{args.dataset}_trainonly_cf_svd.npy"
+    sem_emb_path = st5_dir / f"{args.dataset}_st5_rqvae_input_embeddings.npy"
+    cf_res_full_path = resource_dir / f"{args.dataset}_cf_residual.npy"
+    sem_base_path = resource_dir / f"{args.dataset}_semantic_base.npy"
+    sem_res_raw_path = resource_dir / f"{args.dataset}_semantic_residual.npy"
+    if args.pcsc_mode == "legacy5":
+        legacy_missing = [p for p in [cf_emb_path, sem_emb_path, cf_res_full_path, sem_base_path, sem_res_raw_path] if not p.is_file()]
+        if legacy_missing:
+            raise SystemExit("FORMAL_CHORD_LEGACY5_MISSING_INPUTS:\n" + "\n".join(map(str, legacy_missing)))
+
     ckpt = run_dir / "checkpoints"
     train_cmd = [
         *conda_python_cmd(
@@ -242,11 +268,22 @@ def main():
         "--level3_name", level3_name,
         "--order", args.order,
         "--pcsc_aux",
-        "--pcsc_max_factor", 1.0,
-        "--pcsc_schedule_type", "warmup_hold_decay",
-        "--lambda_shared", 1.0,
-        "--lambda_level2", 1.0,
-        "--lambda_level3", 1.0,
+        "--pcsc_mode", args.pcsc_mode,
+        "--pcsc_max_factor", args.pcsc_max_factor,
+        "--pcsc_schedule_type", args.pcsc_schedule_type,
+        "--lambda_shared", args.lambda_shared,
+        "--lambda_level2", args.lambda_level2,
+        "--lambda_level3", args.lambda_level3,
+        "--lambda_cf", args.lambda_cf,
+        "--lambda_cfres", args.lambda_cfres,
+        "--lambda_base", args.lambda_base,
+        "--lambda_res", args.lambda_res,
+        "--lambda_comp", args.lambda_comp,
+        "--cf_emb", cf_emb_path,
+        "--sem_emb", sem_emb_path,
+        "--cf_res", cf_res_full_path,
+        "--sem_base", sem_base_path,
+        "--sem_res_raw", sem_res_raw_path,
         "--training_metrics", run_dir / "training_metrics.jsonl",
         "--run_summary", run_dir / "run_summary.json",
         "--precision", args.precision,
@@ -314,6 +351,7 @@ def main():
         "dataset": args.dataset,
         "seed": args.seed,
         "order": args.order,
+        "pcsc_mode": args.pcsc_mode,
         "shared_dim": args.shared_dim,
         "actual_shared_dim": asset.get("actual_shared_dim"),
         "codebook_size": args.codebook_size,

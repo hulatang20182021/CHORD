@@ -9,6 +9,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from chord.io_utils import save_json
 from chord.paths import load_config
@@ -43,6 +45,20 @@ def parse_raw_codes(raw: Any, item_order: list[str]) -> list[dict[str, Any]]:
     raise ValueError("base_raw_codes.json must be dict or list")
 
 
+def load_optional_repr(base_dir: Path) -> np.ndarray | None:
+    parts = []
+    for name in ["z_shared.npy", "z_cfres.npy", "z_semres.npy"]:
+        path = base_dir / name
+        if path.exists():
+            parts.append(np.load(path).astype(np.float32))
+    if not parts:
+        return None
+    n = len(parts[0])
+    if any(len(x) != n for x in parts):
+        raise ValueError("representation length mismatch for c4 sorting")
+    return np.concatenate(parts, axis=1)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Build repo-native deterministic CHORD SID index.")
     ap.add_argument("--config", default="configs/beauty_new_machine.yaml")
@@ -52,6 +68,9 @@ def main() -> None:
     root = Path(__file__).resolve().parents[1]
     cfg = load_config(root / args.config)
     force = bool(cfg.raw.get("force", False)) or os.environ.get("FORCE") == "1"
+    c4_mode = os.environ.get("C4_MODE", str(cfg.raw.get("c4_mode", "item_order"))).strip().lower()
+    if c4_mode not in {"item_order", "dpos", "residual_sort"}:
+        raise SystemExit(f"Unknown C4_MODE={c4_mode}; expected item_order, dpos, residual_sort")
     dataset = cfg.dataset
     seed = cfg.seed
     base_dir = cfg.output_root / "base" / f"{dataset}_chord_seed{seed}"
@@ -70,6 +89,7 @@ def main() -> None:
         "index_path": str(index_path),
         "summary_path": str(summary_path),
         "force": force,
+        "c4_mode": c4_mode,
         "missing_base_files": missing,
     }
     save_json(plan, report_dir / f"{dataset}_sid_plan.json")
@@ -97,10 +117,24 @@ def main() -> None:
         prefix = (int(row["c1"]), int(row["c2"]), int(row["c3"]))
         buckets[prefix].append(i)
 
+    reprs = load_optional_repr(base_dir)
+    if c4_mode in {"dpos", "residual_sort"} and reprs is None:
+        raise SystemExit(f"C4_MODE={c4_mode} requires z_shared/z_cfres/z_semres under {base_dir}")
+
     sid_index: dict[str, list[str]] = {}
     seen = set()
     for prefix, rows in buckets.items():
-        for suffix, i in enumerate(rows):
+        ordered_rows = list(rows)
+        if c4_mode == "dpos":
+            bucket = reprs[ordered_rows]
+            center = bucket.mean(axis=0, keepdims=True)
+            dist = np.linalg.norm(bucket - center, axis=1)
+            ordered_rows = [ordered_rows[j] for j in np.lexsort((np.asarray(ordered_rows), dist))]
+        elif c4_mode == "residual_sort":
+            bucket = reprs[ordered_rows]
+            norms = np.linalg.norm(bucket, axis=1)
+            ordered_rows = [ordered_rows[j] for j in np.lexsort((np.asarray(ordered_rows), -norms))]
+        for suffix, i in enumerate(ordered_rows):
             sid = [code_token(prefix[0]), code_token(prefix[1]), code_token(prefix[2]), code_token(suffix)]
             sid_tuple = tuple(sid)
             if sid_tuple in seen:
@@ -124,7 +158,8 @@ def main() -> None:
         "max_bucket_size": max(sizes) if sizes else 0,
         "full_sid_unique": len(seen),
         "full_sid_duplicate_count": full_sid_duplicate_count,
-        "c4": "deterministic zero-based suffix within each (c1,c2,c3) bucket",
+        "c4_mode": c4_mode,
+        "c4": f"{c4_mode} zero-based suffix within each (c1,c2,c3) bucket",
         "bucket_size_hist": dict(sorted(Counter(sizes).items())),
     }
     save_json(summary, summary_path)
