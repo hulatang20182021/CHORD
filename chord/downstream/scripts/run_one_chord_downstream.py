@@ -5,21 +5,22 @@ import argparse
 import json
 import os
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
-PROJECT = Path(os.environ.get(
-    "PROJECT",
-    "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline",
-))
+PROJECT = Path(os.environ.get("PROJECT", Path(__file__).resolve().parents[3]))
+FORMAL_SCRIPT_DIR = Path(os.environ.get("FORMAL_SCRIPT_DIR", Path(__file__).resolve().parent))
 ROOT = Path(os.environ.get("LETTER_ROOT", "/home/huangxin/llmNrec/LETTER-master"))
 CONDA = Path(os.environ.get("CONDA_EXE", "/home/huangxin/miniconda3/bin/conda"))
 TIGER = Path(os.environ.get("TIGER", str(ROOT / "LETTER-TIGER")))
+FORMAL_CONDA_ENV = os.environ.get("FORMAL_CONDA_ENV", "chord_formal_oldpipe")
 TEST_WRAPPER = Path(os.environ.get(
     "TEST_WRAPPER",
     "/home/huangxin/llmNrec/component_relation_sid/scripts/run_letter_script_patience_override.py",
 ))
-RESULT_BASE = PROJECT / "results/chord"
+RESULT_BASE = Path(os.environ.get("RESULT_BASE", PROJECT / "results/chord"))
+DATA_ROOT = Path(os.environ.get("DATA_ROOT", ROOT / "data"))
 
 
 def read_json(path: Path):
@@ -52,6 +53,47 @@ def execute(cmd, log, env, cwd, quiet=False):
         raise RuntimeError(f"command failed, see {log}")
 
 
+def conda_python_cmd(*args):
+    return [CONDA, "run", "--no-capture-output", "-n", FORMAL_CONDA_ENV, "python", *args]
+
+
+def check_formal_environment(strict: bool = False):
+    code = (
+        "import importlib.metadata as md, json, sys; "
+        "mods=['torch','transformers','tokenizers','accelerate']; "
+        "print(json.dumps({m: md.version(m) for m in mods}))"
+    )
+    try:
+        out = subprocess.check_output(
+            list(map(str, conda_python_cmd("-c", code))),
+            text=True,
+            stderr=subprocess.STDOUT,
+        ).strip()
+        versions = json.loads(out.splitlines()[-1])
+    except Exception as exc:
+        msg = f"FORMAL_ENV_CHECK_FAILED env={FORMAL_CONDA_ENV}: {exc}"
+        if strict:
+            raise SystemExit(msg)
+        print(f"[formal-env][warning] {msg}", flush=True)
+        return {}
+    expected = {
+        "transformers": "4.46.3",
+        "tokenizers": "0.20.3",
+        "accelerate": "1.13.0",
+    }
+    print(f"[formal-env] env={FORMAL_CONDA_ENV} versions={versions}", flush=True)
+    mismatches = {k: {"expected": v, "actual": versions.get(k)} for k, v in expected.items() if versions.get(k) != v}
+    torch_version = versions.get("torch", "")
+    if not torch_version.startswith("2.11.0"):
+        mismatches["torch"] = {"expected": "2.11.0(+cu128)", "actual": torch_version}
+    if mismatches:
+        msg = f"FORMAL_ENV_VERSION_MISMATCH {json.dumps(mismatches, sort_keys=True)}"
+        if strict:
+            raise SystemExit(msg)
+        print(f"[formal-env][warning] {msg}", flush=True)
+    return versions
+
+
 def extract_metrics(path: Path):
     raw = read_json(path)
     mean = raw.get("mean_results", raw)
@@ -69,9 +111,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", choices=["Beauty", "Instruments", "Yelp"], required=True)
     ap.add_argument("--seed", type=int, default=42)
-    ap.add_argument("--order", choices=["sem_first", "cf_first"], default="sem_first")
+    ap.add_argument("--order", choices=["sem_first", "cf_first"], default="cf_first")
     ap.add_argument("--shared_dim", type=int, default=128)
     ap.add_argument("--codebook_size", type=int, default=256)
+    ap.add_argument("--index_name", default="")
+    ap.add_argument("--base_name", default="")
+    ap.add_argument("--result_base", default="")
+    ap.add_argument("--formal_conda_env", default="")
+    ap.add_argument("--strict_env_check", action="store_true")
     ap.add_argument("--gpu", choices=["0", "1", "2", "3"], default="0")
     ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--num_beams", type=int, default=20)
@@ -93,6 +140,12 @@ def main():
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args()
+    global RESULT_BASE, FORMAL_CONDA_ENV
+    if args.result_base:
+        RESULT_BASE = Path(args.result_base)
+    if args.formal_conda_env:
+        FORMAL_CONDA_ENV = args.formal_conda_env
+    check_formal_environment(strict=args.strict_env_check)
     if args.precision == "fb32":
         print("[warning] PRECISION=fb32 is not a valid precision name; using fp32", flush=True)
         args.precision = "fp32"
@@ -104,10 +157,14 @@ def main():
         args.print_every = 1
 
     suffix = f"_{args.run_suffix}" if args.run_suffix else ""
-    run_name = f"{args.dataset}_chord_{args.order}_sd{args.shared_dim}_k{args.codebook_size}_seed{args.seed}_down{args.epochs}_beam{args.num_beams}{suffix}"
-    index_name = f"{args.dataset}_chord_{args.order}_sd{args.shared_dim}_k{args.codebook_size}_seed{args.seed}"
+    run_name = f"{args.dataset}_formal_chord_{args.order}_seed{args.seed}_hard_pcsc_down{args.epochs}_beam{args.num_beams}{suffix}"
+    default_current_name = f"{args.dataset}_chord_seed{args.seed}"
+    default_static_name = f"{args.dataset}_chord_{args.order}_sd{args.shared_dim}_k{args.codebook_size}_seed{args.seed}"
+    index_name = args.index_name or (default_current_name if (RESULT_BASE / "index" / default_current_name).exists() else default_static_name)
+    base_name = args.base_name or (default_current_name if (RESULT_BASE / "base" / default_current_name).exists() else index_name)
     index_dir = RESULT_BASE / "index" / index_name
     index_json = index_dir / f"{index_name}.index.json"
+    base_dir = RESULT_BASE / "base" / base_name
     run_dir = RESULT_BASE / "runs" / run_name
     metrics = run_dir / "metrics.json"
     if metrics.exists() and not args.force:
@@ -119,31 +176,49 @@ def main():
     env = os.environ.copy()
     env["CUDA_VISIBLE_DEVICES"] = args.gpu
     env["WANDB_DISABLED"] = "true"
-    env["PYTHONPATH"] = os.pathsep.join([str(PROJECT / "scripts"), str(TIGER)])
+    env["PROJECT"] = str(PROJECT)
+    env["RESULT_BASE"] = str(RESULT_BASE)
+    env["DATA_ROOT"] = str(DATA_ROOT)
+    env["FORMAL_SCRIPT_DIR"] = str(FORMAL_SCRIPT_DIR)
+    env["PYTHONPATH"] = os.pathsep.join([str(FORMAL_SCRIPT_DIR), str(TIGER)])
     env["LOCAL_5060_BF16_FAST"] = str(args.local_5060_bf16_fast)
 
     alias = run_name
     data_dir = RESULT_BASE / "data" / alias
     execute([
-        CONDA, "run", "--no-capture-output", "-n", "emotion_ml1m", "python",
-        PROJECT / "scripts/build_chord_downstream_data.py",
+        *conda_python_cmd(
+        FORMAL_SCRIPT_DIR / "build_chord_downstream_data.py",
         "--dataset", args.dataset,
         "--alias", alias,
         "--index_json", index_json,
         "--output_dir", data_dir,
+        ),
     ], RESULT_BASE / "logs" / f"{run_name}.build_data.log", env, PROJECT, args.quiet)
 
+    item_order_path = index_dir / "item_order.json"
+    shared_path = index_dir / "shared_repr.npy"
+    cf_res_path = index_dir / "cf_residual.npy"
+    sem_res_path = index_dir / "sem_residual.npy"
+    if not shared_path.exists():
+        item_order_path = base_dir / "item_order.json"
+        shared_path = base_dir / "z_shared.npy"
+        cf_res_path = base_dir / "z_cfres.npy"
+        sem_res_path = base_dir / "z_semres.npy"
+    missing_assets = [p for p in [index_json, item_order_path, shared_path, cf_res_path, sem_res_path] if not Path(p).is_file()]
+    if missing_assets:
+        raise SystemExit("FORMAL_CHORD_MISSING_INPUTS:\n" + "\n".join(map(str, missing_assets)))
+
     if args.order == "sem_first":
-        level2_path, level2_name = index_dir / "sem_residual.npy", "semantic_residual"
-        level3_path, level3_name = index_dir / "cf_residual.npy", "cf_residual"
+        level2_path, level2_name = sem_res_path, "semantic_residual"
+        level3_path, level3_name = cf_res_path, "cf_residual"
     else:
-        level2_path, level2_name = index_dir / "cf_residual.npy", "cf_residual"
-        level3_path, level3_name = index_dir / "sem_residual.npy", "semantic_residual"
+        level2_path, level2_name = cf_res_path, "cf_residual"
+        level3_path, level3_name = sem_res_path, "semantic_residual"
 
     ckpt = run_dir / "checkpoints"
     train_cmd = [
-        CONDA, "run", "--no-capture-output", "-n", "emotion_ml1m", "python",
-        PROJECT / "scripts/finetune_chord.py",
+        *conda_python_cmd(
+        FORMAL_SCRIPT_DIR / "finetune_chord.py",
         "--output_dir", ckpt,
         "--dataset", alias,
         "--data_path", RESULT_BASE / "data",
@@ -159,8 +234,8 @@ def main():
         "--temperature", 1.0,
         "--seed", args.seed,
         "--index", index_json,
-        "--item_order", index_dir / "item_order.json",
-        "--shared_emb", index_dir / "shared_repr.npy",
+        "--item_order", item_order_path,
+        "--shared_emb", shared_path,
         "--level2_emb", level2_path,
         "--level3_emb", level3_path,
         "--level2_name", level2_name,
@@ -181,6 +256,7 @@ def main():
         "--local_fast_mode", args.local_fast_mode,
         "--local_5060_bf16_fast", args.local_5060_bf16_fast,
         "--print_every", args.print_every,
+        ),
     ]
     if args.eval_every_n_epochs is not None:
         train_cmd.extend(["--eval_every_n_epochs", args.eval_every_n_epochs])
@@ -211,7 +287,7 @@ def main():
     print(f"[eval-config] test_batch_size={args.test_batch_size} num_beams={args.num_beams} print_every={args.print_every}", flush=True)
     eval_metrics = run_dir / "eval_metrics.json"
     execute([
-        CONDA, "run", "--no-capture-output", "-n", "emotion_ml1m", "python",
+        *conda_python_cmd(
         TEST_WRAPPER, "./test.py",
         "--gpu_id", "0",
         "--ckpt_path", ckpt,
@@ -226,11 +302,14 @@ def main():
         "--metrics", "hit@1,hit@5,hit@10,ndcg@1,ndcg@5,ndcg@10",
         "--seed", args.seed,
         "--print_every", args.print_every,
+        ),
     ], RESULT_BASE / "logs" / f"{run_name}.eval.log", env, TIGER, args.quiet)
 
-    asset = read_json(index_dir / "asset_summary.json")
+    asset_path = index_dir / "asset_summary.json"
+    asset = read_json(asset_path) if asset_path.exists() else {}
     out = {
         "run_name": run_name,
+        "backend": "formal_chord",
         "method": "chord",
         "dataset": args.dataset,
         "seed": args.seed,
@@ -246,6 +325,7 @@ def main():
             "level3_hidden": level3_name,
         },
         "index_dir": str(index_dir),
+        "base_dir": str(base_dir),
         "no_ridge": asset.get("no_ridge"),
         "finished_at": datetime.now().isoformat(timespec="seconds"),
     }

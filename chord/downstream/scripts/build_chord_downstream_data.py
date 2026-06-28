@@ -8,8 +8,9 @@ import shutil
 from pathlib import Path
 
 ROOT = Path(os.environ.get("LETTER_ROOT", "/home/huangxin/llmNrec/LETTER-master"))
-PROJECT = Path(os.environ.get("PROJECT", "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline"))
-RESULT_BASE = PROJECT / "results/chord"
+PROJECT = Path(os.environ.get("PROJECT", Path(__file__).resolve().parents[3]))
+DATA_ROOT = Path(os.environ.get("DATA_ROOT", ROOT / "data"))
+RESULT_BASE = Path(os.environ.get("RESULT_BASE", PROJECT / "results/chord"))
 
 
 def write_json(value, path: Path) -> None:
@@ -25,7 +26,11 @@ def main() -> None:
     ap.add_argument("--output_dir", required=True)
     args = ap.parse_args()
 
-    src = ROOT / "data" / args.dataset
+    src = DATA_ROOT / args.dataset
+    if not src.exists():
+        fallback = ROOT / "data" / args.dataset
+        if fallback.exists():
+            src = fallback
     dst = Path(args.output_dir)
     dst.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src / f"{args.dataset}.inter.json", dst / f"{args.alias}.inter.json")
@@ -39,6 +44,7 @@ def main() -> None:
             "split_source": str(src),
             "split_unchanged": True,
             "method": "chord",
+            "backend": "formal_chord",
         },
         dst / "dataset_meta.json",
     )

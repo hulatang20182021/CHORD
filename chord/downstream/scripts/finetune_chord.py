@@ -12,10 +12,11 @@ import torch
 import transformers
 from transformers import TrainerCallback, T5Config, T5Tokenizer
 
-PROJECT = Path(os.environ.get("PROJECT", "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline"))
-SCRIPT_DIR = PROJECT / "scripts"
-THIS_DIR = SCRIPT_DIR
-for p in [str(THIS_DIR), str(SCRIPT_DIR), str(Path("/home/huangxin/llmNrec/Letter/LETTER-master/LETTER-TIGER"))]:
+PROJECT = Path(os.environ.get("PROJECT", Path(__file__).resolve().parents[3]))
+SCRIPT_DIR = Path(os.environ.get("FORMAL_SCRIPT_DIR", Path(__file__).resolve().parent))
+THIS_DIR = Path(__file__).resolve().parent
+TIGER = Path(os.environ.get("TIGER", "/home/huangxin/llmNrec/LETTER-master/LETTER-TIGER"))
+for p in [str(THIS_DIR), str(SCRIPT_DIR), str(TIGER)]:
     if p not in sys.path:
         sys.path.insert(0, p)
 

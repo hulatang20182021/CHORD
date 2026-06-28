@@ -1,0 +1,21 @@
+# Formal downstream environment pinned to the working old pipeline env:
+# conda env: emotion_ml1m
+# python: 3.10.20
+#
+# Keep this separate from lightweight portable smoke requirements. The formal
+# LETTER/TIGER downstream path is sensitive to transformers/torch API drift.
+torch==2.11.0
+transformers==4.46.3
+tokenizers==0.20.3
+accelerate==1.13.0
+safetensors==0.7.0
+sentencepiece==0.2.1
+protobuf==7.34.1
+numpy==2.2.6
+scipy==1.15.3
+scikit-learn==1.7.2
+pandas==2.3.3
+tqdm==4.67.3
+pyyaml==6.0.3
+threadpoolctl
+wandb==0.27.2
