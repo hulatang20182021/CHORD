@@ -150,7 +150,7 @@ def main():
     ap.add_argument("--eval_every_n_epochs", type=int, default=int(os.environ["EVAL_EVERY_N_EPOCHS"]) if os.environ.get("EVAL_EVERY_N_EPOCHS") else None)
     ap.add_argument("--save_every_n_epochs", type=int, default=int(os.environ["SAVE_EVERY_N_EPOCHS"]) if os.environ.get("SAVE_EVERY_N_EPOCHS") else None)
     ap.add_argument("--save_total_limit", type=int, default=int(os.environ["SAVE_TOTAL_LIMIT"]) if os.environ.get("SAVE_TOTAL_LIMIT") else None)
-    ap.add_argument("--load_best_model_at_end", type=str2bool, default=str2bool(os.environ.get("LOAD_BEST_MODEL_AT_END", "true")))
+    ap.add_argument("--load_best_model_at_end", type=str2bool, default=str2bool(os.environ.get("LOAD_BEST_MODEL_AT_END", "false")))
     ap.add_argument("--metric_for_best_model", default=os.environ.get("METRIC_FOR_BEST_MODEL", "eval_loss"))
     ap.add_argument("--greater_is_better", type=str2bool, default=str2bool(os.environ.get("GREATER_IS_BETTER", "false")))
     ap.add_argument("--local_fast_mode", default=os.environ.get("LOCAL_FAST_MODE", "false"))
@@ -368,6 +368,7 @@ def main():
         "seed": args.seed,
         "order": args.order,
         "pcsc_mode": args.pcsc_mode,
+        "checkpoint_selection": "best_eval_loss" if args.load_best_model_at_end else "final",
         "load_best_model_at_end": args.load_best_model_at_end,
         "metric_for_best_model": args.metric_for_best_model,
         "greater_is_better": args.greater_is_better,
