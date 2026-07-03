@@ -94,6 +94,55 @@ def build_ppmi(train_sequences: dict[str, list[str]], order: list[str], window_s
     return ppmi
 
 
+def build_ppmi_clean_weighted(
+    train_sequences: dict[str, list[str]], order: list[str], window_size: int
+) -> tuple[sparse.csr_matrix, int]:
+    """Forward distance-weighted window, symmetrized before PPMI.
+
+    This matches the cleaned portable CHORD resource builder: for each sequence,
+    only future items within the window are visited, each pair gets weight
+    1 / distance, and both directions are added to the co-occurrence matrix.
+    """
+    item_to_idx = {str(item): i for i, item in enumerate(order)}
+    rows: list[int] = []
+    cols: list[int] = []
+    values: list[float] = []
+    for seq in train_sequences.values():
+        mapped = [item_to_idx[str(item)] for item in seq if str(item) in item_to_idx]
+        for pos, src in enumerate(mapped):
+            upper = min(len(mapped), pos + int(window_size) + 1)
+            for nxt in range(pos + 1, upper):
+                dst = mapped[nxt]
+                if src == dst:
+                    continue
+                weight = 1.0 / float(nxt - pos)
+                rows.extend([src, dst])
+                cols.extend([dst, src])
+                values.extend([weight, weight])
+    cooccurrence = sparse.coo_matrix(
+        (values, (rows, cols)), shape=(len(order), len(order)), dtype=np.float32
+    ).tocsr()
+    cooccurrence.sum_duplicates()
+
+    total = float(cooccurrence.sum())
+    if total <= 0:
+        raise ValueError("empty cooccurrence matrix; cannot build PPMI")
+    row_sum = np.asarray(cooccurrence.sum(axis=1)).ravel().astype(np.float64)
+    coo = cooccurrence.tocoo()
+    denom = row_sum[coo.row] * row_sum[coo.col]
+    vals = np.full(coo.data.shape, -np.inf, dtype=np.float64)
+    valid = denom > 0
+    vals[valid] = np.log(coo.data[valid].astype(np.float64) * total / denom[valid])
+    keep = vals > 0
+    ppmi = sparse.coo_matrix(
+        (vals[keep].astype(np.float32), (coo.row[keep], coo.col[keep])),
+        shape=cooccurrence.shape,
+    ).tocsr()
+    ppmi.sum_duplicates()
+    ppmi.sort_indices()
+    return ppmi, int(cooccurrence.nnz)
+
+
 def csr_hash(matrix: sparse.csr_matrix) -> str:
     buf = io.BytesIO()
     np.savez(buf, data=matrix.data, indices=matrix.indices, indptr=matrix.indptr, shape=np.asarray(matrix.shape, dtype=np.int64))
@@ -134,9 +183,10 @@ def main() -> None:
     resource_dir.mkdir(parents=True, exist_ok=True)
     report_dir.mkdir(parents=True, exist_ok=True)
 
+    resource_mode = str(legacy.get("mode", "legacy_biview")).lower()
     plan = {
         "status": "ready_to_run" if args.run else "planned_only",
-        "mode": "legacy_biview_repo_native",
+        "mode": resource_mode,
         "data_dir": str(data_dir),
         "st5_dir": str(st5_dir),
         "resource_dir": str(resource_dir),
@@ -182,7 +232,18 @@ def main() -> None:
     if len(st5) != len(st5_order) or not np.isfinite(st5).all():
         raise ValueError("Invalid ST5 embeddings")
 
-    ppmi = build_ppmi(train_sequences, st5_order, int(legacy.get("window_size", 5)))
+    resource_mode = str(legacy.get("mode", "legacy_biview")).lower()
+    cooccurrence_nnz = None
+    if resource_mode in {"clean_weighted_window", "weighted_window", "clean_weighted"}:
+        ppmi, cooccurrence_nnz = build_ppmi_clean_weighted(
+            train_sequences, st5_order, int(legacy.get("window_size", 5))
+        )
+        method_name = "clean_weighted_window_trainonly_cf_ppmi_svd_ridge_repo_native"
+    elif resource_mode in {"legacy_biview", "legacy_biview_equal_window", "equal_window"}:
+        ppmi = build_ppmi(train_sequences, st5_order, int(legacy.get("window_size", 5)))
+        method_name = "legacy_biview_trainonly_cf_ppmi_svd_ridge_repo_native"
+    else:
+        raise SystemExit(f"Unknown legacy_cf.mode={resource_mode}")
     ppmi_hash = csr_hash(ppmi)
     svd_dim = int(legacy.get("svd_dim", 128))
     seed = int(legacy.get("random_state", cfg.seed))
@@ -227,7 +288,8 @@ def main() -> None:
     cf_sha = sha256_file(resource_dir / f"{dataset}_trainonly_cf_svd.npy")
     summary = {
         "dataset": dataset,
-        "method": "legacy_biview_trainonly_cf_ppmi_svd_ridge_repo_native",
+        "method": method_name,
+        "resource_mode": resource_mode,
         "split_policy": "per-user sequence[:-2] only",
         "validation_item_policy": "excluded: sequence[-2]",
         "test_item_policy": "excluded: sequence[-1]",
@@ -241,6 +303,7 @@ def main() -> None:
         "actual_svd_components": int(n_components),
         "window_size": int(legacy.get("window_size", 5)),
         "ridge_alpha": ridge_alpha,
+        "cooccurrence_nnz": cooccurrence_nnz,
         "ppmi_nnz": int(ppmi.nnz),
         "ppmi_csr_hash": ppmi_hash,
         "expected_ppmi_csr_hash": expected.get("expected_ppmi_csr_hash"),

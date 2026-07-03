@@ -110,6 +110,10 @@ def extract_metrics(path: Path):
     }
 
 
+def str2bool(value) -> bool:
+    return str(value).strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", choices=["Beauty", "Instruments", "Yelp"], required=True)
@@ -146,6 +150,9 @@ def main():
     ap.add_argument("--eval_every_n_epochs", type=int, default=int(os.environ["EVAL_EVERY_N_EPOCHS"]) if os.environ.get("EVAL_EVERY_N_EPOCHS") else None)
     ap.add_argument("--save_every_n_epochs", type=int, default=int(os.environ["SAVE_EVERY_N_EPOCHS"]) if os.environ.get("SAVE_EVERY_N_EPOCHS") else None)
     ap.add_argument("--save_total_limit", type=int, default=int(os.environ["SAVE_TOTAL_LIMIT"]) if os.environ.get("SAVE_TOTAL_LIMIT") else None)
+    ap.add_argument("--load_best_model_at_end", type=str2bool, default=str2bool(os.environ.get("LOAD_BEST_MODEL_AT_END", "true")))
+    ap.add_argument("--metric_for_best_model", default=os.environ.get("METRIC_FOR_BEST_MODEL", "eval_loss"))
+    ap.add_argument("--greater_is_better", type=str2bool, default=str2bool(os.environ.get("GREATER_IS_BETTER", "false")))
     ap.add_argument("--local_fast_mode", default=os.environ.get("LOCAL_FAST_MODE", "false"))
     ap.add_argument("--local_5060_bf16_fast", default=os.environ.get("LOCAL_5060_BF16_FAST", "false"))
     ap.add_argument("--print_every", type=int, default=int(os.environ["PRINT_EVERY"]) if os.environ.get("PRINT_EVERY") else None)
@@ -169,6 +176,12 @@ def main():
         args.print_every = 50
     elif args.print_every is None:
         args.print_every = 1
+    if args.eval_every_n_epochs is None:
+        args.eval_every_n_epochs = 1
+    if args.save_every_n_epochs is None:
+        args.save_every_n_epochs = 1
+    if args.save_total_limit is None:
+        args.save_total_limit = 5
 
     suffix = f"_{args.run_suffix}" if args.run_suffix else ""
     run_name = f"{args.dataset}_formal_chord_{args.order}_seed{args.seed}_hard_pcsc_down{args.epochs}_beam{args.num_beams}{suffix}"
@@ -295,12 +308,15 @@ def main():
         "--print_every", args.print_every,
         ),
     ]
-    if args.eval_every_n_epochs is not None:
-        train_cmd.extend(["--eval_every_n_epochs", args.eval_every_n_epochs])
-    if args.save_every_n_epochs is not None:
-        train_cmd.extend(["--save_every_n_epochs", args.save_every_n_epochs])
-    if args.save_total_limit is not None:
-        train_cmd.extend(["--save_total_limit", args.save_total_limit])
+    train_cmd.extend(["--eval_every_n_epochs", args.eval_every_n_epochs])
+    train_cmd.extend(["--save_every_n_epochs", args.save_every_n_epochs])
+    train_cmd.extend(["--save_total_limit", args.save_total_limit])
+    if args.load_best_model_at_end:
+        train_cmd.extend([
+            "--load_best_model_at_end",
+            "--metric_for_best_model", args.metric_for_best_model,
+            "--greater_is_better", str(args.greater_is_better).lower(),
+        ])
     execute(train_cmd, RESULT_BASE / "logs" / f"{run_name}.train.log", env, TIGER, args.quiet)
 
     if args.skip_final_eval:
@@ -352,6 +368,12 @@ def main():
         "seed": args.seed,
         "order": args.order,
         "pcsc_mode": args.pcsc_mode,
+        "load_best_model_at_end": args.load_best_model_at_end,
+        "metric_for_best_model": args.metric_for_best_model,
+        "greater_is_better": args.greater_is_better,
+        "eval_every_n_epochs": args.eval_every_n_epochs,
+        "save_every_n_epochs": args.save_every_n_epochs,
+        "save_total_limit": args.save_total_limit,
         "shared_dim": args.shared_dim,
         "actual_shared_dim": asset.get("actual_shared_dim"),
         "codebook_size": args.codebook_size,

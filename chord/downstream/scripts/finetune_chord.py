@@ -79,12 +79,12 @@ def configure_runtime_args(args):
     resolve_precision(args)
     if args.local_fast_mode:
         if args.eval_every_n_epochs is None:
-            args.eval_every_n_epochs = 5
+            args.eval_every_n_epochs = 1
         if args.save_every_n_epochs is None:
-            args.save_every_n_epochs = 5
+            args.save_every_n_epochs = 1
         if args.save_total_limit is None:
-            args.save_total_limit = 2
-        print("[runtime] local_fast_mode enabled: eval/save every 5 epochs", flush=True)
+            args.save_total_limit = 5
+        print("[runtime] local_fast_mode enabled: eval/save every 1 epoch", flush=True)
 
     if args.eval_every_n_epochs is None:
         args.eval_every_n_epochs = 1

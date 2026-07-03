@@ -27,8 +27,11 @@ def nonempty(path: Path) -> bool:
     return path.exists() and path.is_file() and path.stat().st_size > 0
 
 
-def code_token(value: int) -> str:
-    return f"<a_{int(value)}>"
+def code_token(position: int, value: int) -> str:
+    prefixes = ("a", "b", "c", "d")
+    if position < 0 or position >= len(prefixes):
+        raise ValueError(f"Unsupported SID position: {position}")
+    return f"<{prefixes[position]}_{int(value)}>"
 
 
 def parse_raw_codes(raw: Any, item_order: list[str]) -> list[dict[str, Any]]:
@@ -135,7 +138,12 @@ def main() -> None:
             norms = np.linalg.norm(bucket, axis=1)
             ordered_rows = [ordered_rows[j] for j in np.lexsort((np.asarray(ordered_rows), -norms))]
         for suffix, i in enumerate(ordered_rows):
-            sid = [code_token(prefix[0]), code_token(prefix[1]), code_token(prefix[2]), code_token(suffix)]
+            sid = [
+                code_token(0, prefix[0]),
+                code_token(1, prefix[1]),
+                code_token(2, prefix[2]),
+                code_token(3, suffix),
+            ]
             sid_tuple = tuple(sid)
             if sid_tuple in seen:
                 raise ValueError(f"Duplicate SID generated: {sid}")
