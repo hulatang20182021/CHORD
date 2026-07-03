@@ -71,7 +71,9 @@ def main() -> None:
     root = Path(__file__).resolve().parents[1]
     cfg = load_config(root / args.config)
     force = bool(cfg.raw.get("force", False)) or os.environ.get("FORCE") == "1"
-    c4_mode = os.environ.get("C4_MODE", str(cfg.raw.get("c4_mode", "item_order"))).strip().lower()
+    sid_cfg = cfg.raw.get("sid", {}) if isinstance(cfg.raw.get("sid", {}), dict) else {}
+    default_c4_mode = cfg.raw.get("c4_mode", sid_cfg.get("c4_mode", "item_order"))
+    c4_mode = os.environ.get("C4_MODE", str(default_c4_mode)).strip().lower()
     if c4_mode not in {"item_order", "dpos", "residual_sort"}:
         raise SystemExit(f"Unknown C4_MODE={c4_mode}; expected item_order, dpos, residual_sort")
     dataset = cfg.dataset

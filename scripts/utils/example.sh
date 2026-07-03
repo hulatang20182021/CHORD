@@ -63,7 +63,7 @@ ST5_DEVICE=${ST5_DEVICE:-cuda}
 # -----------------------------
 # Legacy CF / PPMI / SVD options
 # -----------------------------
-RESOURCE_MODE=${RESOURCE_MODE:-clean_weighted_window}
+RESOURCE_MODE=${RESOURCE_MODE:-legacy_biview}
 RESOURCE_WINDOW_SIZE=${RESOURCE_WINDOW_SIZE:-5}
 RESOURCE_SVD_DIM=${RESOURCE_SVD_DIM:-128}
 RESOURCE_RIDGE_ALPHA=${RESOURCE_RIDGE_ALPHA:-10.0}
@@ -137,7 +137,7 @@ echo "[example] DATA_ROOT=$DATA_ROOT DATASET=$DATASET SEED=$SEED"
 echo "[example] MODEL_PATH=$MODEL_PATH"
 echo "[example] stages verify=$RUN_VERIFY st5=$RUN_ST5 cf=$RUN_CF residual=$RUN_RESIDUAL pls=$RUN_PLS sid=$RUN_SID downstream=$RUN_DOWNSTREAM audit=$RUN_AUDIT"
 echo "[example] downstream_backend=$DOWNSTREAM_BACKEND"
-if [[ "$DOWNSTREAM_BACKEND" == "formal_chord" ]]; then
+if [[ "$DOWNSTREAM_BACKEND" == "static_intersection" ]]; then
   echo "[example] formal env=$FORMAL_CONDA_ENV order=$FORMAL_ORDER index=$FORMAL_INDEX_NAME base=$FORMAL_BASE_NAME"
 fi
 echo "[example] resource_mode=$RESOURCE_MODE window=$RESOURCE_WINDOW_SIZE svd_dim=$RESOURCE_SVD_DIM ridge_alpha=$RESOURCE_RIDGE_ALPHA random_state=$RESOURCE_RANDOM_STATE"

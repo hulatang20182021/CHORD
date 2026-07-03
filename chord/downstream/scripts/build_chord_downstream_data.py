@@ -44,7 +44,7 @@ def main() -> None:
             "split_source": str(src),
             "split_unchanged": True,
             "method": "chord",
-            "backend": "formal_chord",
+            "backend": "static_intersection",
         },
         dst / "dataset_meta.json",
     )

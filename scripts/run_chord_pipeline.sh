@@ -17,7 +17,7 @@ RUN_PLS=${RUN_PLS:-1}
 RUN_SID=${RUN_SID:-1}
 RUN_DOWNSTREAM=${RUN_DOWNSTREAM:-0}
 RUN_AUDIT=${RUN_AUDIT:-1}
-DOWNSTREAM_BACKEND=${DOWNSTREAM_BACKEND:-formal_chord}
+DOWNSTREAM_BACKEND=${DOWNSTREAM_BACKEND:-static_intersection}
 FORCE=${FORCE:-0}
 DRY_RUN=${DRY_RUN:-0}
 C4_MODE=${C4_MODE:-dpos}
@@ -27,7 +27,7 @@ ST5_MAX_LENGTH=${ST5_MAX_LENGTH:-256}
 ST5_NORMALIZE=${ST5_NORMALIZE:-1}
 ST5_DEVICE=${ST5_DEVICE:-cuda}
 
-RESOURCE_MODE=${RESOURCE_MODE:-clean_weighted_window}
+RESOURCE_MODE=${RESOURCE_MODE:-legacy_biview}
 RESOURCE_WINDOW_SIZE=${RESOURCE_WINDOW_SIZE:-5}
 RESOURCE_SVD_DIM=${RESOURCE_SVD_DIM:-128}
 RESOURCE_RIDGE_ALPHA=${RESOURCE_RIDGE_ALPHA:-10.0}
@@ -48,6 +48,7 @@ LETTER_ROOT=${LETTER_ROOT:-/home/huangxin/llmNrec/LETTER-master}
 TIGER=${TIGER:-$LETTER_ROOT/LETTER-TIGER}
 TEST_WRAPPER=${TEST_WRAPPER:-/home/huangxin/llmNrec/component_relation_sid/scripts/run_letter_script_patience_override.py}
 FORMAL_SCRIPT_DIR=${FORMAL_SCRIPT_DIR:-$PROJECT/chord/downstream/scripts}
+STATIC_SCRIPT_DIR=${STATIC_SCRIPT_DIR:-$FORMAL_SCRIPT_DIR}
 FORMAL_ORDER=${FORMAL_ORDER:-cf_first}
 FORMAL_INDEX_NAME=${FORMAL_INDEX_NAME:-${DATASET}_chord_seed${SEED}}
 FORMAL_BASE_NAME=${FORMAL_BASE_NAME:-${DATASET}_chord_seed${SEED}}
@@ -103,7 +104,7 @@ echo "[pipeline] RUN_NAME=$RUN_NAME"
 echo "[pipeline] RESULT_BASE=$RESULT_BASE"
 echo "[pipeline] DRY_RUN=$DRY_RUN FORCE=$FORCE"
 echo "[pipeline] DOWNSTREAM_BACKEND=$DOWNSTREAM_BACKEND"
-echo "[pipeline] C4_MODE=$C4_MODE PCSC_MODE=$PCSC_MODE"
+echo "[pipeline] C4_MODE=$C4_MODE PCSC_MODE=legacy5"
 
 cat > "$RUNTIME_CONFIG" <<EOF
 dataset: $DATASET
@@ -220,41 +221,27 @@ BUILD_DATA_STATUS=SKIPPED
 TRAIN_STATUS=SKIPPED
 EVAL_STATUS=SKIPPED
 if [[ "$RUN_DOWNSTREAM" == "1" ]]; then
-  if [[ "$DOWNSTREAM_BACKEND" != "formal_chord" ]]; then
-    echo "Unsupported DOWNSTREAM_BACKEND=$DOWNSTREAM_BACKEND; CHORD reproduction requires formal_chord" >&2
+  if [[ "$DOWNSTREAM_BACKEND" != "static_intersection" ]]; then
+    echo "Unsupported DOWNSTREAM_BACKEND=$DOWNSTREAM_BACKEND; CHORD release pipeline uses static_intersection only" >&2
     exit 7
   fi
   INDEX_JSON="$INDEX_DIR/${DATASET}_chord_seed${SEED}.index.json"
   missing_downstream=0
-  if [[ "$DOWNSTREAM_BACKEND" == "portable" ]]; then
-    for f in \
-      "$INDEX_JSON" \
-      "$RESOURCE_DIR/${DATASET}_item_id_order.json" \
-      "$RESOURCE_DIR/${DATASET}_trainonly_cf_svd.npy" \
-      "$ST5_DIR/${DATASET}_st5_rqvae_input_embeddings.npy" \
-      "$RESOURCE_DIR/${DATASET}_cf_residual.npy" \
-      "$RESOURCE_DIR/${DATASET}_semantic_base.npy" \
-      "$RESOURCE_DIR/${DATASET}_semantic_residual.npy"; do
+  if [[ "$DOWNSTREAM_BACKEND" == "static_intersection" ]]; then
+    STATIC_INDEX_JSON="$RESULT_BASE/index/$FORMAL_INDEX_NAME/$FORMAL_INDEX_NAME.index.json"
+    STATIC_BASE_DIR="$RESULT_BASE/base/$FORMAL_BASE_NAME"
+    STATIC_INPUTS=(
+      "$STATIC_INDEX_JSON"
+      "$STATIC_BASE_DIR/item_order.json"
+      "$RESOURCE_DIR/${DATASET}_trainonly_cf_svd.npy"
+      "$ST5_DIR/${DATASET}_st5_rqvae_input_embeddings.npy"
+      "$RESOURCE_DIR/${DATASET}_cf_residual.npy"
+      "$RESOURCE_DIR/${DATASET}_semantic_base.npy"
+      "$RESOURCE_DIR/${DATASET}_semantic_residual.npy"
+    )
+    for f in "${STATIC_INPUTS[@]}"; do
       if [[ "$DRY_RUN" != "1" && ! -s "$f" ]]; then
-        echo "DOWNSTREAM_PORTABLE_FAILED missing input: $f" >&2
-        missing_downstream=1
-      fi
-    done
-    if [[ "$missing_downstream" == "1" ]]; then
-      DOWNSTREAM_STATUS=FAILED
-      PIPELINE_RC=1
-    fi
-  else
-    FORMAL_INDEX_JSON="$RESULT_BASE/index/$FORMAL_INDEX_NAME/$FORMAL_INDEX_NAME.index.json"
-    FORMAL_BASE_DIR="$RESULT_BASE/base/$FORMAL_BASE_NAME"
-    for f in \
-      "$FORMAL_INDEX_JSON" \
-      "$FORMAL_BASE_DIR/item_order.json" \
-      "$FORMAL_BASE_DIR/z_shared.npy" \
-      "$FORMAL_BASE_DIR/z_cfres.npy" \
-      "$FORMAL_BASE_DIR/z_semres.npy"; do
-      if [[ "$DRY_RUN" != "1" && ! -s "$f" ]]; then
-        echo "DOWNSTREAM_FORMAL_CHORD_FAILED missing input: $f" >&2
+        echo "DOWNSTREAM_STATIC_INTERSECTION_FAILED missing input: $f" >&2
         missing_downstream=1
       fi
     done
@@ -264,28 +251,11 @@ if [[ "$RUN_DOWNSTREAM" == "1" ]]; then
     fi
   fi
 
-  if [[ "$PIPELINE_RC" == "0" && "$DOWNSTREAM_BACKEND" == "portable" ]]; then
-    if stage build_data "$LOG_DIR/${RUN_NAME}.build_data.log" "$PY" "$PROJECT/scripts/06_build_downstream_data.py" --dataset "$DATASET" --run_name "$RUN_NAME" --data_root "$DATA_ROOT" --index_json "$INDEX_JSON" --output_dir "$DATA_DIR" --summary "$REPORT_DIR/${RUN_NAME}.data_summary.json"; then
-      if [[ "$DRY_RUN" == "1" ]]; then BUILD_DATA_STATUS=DRY_RUN; else BUILD_DATA_STATUS=DONE; fi
-    else
-      BUILD_DATA_STATUS=FAILED; DOWNSTREAM_STATUS=FAILED; PIPELINE_RC=1
-    fi
-    if [[ "$PIPELINE_RC" == "0" ]] && stage train "$LOG_DIR/${RUN_NAME}.train.log" env CUDA_VISIBLE_DEVICES="$GPU" "$PY" -m chord.downstream.train_portable --data_path "$RESULT_BASE/data" --dataset "$RUN_NAME" --run_dir "$RUN_DIR" --epochs "$EPOCHS" --learning_rate "$LEARNING_RATE" --train_batch_size "$TRAIN_BATCH_SIZE" --grad_accum "$GRAD_ACCUM" --seed "$SEED" --pcsc_max_factor "$PCSC_MAX_FACTOR" --pcsc_schedule_type "$PCSC_SCHEDULE_TYPE" --lambda_cf "$LAMBDA_CF" --lambda_cfres "$LAMBDA_CFRES" --lambda_base "$LAMBDA_BASE" --lambda_res "$LAMBDA_RES" --lambda_comp "$LAMBDA_COMP"; then
-      if [[ "$DRY_RUN" == "1" ]]; then TRAIN_STATUS=DRY_RUN; else TRAIN_STATUS=DONE; fi
-    elif [[ "$PIPELINE_RC" == "0" ]]; then
-      TRAIN_STATUS=FAILED; DOWNSTREAM_STATUS=FAILED; PIPELINE_RC=1
-    fi
-    if [[ "$PIPELINE_RC" == "0" ]] && stage eval "$LOG_DIR/${RUN_NAME}.eval.log" "$PY" "$PROJECT/scripts/07_eval_downstream.py" --run_dir "$RUN_DIR" --data_path "$RESULT_BASE/data" --dataset "$RUN_NAME" --index "$INDEX_JSON" --num_beams "$NUM_BEAMS" --test_batch_size "$TEST_BATCH_SIZE" --reports_dir "$REPORT_DIR"; then
-      if [[ "$DRY_RUN" == "1" ]]; then EVAL_STATUS=DRY_RUN; DOWNSTREAM_STATUS=DRY_RUN; else EVAL_STATUS=DONE; DOWNSTREAM_STATUS=DONE; fi
-    elif [[ "$PIPELINE_RC" == "0" ]]; then
-      EVAL_STATUS=FAILED; DOWNSTREAM_STATUS=FAILED; PIPELINE_RC=1
-    fi
-  elif [[ "$PIPELINE_RC" == "0" && "$DOWNSTREAM_BACKEND" == "formal_chord" ]]; then
-    FORMAL_ARGS=(
-      "$PY" "$PROJECT/chord/downstream/scripts/run_one_chord_downstream.py"
+  if [[ "$PIPELINE_RC" == "0" && "$DOWNSTREAM_BACKEND" == "static_intersection" ]]; then
+    STATIC_ARGS=(
+      "$PY" "$PROJECT/chord/downstream/scripts/run_one_static_intersection_downstream.py"
       --dataset "$DATASET"
       --seed "$SEED"
-      --order "$FORMAL_ORDER"
       --index_name "$FORMAL_INDEX_NAME"
       --base_name "$FORMAL_BASE_NAME"
       --result_base "$RESULT_BASE"
@@ -297,22 +267,18 @@ if [[ "$RUN_DOWNSTREAM" == "1" ]]; then
       --test_batch_size "$TEST_BATCH_SIZE"
       --learning_rate "$LEARNING_RATE"
       --run_suffix "$RUN_SUFFIX"
-      --pcsc_mode "$PCSC_MODE"
       --pcsc_max_factor "$PCSC_MAX_FACTOR"
       --pcsc_schedule_type "$PCSC_SCHEDULE_TYPE"
-      --lambda_shared "$LAMBDA_SHARED"
-      --lambda_level2 "$LAMBDA_LEVEL2"
-      --lambda_level3 "$LAMBDA_LEVEL3"
       --lambda_cf "$LAMBDA_CF"
       --lambda_cfres "$LAMBDA_CFRES"
       --lambda_base "$LAMBDA_BASE"
       --lambda_res "$LAMBDA_RES"
       --lambda_comp "$LAMBDA_COMP"
     )
-    if [[ "$FORCE" == "1" ]]; then FORMAL_ARGS+=(--force); fi
-    if [[ "$FORMAL_STRICT_ENV_CHECK" == "1" ]]; then FORMAL_ARGS+=(--strict_env_check); fi
-    if [[ "$FORMAL_SKIP_FINAL_EVAL" == "1" ]]; then FORMAL_ARGS+=(--skip_final_eval); fi
-    if stage formal_chord "$LOG_DIR/${RUN_NAME}.formal_chord.log" env PROJECT="$PROJECT" RESULT_BASE="$RESULT_BASE" DATA_ROOT="$DATA_ROOT" LETTER_ROOT="$LETTER_ROOT" TIGER="$TIGER" TEST_WRAPPER="$TEST_WRAPPER" FORMAL_SCRIPT_DIR="$FORMAL_SCRIPT_DIR" FORMAL_CONDA_ENV="$FORMAL_CONDA_ENV" FORMAL_PYTHON="${FORMAL_PYTHON:-}" PCSC_MODE="$PCSC_MODE" "${FORMAL_ARGS[@]}"; then
+    if [[ "$FORCE" == "1" ]]; then STATIC_ARGS+=(--force); fi
+    if [[ "$FORMAL_STRICT_ENV_CHECK" == "1" ]]; then STATIC_ARGS+=(--strict_env_check); fi
+    if [[ "$FORMAL_SKIP_FINAL_EVAL" == "1" ]]; then STATIC_ARGS+=(--skip_final_eval); fi
+    if stage static_intersection "$LOG_DIR/${RUN_NAME}.static_intersection.log" env PROJECT="$PROJECT" RESULT_BASE="$RESULT_BASE" DATA_ROOT="$DATA_ROOT" LETTER_ROOT="$LETTER_ROOT" TIGER="$TIGER" TEST_WRAPPER="$TEST_WRAPPER" FORMAL_SCRIPT_DIR="$STATIC_SCRIPT_DIR" FORMAL_CONDA_ENV="$FORMAL_CONDA_ENV" FORMAL_PYTHON="${FORMAL_PYTHON:-}" PCSC_MODE="$PCSC_MODE" "${STATIC_ARGS[@]}"; then
       if [[ "$DRY_RUN" == "1" ]]; then
         BUILD_DATA_STATUS=DRY_RUN; TRAIN_STATUS=DRY_RUN; EVAL_STATUS=DRY_RUN; DOWNSTREAM_STATUS=DRY_RUN
       else
