@@ -28,10 +28,9 @@ CORE_PIPELINE_FILES = [
     "scripts/04_build_pls_shared_private_impl.py",
     "scripts/05_optional_build_sid_index.py",
     "scripts/run_chord_pipeline.sh",
+    "scripts/run_chord_main.sh",
     "chord/downstream/scripts/build_chord_downstream_data.py",
-    "chord/downstream/scripts/finetune_chord.py",
-    "chord/downstream/scripts/modeling_chord_letter.py",
-    "chord/downstream/scripts/run_one_chord_downstream.py",
+    "chord/downstream/scripts/run_one_static_intersection_downstream.py",
     "chord/downstream/scripts/static_intersection_downstream_finetune.py",
 ]
 
