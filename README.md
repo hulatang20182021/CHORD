@@ -30,18 +30,18 @@ or set `MODEL_PATH`.
 
 ## Recommended Entry Point
 
-```bash
-bash scripts/utils/example.sh
-```
-
-The default run builds resources and SID index, with downstream disabled. A 60-epoch
-formal downstream run can be launched as:
+Use the canonical CHORD main preset:
 
 ```bash
 DATASET=Beauty SEED=42 GPU=0 EPOCHS=60 NUM_BEAMS=20 \
-RUN_DOWNSTREAM=1 RUN_SUFFIX=paper60 \
-bash scripts/utils/example.sh
+RUN_SUFFIX=paper60 \
+bash scripts/run_chord_main.sh
 ```
+
+`run_chord_main.sh` fixes the paper method choices: `legacy_biview` resources,
+DPOS C4, `static_intersection` downstream, legacy5 PCSC, and final-checkpoint evaluation.
+`scripts/utils/example.sh` is kept as a lower-level stage-control example, not as the
+recommended downstream reproduction entry point.
 
 Useful knobs:
 
@@ -51,9 +51,8 @@ SEED=42
 GPU=0
 EPOCHS=60
 NUM_BEAMS=20
-C4_MODE=dpos
-PCSC_MODE=legacy5
-RESOURCE_MODE=clean_weighted_window
+C4_MODE=dpos              # use C4_MODE=item_order only for the C4 ablation
+RESOURCE_MODE=legacy_biview
 ST5_NORMALIZE=1
 LOAD_BEST_MODEL_AT_END=false
 RESULT_BASE=/path/to/results/chord
@@ -66,7 +65,7 @@ you explicitly request best-eval-loss checkpoint selection.
 
 ```bash
 RUN_VERIFY=1 RUN_ST5=1 RUN_CF=1 RUN_RESIDUAL=1 RUN_PLS=1 RUN_SID=1 RUN_DOWNSTREAM=0 RUN_AUDIT=1 \
-bash scripts/utils/example.sh
+bash scripts/run_chord_main.sh
 ```
 
 Verify only:
