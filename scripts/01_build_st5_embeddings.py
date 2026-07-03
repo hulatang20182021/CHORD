@@ -34,11 +34,14 @@ def main() -> None:
     force = bool(cfg.raw.get("force", False)) or os.environ.get("FORCE") == "1"
     run_name = str(cfg.raw.get("run_name") or os.environ.get("RUN_NAME") or f"{cfg.dataset}_st5")
     st5_cfg = cfg.raw.get("st5", {})
+    text_source = str(st5_cfg.get("text_source", "legacy_coverage"))
 
     out = cfg.output_root / "st5" / cfg.dataset
     report_dir = cfg.output_root / "reports"
+    coverage_dir = cfg.output_root / "coverage"
     out.mkdir(parents=True, exist_ok=True)
     report_dir.mkdir(parents=True, exist_ok=True)
+    coverage_dir.mkdir(parents=True, exist_ok=True)
 
     files = {
         "embedding": out / f"{cfg.dataset}_st5_rqvae_input_embeddings.npy",
@@ -67,6 +70,12 @@ def main() -> None:
         str(st5_cfg.get("max_length", 256)),
         "--device",
         str(st5_cfg.get("device", "cuda")),
+        "--text_source",
+        text_source,
+        "--coverage_dir",
+        str(st5_cfg.get("coverage_dir", coverage_dir)),
+        "--coverage_top_k",
+        str(st5_cfg.get("coverage_top_k", 8)),
     ]
     if force:
         cmd.append("--force")

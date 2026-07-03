@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Canonical CHORD main preset for paper reproduction.
 # Fixed method choices:
-#   resource_mode       = legacy_biview train-only CF/semantic resources
+#   stable preset       = legacy ST5-from-raw + legacy_biview train-only resources
 #   c4_mode             = dpos collision suffix
 #   downstream_impl     = static_intersection_downstream_finetune.py
 #   pcsc_mode           = legacy5 five-target PCSC
@@ -18,7 +18,11 @@ set -euo pipefail
 PROJECT=${PROJECT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}
 
 export PROJECT
-export RESOURCE_MODE=legacy_biview
+export CHORD_PRESET=${CHORD_PRESET:-stable_legacy_raw}
+export RESOURCE_MODE=${RESOURCE_MODE:-legacy_biview}
+export ST5_TEXT_SOURCE=${ST5_TEXT_SOURCE:-legacy_coverage}
+export ST5_COVERAGE_TOP_K=${ST5_COVERAGE_TOP_K:-8}
+export STABLE_HASH_GUARD=${STABLE_HASH_GUARD:-strict}
 export DOWNSTREAM_BACKEND=static_intersection
 export PCSC_MODE=legacy5
 export LOAD_BEST_MODEL_AT_END=false
@@ -45,8 +49,15 @@ if [[ -d /hy-tmp/llmNrec/CHORD_dpos_pcsc5_dev/models/Sentence-T5/sentence-t5-bas
 fi
 if [[ -x /hy-tmp/venvs/chord5060/bin/python ]]; then
   export PY=${PY:-/hy-tmp/venvs/chord5060/bin/python}
+  export ST5_PY=${ST5_PY:-/hy-tmp/venvs/chord5060/bin/python}
   export FORMAL_PYTHON=${FORMAL_PYTHON:-/hy-tmp/venvs/chord5060/bin/python}
   export FORMAL_STRICT_ENV_CHECK=${FORMAL_STRICT_ENV_CHECK:-0}
+fi
+
+if [[ -x /hy-tmp/venvs/chord_oldsk_py310/bin/python ]]; then
+  export CF_PY=${CF_PY:-/hy-tmp/venvs/chord_oldsk_py310/bin/python}
+  export PLS_PY=${PLS_PY:-/hy-tmp/venvs/chord_oldsk_py310/bin/python}
+  export SID_PY=${SID_PY:-/hy-tmp/venvs/chord_oldsk_py310/bin/python}
 fi
 
 export EPOCHS=${EPOCHS:-60}

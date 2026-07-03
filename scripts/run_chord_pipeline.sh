@@ -3,6 +3,14 @@ set -euo pipefail
 
 PROJECT=${PROJECT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}
 PY=${PY:-python}
+ST5_PY_USER=${ST5_PY:-}
+CF_PY_USER=${CF_PY:-}
+PLS_PY_USER=${PLS_PY:-}
+SID_PY_USER=${SID_PY:-}
+ST5_PY=${ST5_PY:-}
+CF_PY=${CF_PY:-}
+PLS_PY=${PLS_PY:-}
+SID_PY=${SID_PY:-}
 RESULT_BASE=${RESULT_BASE:-$PROJECT/results/chord}
 DATA_ROOT=${DATA_ROOT:-$PROJECT/data}
 DATASET=${DATASET:-Beauty}
@@ -21,11 +29,16 @@ DOWNSTREAM_BACKEND=${DOWNSTREAM_BACKEND:-static_intersection}
 FORCE=${FORCE:-0}
 DRY_RUN=${DRY_RUN:-0}
 C4_MODE=${C4_MODE:-dpos}
+CHORD_PRESET=${CHORD_PRESET:-stable_legacy_raw}
+STABLE_HASH_GUARD=${STABLE_HASH_GUARD:-strict}
+PLS_NUM_THREADS=${PLS_NUM_THREADS:-8}
 
 ST5_BATCH_SIZE=${ST5_BATCH_SIZE:-32}
 ST5_MAX_LENGTH=${ST5_MAX_LENGTH:-256}
 ST5_NORMALIZE=${ST5_NORMALIZE:-1}
 ST5_DEVICE=${ST5_DEVICE:-cuda}
+ST5_TEXT_SOURCE=${ST5_TEXT_SOURCE:-legacy_coverage}
+ST5_COVERAGE_TOP_K=${ST5_COVERAGE_TOP_K:-8}
 
 RESOURCE_MODE=${RESOURCE_MODE:-legacy_biview}
 RESOURCE_WINDOW_SIZE=${RESOURCE_WINDOW_SIZE:-5}
@@ -79,6 +92,29 @@ WANDB_RUN_NAME=${WANDB_RUN_NAME:-}
 WANDB_MODE=${WANDB_MODE:-offline}
 WANDB_DIR=${WANDB_DIR:-$RESULT_BASE/wandb}
 
+if [[ "$CHORD_PRESET" == "stable_legacy_raw" ]]; then
+  ST5_TEXT_SOURCE=${ST5_TEXT_SOURCE:-legacy_coverage}
+  ST5_COVERAGE_TOP_K=${ST5_COVERAGE_TOP_K:-8}
+  RESOURCE_MODE=${RESOURCE_MODE:-legacy_biview}
+  C4_MODE=${C4_MODE:-dpos}
+  DOWNSTREAM_BACKEND=${DOWNSTREAM_BACKEND:-static_intersection}
+  PCSC_MODE=${PCSC_MODE:-legacy5}
+  LOAD_BEST_MODEL_AT_END=${LOAD_BEST_MODEL_AT_END:-false}
+  if [[ -x /hy-tmp/venvs/chord_oldsk_py310/bin/python ]]; then
+    if [[ -z "$CF_PY_USER" ]]; then CF_PY=/hy-tmp/venvs/chord_oldsk_py310/bin/python; fi
+    if [[ -z "$PLS_PY_USER" ]]; then PLS_PY=/hy-tmp/venvs/chord_oldsk_py310/bin/python; fi
+    if [[ -z "$SID_PY_USER" ]]; then SID_PY=/hy-tmp/venvs/chord_oldsk_py310/bin/python; fi
+  fi
+elif [[ "$CHORD_PRESET" != "custom" ]]; then
+  echo "Unknown CHORD_PRESET=$CHORD_PRESET (expected stable_legacy_raw or custom)" >&2
+  exit 2
+fi
+
+ST5_PY=${ST5_PY:-$PY}
+CF_PY=${CF_PY:-$PY}
+PLS_PY=${PLS_PY:-$PY}
+SID_PY=${SID_PY:-$PY}
+
 RUN_NAME=${DATASET}_chord_seed${SEED}_new_machine_${RUN_SUFFIX}
 LOG_DIR=$RESULT_BASE/logs
 REPORT_DIR=$RESULT_BASE/reports
@@ -104,7 +140,11 @@ echo "[pipeline] RUN_NAME=$RUN_NAME"
 echo "[pipeline] RESULT_BASE=$RESULT_BASE"
 echo "[pipeline] DRY_RUN=$DRY_RUN FORCE=$FORCE"
 echo "[pipeline] DOWNSTREAM_BACKEND=$DOWNSTREAM_BACKEND"
-echo "[pipeline] C4_MODE=$C4_MODE PCSC_MODE=legacy5"
+echo "[pipeline] CHORD_PRESET=$CHORD_PRESET STABLE_HASH_GUARD=$STABLE_HASH_GUARD"
+echo "[pipeline] C4_MODE=$C4_MODE PCSC_MODE=$PCSC_MODE"
+echo "[pipeline] ST5_TEXT_SOURCE=$ST5_TEXT_SOURCE ST5_COVERAGE_TOP_K=$ST5_COVERAGE_TOP_K"
+echo "[pipeline] PY=$PY ST5_PY=$ST5_PY CF_PY=$CF_PY PLS_PY=$PLS_PY SID_PY=$SID_PY"
+echo "[pipeline] PLS_NUM_THREADS=$PLS_NUM_THREADS"
 
 cat > "$RUNTIME_CONFIG" <<EOF
 dataset: $DATASET
@@ -124,6 +164,8 @@ st5:
   max_length: $ST5_MAX_LENGTH
   normalize: $ST5_NORMALIZE
   device: $ST5_DEVICE
+  text_source: $ST5_TEXT_SOURCE
+  coverage_top_k: $ST5_COVERAGE_TOP_K
 
 legacy_cf:
   mode: $RESOURCE_MODE
@@ -140,7 +182,12 @@ pls:
   k3: $K3
 
 sid:
+  token_namespace: typed
   c4_mode: $C4_MODE
+
+stable:
+  preset: $CHORD_PRESET
+  hash_guard: $STABLE_HASH_GUARD
 EOF
 
 echo "[pipeline] runtime_config=$RUNTIME_CONFIG"
@@ -176,11 +223,11 @@ if [[ "$RUN_VERIFY" == "1" ]]; then
 fi
 
 if [[ "$RUN_ST5" == "1" ]]; then
-  stage st5 "$LOG_DIR/${RUN_NAME}.st5.log" "$PY" "$PROJECT/scripts/01_build_st5_embeddings.py" --config "$RUNTIME_CONFIG" --run
+  stage st5 "$LOG_DIR/${RUN_NAME}.st5.log" "$ST5_PY" "$PROJECT/scripts/01_build_st5_embeddings.py" --config "$RUNTIME_CONFIG" --run
 fi
 
 if [[ "$RUN_CF" == "1" ]]; then
-  stage cf "$LOG_DIR/${RUN_NAME}.cf.log" "$PY" "$PROJECT/scripts/02_build_legacy_cf_ppmi_svd.py" --config "$RUNTIME_CONFIG" --run
+  stage cf "$LOG_DIR/${RUN_NAME}.cf.log" "$CF_PY" "$PROJECT/scripts/02_build_legacy_cf_ppmi_svd.py" --config "$RUNTIME_CONFIG" --run
 fi
 
 if [[ "$RUN_RESIDUAL" == "1" ]]; then
@@ -201,12 +248,12 @@ if [[ "$RUN_RESIDUAL" == "1" ]]; then
 fi
 
 if [[ "$RUN_PLS" == "1" ]]; then
-  stage pls "$LOG_DIR/${RUN_NAME}.pls.log" "$PY" "$PROJECT/scripts/04_build_pls_shared_private.py" --config "$RUNTIME_CONFIG" --run
+  stage pls "$LOG_DIR/${RUN_NAME}.pls.log" env OMP_NUM_THREADS="$PLS_NUM_THREADS" OPENBLAS_NUM_THREADS="$PLS_NUM_THREADS" MKL_NUM_THREADS="$PLS_NUM_THREADS" NUMEXPR_NUM_THREADS="$PLS_NUM_THREADS" "$PLS_PY" "$PROJECT/scripts/04_build_pls_shared_private.py" --config "$RUNTIME_CONFIG" --run
 fi
 
 SID_STATUS=SKIPPED
 if [[ "$RUN_SID" == "1" ]]; then
-  if stage sid "$LOG_DIR/${RUN_NAME}.sid.log" "$PY" "$PROJECT/scripts/05_optional_build_sid_index.py" --config "$RUNTIME_CONFIG" --run; then
+  if stage sid "$LOG_DIR/${RUN_NAME}.sid.log" "$SID_PY" "$PROJECT/scripts/05_optional_build_sid_index.py" --config "$RUNTIME_CONFIG" --run; then
     if [[ "$DRY_RUN" == "1" ]]; then SID_STATUS=DRY_RUN; else SID_STATUS=DONE; fi
   else
     SID_STATUS=FAILED
@@ -214,6 +261,10 @@ if [[ "$RUN_SID" == "1" ]]; then
   fi
 else
   echo -e "sid\tSKIPPED\t" >> "$STAGE_STATUS"
+fi
+
+if [[ "$STABLE_HASH_GUARD" != "off" && "$CHORD_PRESET" == "stable_legacy_raw" && "$RUN_SID" == "1" ]]; then
+  stage stable_hash_guard "$LOG_DIR/${RUN_NAME}.stable_hash_guard.log" "$PY" "$PROJECT/scripts/08_guard_stable_hashes.py" --result_base "$RESULT_BASE" --dataset "$DATASET" --seed "$SEED" --mode "$STABLE_HASH_GUARD"
 fi
 
 DOWNSTREAM_STATUS=SKIPPED
