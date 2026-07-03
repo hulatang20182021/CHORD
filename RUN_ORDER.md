@@ -1,14 +1,15 @@
-# Run Order
+# CHORD Run Order
 
-All commands should use isolated outputs. The default config writes to `/home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline`.
+Use `scripts/utils/example.sh` for the normal paper pipeline. The same stages can also be
+run individually for debugging.
 
-## 0. Verify
+## 0. Verify Inputs
 
 ```bash
 python scripts/00_verify_inputs.py --config configs/beauty_new_machine.yaml
 ```
 
-Purpose: check Beauty data hashes, model presence, legacy builder hash, and package versions.
+Checks raw data files, Sentence-T5 model files, package versions, and required CHORD pipeline files.
 
 ## 1. ST5 Embeddings
 
@@ -16,15 +17,15 @@ Purpose: check Beauty data hashes, model presence, legacy builder hash, and pack
 python scripts/01_build_st5_embeddings.py --config configs/beauty_new_machine.yaml --run
 ```
 
-Purpose: generate `Beauty_st5_rqvae_input_embeddings.npy`, item order, and summary under isolated outputs.
+Builds item-order-aligned, normalized Sentence-T5 embeddings.
 
-## 2. Legacy CF/PPMI/SVD
+## 2. Train-Only CF Resources
 
 ```bash
 python scripts/02_build_legacy_cf_ppmi_svd.py --config configs/beauty_new_machine.yaml --run
 ```
 
-Purpose: run exact legacy builder through an isolated `project_paths.py` shim. PPMI expected hash is `0627d077...`; new-machine CF-SVD may be `4ac176...`.
+Builds train-only co-occurrence, PPMI, CF-SVD, semantic base/residual, and related resource summaries.
 
 ## 3. Residual Resources
 
@@ -32,185 +33,36 @@ Purpose: run exact legacy builder through an isolated `project_paths.py` shim. P
 python scripts/03_build_residual_resources.py --config configs/beauty_new_machine.yaml --run
 ```
 
-Purpose: residual resources are emitted by the legacy resource builder.
+Ensures residual resources exist for downstream PLS/PCSC stages.
 
-## 4. PLS Shared/Private
+## 4. PLS Shared/Private Representations
 
 ```bash
-python scripts/04_build_pls_shared_private.py --config configs/beauty_new_machine.yaml
+python scripts/04_build_pls_shared_private.py --config configs/beauty_new_machine.yaml --run
 ```
 
-Purpose: list copied PLS builders and planned isolated output path. Inspect adapter path assumptions before executing.
+Builds shared consensus, CF-private residual, and semantic-private residual representations.
 
-## 5. Optional SID Index
+## 5. SID Index
 
 ```bash
-python scripts/05_optional_build_sid_index.py --config configs/beauty_new_machine.yaml
+python scripts/05_optional_build_sid_index.py --config configs/beauty_new_machine.yaml --run
 ```
 
-Purpose: list SID/index builder candidates.
+Builds the static CHORD SID index. The paper default uses `C4_MODE=dpos`.
 
-## 6. Optional Downstream
+## 6. Downstream Training/Evaluation
 
-```bash
-bash scripts/06_optional_downstream_train_eval.sh
-```
-
-Purpose: placeholder wrapper. It does not launch training unless explicitly customized.
-
-## 7. Audit
+Recommended launcher:
 
 ```bash
-python scripts/audit_reproduction.py --config configs/beauty_new_machine.yaml
-```
-
-Purpose: hash generated isolated outputs and compare manually against `docs/HASH_REFERENCE.md`.
-
-## One-File Configurable Launcher
-
-Use the editable shell example when you want old-example-style environment variable control:
-
-```bash
-bash scripts/utils/example_beauty_new_machine.sh
-```
-
-Only verify inputs:
-
-```bash
-RUN_ST5=0 RUN_CF=0 RUN_RESIDUAL=0 RUN_PLS=0 RUN_AUDIT=0 \
-bash scripts/utils/example_beauty_new_machine.sh
-```
-
-Run through PLS:
-
-```bash
-RUN_SID=0 RUN_DOWNSTREAM=0 \
-bash scripts/utils/example_beauty_new_machine.sh
-```
-
-Specify GPU and output directory:
-
-```bash
-GPU=1 OUTPUT_ROOT=/home/huangxin/llmNrec/repro_outputs/Beauty_test \
-bash scripts/utils/example_beauty_new_machine.sh
-```
-
-Dry run:
-
-```bash
-DRY_RUN=1 bash scripts/utils/example_beauty_new_machine.sh
-```
-
-## Recommended Example Script
-
-Use the short user-editable example script as the recommended entrypoint:
-
-```bash
+DATASET=Beauty SEED=42 GPU=0 EPOCHS=60 NUM_BEAMS=20 RUN_DOWNSTREAM=1 \
 bash scripts/utils/example.sh
 ```
 
-Dry run only:
+The paper default uses hard SID only, `PCSC_MODE=legacy5`, and final-checkpoint evaluation.
 
-```bash
-DRY_RUN=1 bash scripts/utils/example.sh
-```
+## 7. Audit Report
 
-Only verify inputs:
-
-```bash
-RUN_ST5=0 RUN_CF=0 RUN_RESIDUAL=0 RUN_PLS=0 RUN_AUDIT=0 bash scripts/utils/example.sh
-```
-
-Run through PLS, without SID/downstream:
-
-```bash
-RUN_SID=0 RUN_DOWNSTREAM=0 bash scripts/utils/example.sh
-```
-
-Specify output directory:
-
-```bash
-OUTPUT_ROOT=/home/huangxin/llmNrec/repro_outputs/Beauty_test bash scripts/utils/example.sh
-```
-
-## Old-Pipeline-Style Runner
-
-Recommended entrypoint:
-
-```bash
-bash scripts/utils/example.sh
-```
-
-Default result root:
-
-`$PROJECT/results/chord`
-
-Use a custom result root when needed:
-
-```bash
-RESULT_BASE=/home/huangxin/llmNrec/repro_outputs/chord_test bash scripts/utils/example.sh
-```
-
-Dry run:
-
-```bash
-DRY_RUN=1 bash scripts/utils/example.sh
-```
-
-Only verify inputs:
-
-```bash
-RUN_ST5=0 RUN_CF=0 RUN_RESIDUAL=0 RUN_PLS=0 RUN_SID=0 RUN_DOWNSTREAM=0 RUN_AUDIT=0 bash scripts/utils/example.sh
-```
-
-Run through PLS only:
-
-```bash
-RUN_SID=0 RUN_DOWNSTREAM=0 bash scripts/utils/example.sh
-```
-
-PLS reuse behavior:
-
-- Complete base at `$RESULT_BASE/base/${DATASET}_chord_seed${SEED}` is reused by default.
-- `FORCE=1` passes `--force` to the PLS builder and rebuilds.
-- `RUN_PLS=0` skips PLS.
-
-Downstream smoke-test style invocation:
-
-```bash
-RUN_DOWNSTREAM=1 EPOCHS=1 NUM_BEAMS=5 GPU=0 RUN_SUFFIX=smoke bash scripts/utils/example.sh
-```
-
-## Cloud-Portable Run Order
-
-Default paths are repo-relative:
-
-- `RESULT_BASE=$PROJECT/results/chord`
-- `DATA_ROOT=$PROJECT/data`
-- `MODEL_PATH=$PROJECT/models/Sentence-T5/sentence-t5-base`
-
-Verify prepared data/model:
-
-```bash
-RUN_ST5=0 RUN_CF=0 RUN_RESIDUAL=0 RUN_PLS=0 RUN_SID=0 RUN_DOWNSTREAM=0 bash scripts/utils/example.sh
-```
-
-Run through SID:
-
-```bash
-bash scripts/utils/example.sh
-```
-
-Downstream smoke command:
-
-```bash
-RUN_DOWNSTREAM=1 EPOCHS=1 NUM_BEAMS=5 GPU=0 bash scripts/utils/example.sh
-```
-
-60 epoch formal run:
-
-```bash
-RUN_DOWNSTREAM=1 EPOCHS=60 NUM_BEAMS=20 GPU=0 RUN_SUFFIX=down60 bash scripts/utils/example.sh
-```
-
-`GPU=0` is the common single-card cloud setting. On multi-card platforms, set another visible GPU id.
+When `RUN_AUDIT=1`, `scripts/run_chord_pipeline.sh` writes a compact reproduction audit under
+`$RESULT_BASE/reports/` and `$RESULT_BASE/audit_report.json`.

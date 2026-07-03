@@ -63,7 +63,7 @@ ST5_DEVICE=${ST5_DEVICE:-cuda}
 # -----------------------------
 # Legacy CF / PPMI / SVD options
 # -----------------------------
-RESOURCE_MODE=${RESOURCE_MODE:-legacy_biview}
+RESOURCE_MODE=${RESOURCE_MODE:-clean_weighted_window}
 RESOURCE_WINDOW_SIZE=${RESOURCE_WINDOW_SIZE:-5}
 RESOURCE_SVD_DIM=${RESOURCE_SVD_DIM:-128}
 RESOURCE_RIDGE_ALPHA=${RESOURCE_RIDGE_ALPHA:-10.0}

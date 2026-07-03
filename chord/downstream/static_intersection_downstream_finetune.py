@@ -3,7 +3,7 @@
 
 This module intentionally avoids old absolute paths. For cloud smoke tests it
 uses the portable backend in train_portable.py. Legacy LETTER/T5 sources remain
-available in third_party for future exact migration.
+kept as a lightweight compatibility wrapper for historical downstream entrypoints.
 """
 from __future__ import annotations
 

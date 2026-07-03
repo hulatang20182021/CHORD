@@ -13,6 +13,7 @@ st5:
   device: cuda:0
 
 legacy_cf:
+  mode: clean_weighted_window
   window_size: 5
   svd_dim: 128
   ridge_alpha: 10.0

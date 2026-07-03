@@ -183,7 +183,7 @@ def main() -> None:
     resource_dir.mkdir(parents=True, exist_ok=True)
     report_dir.mkdir(parents=True, exist_ok=True)
 
-    resource_mode = str(legacy.get("mode", "legacy_biview")).lower()
+    resource_mode = str(legacy.get("mode", "clean_weighted_window")).lower()
     plan = {
         "status": "ready_to_run" if args.run else "planned_only",
         "mode": resource_mode,
@@ -232,7 +232,7 @@ def main() -> None:
     if len(st5) != len(st5_order) or not np.isfinite(st5).all():
         raise ValueError("Invalid ST5 embeddings")
 
-    resource_mode = str(legacy.get("mode", "legacy_biview")).lower()
+    resource_mode = str(legacy.get("mode", "clean_weighted_window")).lower()
     cooccurrence_nnz = None
     if resource_mode in {"clean_weighted_window", "weighted_window", "clean_weighted"}:
         ppmi, cooccurrence_nnz = build_ppmi_clean_weighted(
