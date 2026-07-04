@@ -329,7 +329,6 @@ if __name__ == "__main__":
     parser.add_argument("--run_summary", required=True)
     parser.add_argument("--schedule_total_epochs", type=int, default=0)
     parser.add_argument("--stop_after_epoch", type=float, default=0.0)
-    parser.add_argument("--resume_from_checkpoint", default=None)
     parser.add_argument("--use_wandb", action="store_true")
     parser.add_argument("--wandb_project", default="pls-sd128-dpos-pcsc")
     parser.add_argument("--wandb_entity", default="")
