@@ -20,7 +20,7 @@ PROJECT=${PROJECT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}
 export PROJECT
 export CHORD_PRESET=${CHORD_PRESET:-stable_legacy_raw}
 export RESOURCE_MODE=${RESOURCE_MODE:-legacy_biview}
-export ST5_TEXT_SOURCE=${ST5_TEXT_SOURCE:-legacy_coverage}
+export ST5_TEXT_SOURCE=${ST5_TEXT_SOURCE:-item_json}
 export ST5_COVERAGE_TOP_K=${ST5_COVERAGE_TOP_K:-8}
 export STABLE_HASH_GUARD=${STABLE_HASH_GUARD:-strict}
 export DOWNSTREAM_BACKEND=static_intersection
@@ -29,6 +29,7 @@ export LOAD_BEST_MODEL_AT_END=false
 export RUN_DOWNSTREAM=${RUN_DOWNSTREAM:-1}
 export RUN_AUDIT=${RUN_AUDIT:-1}
 export C4_MODE=${C4_MODE:-dpos}
+export RESOURCE_NUM_THREADS=${RESOURCE_NUM_THREADS:-8}
 
 if [[ "$C4_MODE" != "dpos" && "$C4_MODE" != "item_order" ]]; then
   echo "CHORD main only supports C4_MODE=dpos or explicit ablation C4_MODE=item_order; got $C4_MODE" >&2
@@ -55,9 +56,11 @@ if [[ -x /hy-tmp/venvs/chord5060/bin/python ]]; then
 fi
 
 if [[ -x /hy-tmp/venvs/chord_oldsk_py310/bin/python ]]; then
-  export CF_PY=${CF_PY:-/hy-tmp/venvs/chord_oldsk_py310/bin/python}
-  export PLS_PY=${PLS_PY:-/hy-tmp/venvs/chord_oldsk_py310/bin/python}
-  export SID_PY=${SID_PY:-/hy-tmp/venvs/chord_oldsk_py310/bin/python}
+  # Keep the paper main preset on the same numerical stack as the reproduced high-score chain.
+  # oldsk can still be selected explicitly by setting CF_PY/PLS_PY/SID_PY in the environment.
+  export CF_PY=${CF_PY:-${PY:-/hy-tmp/venvs/chord5060/bin/python}}
+  export PLS_PY=${PLS_PY:-${PY:-/hy-tmp/venvs/chord5060/bin/python}}
+  export SID_PY=${SID_PY:-${PY:-/hy-tmp/venvs/chord5060/bin/python}}
 fi
 
 export EPOCHS=${EPOCHS:-60}

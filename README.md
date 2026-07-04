@@ -30,18 +30,18 @@ or set `MODEL_PATH`.
 
 ## Recommended Entry Point
 
-Use the canonical CHORD main preset:
+```bash
+bash scripts/utils/example.sh
+```
+
+The default run builds resources and SID index, with downstream disabled. A 60-epoch
+formal downstream run can be launched as:
 
 ```bash
 DATASET=Beauty SEED=42 GPU=0 EPOCHS=60 NUM_BEAMS=20 \
-RUN_SUFFIX=paper60 \
-bash scripts/run_chord_main.sh
+RUN_DOWNSTREAM=1 RUN_SUFFIX=paper60 \
+bash scripts/utils/example.sh
 ```
-
-`run_chord_main.sh` fixes the paper method choices: `legacy_biview` resources,
-DPOS C4, `static_intersection` downstream, legacy5 PCSC, and final-checkpoint evaluation.
-`scripts/utils/example.sh` is kept as a lower-level stage-control example, not as the
-recommended downstream reproduction entry point.
 
 Useful knobs:
 
@@ -51,8 +51,12 @@ SEED=42
 GPU=0
 EPOCHS=60
 NUM_BEAMS=20
-C4_MODE=dpos              # use C4_MODE=item_order only for the C4 ablation
+C4_MODE=dpos
+PCSC_MODE=legacy5
 RESOURCE_MODE=legacy_biview
+ST5_TEXT_SOURCE=item_json
+RESOURCE_NUM_THREADS=8
+# CHORD main uses the same Python stack for ST5/CF/PLS/SID by default; override CF_PY/PLS_PY/SID_PY only for diagnostics.
 ST5_NORMALIZE=1
 LOAD_BEST_MODEL_AT_END=false
 RESULT_BASE=/path/to/results/chord
@@ -65,7 +69,7 @@ you explicitly request best-eval-loss checkpoint selection.
 
 ```bash
 RUN_VERIFY=1 RUN_ST5=1 RUN_CF=1 RUN_RESIDUAL=1 RUN_PLS=1 RUN_SID=1 RUN_DOWNSTREAM=0 RUN_AUDIT=1 \
-bash scripts/run_chord_main.sh
+bash scripts/utils/example.sh
 ```
 
 Verify only:

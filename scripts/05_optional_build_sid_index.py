@@ -9,6 +9,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from chord.io_utils import save_json
 from chord.paths import load_config
@@ -50,20 +52,41 @@ def parse_raw_codes(raw: Any, item_order: list[str]) -> list[dict[str, Any]]:
     raise ValueError("base_raw_codes.json must be dict or list")
 
 
-def item_sort_key(item_id: str) -> tuple[int, int | str]:
-    text = str(item_id)
-    return (0, int(text)) if text.isdigit() else (1, text)
+def load_optional_repr(base_dir: Path) -> np.ndarray | None:
+    parts = []
+    for name in ["z_shared.npy", "z_cfres.npy", "z_semres.npy"]:
+        path = base_dir / name
+        if path.exists():
+            parts.append(np.load(path).astype(np.float32))
+    if not parts:
+        return None
+    n = len(parts[0])
+    if any(len(x) != n for x in parts):
+        raise ValueError("representation length mismatch for c4 sorting")
+    return np.concatenate(parts, axis=1)
 
 
 def assign_c4(
     rows: list[int],
-    item_order: list[str],
     mode: str,
+    reprs: np.ndarray | None,
 ) -> list[tuple[int, int]]:
+    ordered = list(rows)
     if mode == "item_order":
-        ordered = rows
+        pass
     elif mode == "dpos":
-        ordered = sorted(rows, key=lambda row: item_sort_key(item_order[row]))
+        if reprs is None:
+            raise ValueError("C4_MODE=dpos requires z_shared/z_cfres/z_semres in base_dir")
+        bucket = reprs[ordered]
+        center = bucket.mean(axis=0, keepdims=True)
+        dist = np.linalg.norm(bucket - center, axis=1)
+        ordered = [ordered[j] for j in np.lexsort((np.asarray(ordered), dist))]
+    elif mode == "residual_sort":
+        if reprs is None:
+            raise ValueError("C4_MODE=residual_sort requires z_shared/z_cfres/z_semres in base_dir")
+        bucket = reprs[ordered]
+        norms = np.linalg.norm(bucket, axis=1)
+        ordered = [ordered[j] for j in np.lexsort((np.asarray(ordered), -norms))]
     else:
         raise ValueError(f"Unknown c4_mode: {mode}")
     return [(row, suffix) for suffix, row in enumerate(ordered)]
@@ -88,7 +111,9 @@ def main() -> None:
     summary_path = report_dir / f"{dataset}_chord_seed{seed}.index_summary.json"
     sid_cfg = cfg.raw.get("sid", {}) or {}
     token_namespace = os.environ.get("SID_TOKEN_NAMESPACE", sid_cfg.get("token_namespace", "typed"))
-    c4_mode = os.environ.get("C4_MODE", sid_cfg.get("c4_mode", "dpos"))
+    c4_mode = os.environ.get("C4_MODE", sid_cfg.get("c4_mode", "dpos")).strip().lower()
+    if c4_mode not in {"item_order", "dpos", "residual_sort"}:
+        raise SystemExit(f"Unknown C4_MODE={c4_mode}; expected item_order, dpos, residual_sort")
     index_dir.mkdir(parents=True, exist_ok=True)
     report_dir.mkdir(parents=True, exist_ok=True)
 
@@ -132,11 +157,15 @@ def main() -> None:
         prefix = (int(row["c1"]), int(row["c2"]), int(row["c3"]))
         buckets[prefix].append(i)
 
+    reprs = load_optional_repr(base_dir)
+    if c4_mode in {"dpos", "residual_sort"} and reprs is None:
+        raise SystemExit(f"C4_MODE={c4_mode} requires z_shared/z_cfres/z_semres under {base_dir}")
+
     sid_index: dict[str, list[str]] = {}
     raw_codes: dict[str, dict[str, Any]] = {}
     seen = set()
     for prefix, rows in buckets.items():
-        for i, suffix in assign_c4(rows, item_order, c4_mode):
+        for i, suffix in assign_c4(rows, c4_mode, reprs):
             sid = [
                 code_token(0, prefix[0], token_namespace),
                 code_token(1, prefix[1], token_namespace),
@@ -178,7 +207,7 @@ def main() -> None:
         "full_sid_duplicate_count": full_sid_duplicate_count,
         "token_namespace": token_namespace,
         "c4_mode": c4_mode,
-        "c4": "zero-based suffix within each (c1,c2,c3) bucket",
+        "c4": f"{c4_mode} zero-based suffix within each (c1,c2,c3) bucket",
         "strict_legacy_compatible": token_namespace == "typed" and c4_mode == "dpos",
         "bucket_size_hist": dict(sorted(Counter(sizes).items())),
     }

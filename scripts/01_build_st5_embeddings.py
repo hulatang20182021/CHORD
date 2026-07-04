@@ -34,7 +34,7 @@ def main() -> None:
     force = bool(cfg.raw.get("force", False)) or os.environ.get("FORCE") == "1"
     run_name = str(cfg.raw.get("run_name") or os.environ.get("RUN_NAME") or f"{cfg.dataset}_st5")
     st5_cfg = cfg.raw.get("st5", {})
-    text_source = str(st5_cfg.get("text_source", "legacy_coverage"))
+    text_source = str(st5_cfg.get("text_source", "item_json"))
 
     out = cfg.output_root / "st5" / cfg.dataset
     report_dir = cfg.output_root / "reports"

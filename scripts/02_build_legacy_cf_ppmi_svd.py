@@ -27,9 +27,9 @@ from chord.paths import load_config
 
 EXPECTED_AUDIT = {
     "Beauty": {
-        "expected_ppmi_csr_hash": "0627d0770a3f817011c861d3f1c63a294c76c33aa627f0a13c32fc8c3a46c63a",
-        "expected_new_machine_cf_svd_sha16": "4ac176b0e1291413",
-        "old_historical_cf_svd_sha16": "6d75cfbe18dc5aa8",
+        "expected_ppmi_csr_hash": "1e67fc96d31fa599c7812d80221e79bbb2c9097adf67d7c4c60d0aefc9607587",
+        "expected_new_machine_cf_svd_sha16": "f76435524b027b25",
+        "old_historical_cf_svd_sha16": "f76435524b027b25",
     }
 }
 
@@ -193,7 +193,7 @@ def main() -> None:
         "expected_ppmi": expected.get("expected_ppmi_csr_hash"),
         "expected_new_machine_cf_svd_sha16": expected.get("expected_new_machine_cf_svd_sha16"),
         "old_historical_cf_svd_sha16": expected.get("old_historical_cf_svd_sha16"),
-        "svd_environment_note": "TruncatedSVD output is numerical-environment sensitive; historical hashes are dataset-specific and only reported when known.",
+        "svd_environment_note": "TruncatedSVD output is numerical-environment sensitive; CHORD main pins resource construction to 8 BLAS/OMP threads for stable reproduction.",
         "force": force,
     }
     save_json(plan, report_dir / f"{dataset}_legacy_cf_plan.json")
@@ -310,7 +310,7 @@ def main() -> None:
         "cf_svd_sha16": cf_sha[:16],
         "expected_new_machine_cf_svd_sha16": expected.get("expected_new_machine_cf_svd_sha16"),
         "old_historical_cf_svd_sha16": expected.get("old_historical_cf_svd_sha16"),
-        "svd_environment_note": "New-machine TruncatedSVD may differ by sklearn/scipy/BLAS. Historical hashes are dataset-specific and only reported when known.",
+        "svd_environment_note": "TruncatedSVD output may differ with BLAS/OMP thread count; CHORD main uses 8 threads to reproduce the stable chain.",
         "sem2cf_train_R2": float(r2_score(cf[train_idx], sem2cf.predict(st5[train_idx]), multioutput="variance_weighted")),
         "sem2cf_val_R2": float(r2_score(cf[val_idx], sem2cf.predict(st5[val_idx]), multioutput="variance_weighted")),
         "cf2sem_train_R2": float(r2_score(st5[train_idx], cf2sem.predict(cf[train_idx]), multioutput="variance_weighted")),

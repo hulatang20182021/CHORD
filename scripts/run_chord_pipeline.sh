@@ -31,7 +31,10 @@ DRY_RUN=${DRY_RUN:-0}
 C4_MODE=${C4_MODE:-dpos}
 CHORD_PRESET=${CHORD_PRESET:-stable_legacy_raw}
 STABLE_HASH_GUARD=${STABLE_HASH_GUARD:-strict}
-PLS_NUM_THREADS=${PLS_NUM_THREADS:-8}
+RESOURCE_NUM_THREADS=${RESOURCE_NUM_THREADS:-8}
+CF_NUM_THREADS=${CF_NUM_THREADS:-$RESOURCE_NUM_THREADS}
+PLS_NUM_THREADS=${PLS_NUM_THREADS:-$RESOURCE_NUM_THREADS}
+SID_NUM_THREADS=${SID_NUM_THREADS:-$RESOURCE_NUM_THREADS}
 
 ST5_BATCH_SIZE=${ST5_BATCH_SIZE:-32}
 ST5_MAX_LENGTH=${ST5_MAX_LENGTH:-256}
@@ -144,7 +147,7 @@ echo "[pipeline] CHORD_PRESET=$CHORD_PRESET STABLE_HASH_GUARD=$STABLE_HASH_GUARD
 echo "[pipeline] C4_MODE=$C4_MODE PCSC_MODE=$PCSC_MODE"
 echo "[pipeline] ST5_TEXT_SOURCE=$ST5_TEXT_SOURCE ST5_COVERAGE_TOP_K=$ST5_COVERAGE_TOP_K"
 echo "[pipeline] PY=$PY ST5_PY=$ST5_PY CF_PY=$CF_PY PLS_PY=$PLS_PY SID_PY=$SID_PY"
-echo "[pipeline] PLS_NUM_THREADS=$PLS_NUM_THREADS"
+echo "[pipeline] RESOURCE_NUM_THREADS=$RESOURCE_NUM_THREADS CF_NUM_THREADS=$CF_NUM_THREADS PLS_NUM_THREADS=$PLS_NUM_THREADS SID_NUM_THREADS=$SID_NUM_THREADS"
 
 cat > "$RUNTIME_CONFIG" <<EOF
 dataset: $DATASET
@@ -173,6 +176,7 @@ legacy_cf:
   svd_dim: $RESOURCE_SVD_DIM
   ridge_alpha: $RESOURCE_RIDGE_ALPHA
   random_state: $RESOURCE_RANDOM_STATE
+  num_threads: $CF_NUM_THREADS
 
 pls:
   shared_dim: $PLS_SHARED_DIM
@@ -180,10 +184,12 @@ pls:
   k1: $K1
   k2: $K2
   k3: $K3
+  num_threads: $PLS_NUM_THREADS
 
 sid:
   token_namespace: typed
   c4_mode: $C4_MODE
+  num_threads: $SID_NUM_THREADS
 
 stable:
   preset: $CHORD_PRESET
@@ -227,7 +233,7 @@ if [[ "$RUN_ST5" == "1" ]]; then
 fi
 
 if [[ "$RUN_CF" == "1" ]]; then
-  stage cf "$LOG_DIR/${RUN_NAME}.cf.log" "$CF_PY" "$PROJECT/scripts/02_build_legacy_cf_ppmi_svd.py" --config "$RUNTIME_CONFIG" --run
+  stage cf "$LOG_DIR/${RUN_NAME}.cf.log" env OMP_NUM_THREADS="$CF_NUM_THREADS" OPENBLAS_NUM_THREADS="$CF_NUM_THREADS" MKL_NUM_THREADS="$CF_NUM_THREADS" NUMEXPR_NUM_THREADS="$CF_NUM_THREADS" "$CF_PY" "$PROJECT/scripts/02_build_legacy_cf_ppmi_svd.py" --config "$RUNTIME_CONFIG" --run
 fi
 
 if [[ "$RUN_RESIDUAL" == "1" ]]; then
@@ -253,7 +259,7 @@ fi
 
 SID_STATUS=SKIPPED
 if [[ "$RUN_SID" == "1" ]]; then
-  if stage sid "$LOG_DIR/${RUN_NAME}.sid.log" "$SID_PY" "$PROJECT/scripts/05_optional_build_sid_index.py" --config "$RUNTIME_CONFIG" --run; then
+  if stage sid "$LOG_DIR/${RUN_NAME}.sid.log" env OMP_NUM_THREADS="$SID_NUM_THREADS" OPENBLAS_NUM_THREADS="$SID_NUM_THREADS" MKL_NUM_THREADS="$SID_NUM_THREADS" NUMEXPR_NUM_THREADS="$SID_NUM_THREADS" "$SID_PY" "$PROJECT/scripts/05_optional_build_sid_index.py" --config "$RUNTIME_CONFIG" --run; then
     if [[ "$DRY_RUN" == "1" ]]; then SID_STATUS=DRY_RUN; else SID_STATUS=DONE; fi
   else
     SID_STATUS=FAILED

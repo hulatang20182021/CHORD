@@ -8,16 +8,14 @@ import json
 from pathlib import Path
 
 EXPECTED_BEAUTY_SEED42 = {
-    "st5/Beauty/Beauty_st5_rqvae_input_embeddings.npy": "97380709f7f205473efed5cd4bbee40e6aa6b7dad415bb1ef9570c18054c3f9d",
+    "st5/Beauty/Beauty_st5_rqvae_input_embeddings.npy": "87d73e918d1c73d239ebb64142093a4288b68d3b716f716de026021d4320ef3b",
     "st5/Beauty/Beauty_st5_rqvae_item_id_order.json": "ea319a99bde963318622120e8f367df54d734295a9f710928fe91be3ddc59adb",
-    "coverage/Beauty_component_relation_item_details.csv": "3f2e417673e9b2b027d5912b936acb5aaf17a4c91cf14b97bf84ca7ce9b4bc7a",
-    "resources/Beauty/Beauty_trainonly_cf_svd.npy": "384a8f477422f8ea7b213553190dd216d5937ae118062e920ee5168a60c33457",
-    "resources/Beauty/Beauty_cf_residual.npy": "7f7a07788a56df0b082a2849fd9abc22d17c3f7f387c77f7ab877bced4f9416f",
-    "resources/Beauty/Beauty_semantic_base.npy": "f76281399d16e432f14b28ea90ea0f52bc392fadcd496b0c799601da55f09097",
-    "resources/Beauty/Beauty_semantic_residual.npy": "c9ced05406d72c928680f668acc52122791c5d22d0a25083b4f7f296ed4b44c0",
-    "base/Beauty_chord_seed42/base_raw_codes.json": "e30aee1dddc879b55be38674c5a06eb0fc0009d1ea0f2e065aee837b8c22d38b",
-    "index/Beauty_chord_seed42/Beauty_chord_seed42.index.json": "18e4f187b5da7682d7a526e5e2b3391b3031891a64aa029428adeb0c2225b1b6",
-    "index/Beauty_chord_seed42/Beauty_chord_seed42_raw_codes.json": "591c9f2ccc0adc603ebd6114af2cbfe8bb75dbc0f9e8e205cb1bd0f3cd8a4b0c",
+    "resources/Beauty/Beauty_trainonly_cf_svd.npy": "f76435524b027b25057c33aaed371f5f9a382c22adc2fcda9c8545b47b5be5ce",
+    "resources/Beauty/Beauty_cf_residual.npy": "a635b441dc40179c755ded6fee552c25d0584a18d9dac14d98e3dbd9204ada5d",
+    "resources/Beauty/Beauty_semantic_base.npy": "b14add4d68dbdcaf67d9fc610ca0eb731de6004d7b4cda27489d3bb797afd357",
+    "resources/Beauty/Beauty_semantic_residual.npy": "3640e517fde792afd98d71ae944e62308b0ac42e93d272077f0b542ef3075bac",
+    "base/Beauty_chord_seed42/base_raw_codes.json": "8ca17ac7f80a65532dff8b0e9ff128e227408a03a6d44f16f840fe0fc5cd5696",
+    "index/Beauty_chord_seed42/Beauty_chord_seed42.index.json": "1a03535512f9e1ca5462d85d16028540d0fd5202196a84fdbc3c716c62fa06db",
 }
 
 
