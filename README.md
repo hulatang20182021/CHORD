@@ -31,16 +31,16 @@ or set `MODEL_PATH`.
 ## Recommended Entry Point
 
 ```bash
-bash scripts/utils/example.sh
+bash scripts/run_chord_main.sh
 ```
 
-The default run builds resources and SID index, with downstream disabled. A 60-epoch
-formal downstream run can be launched as:
+The default main run builds resources, builds the DPOS SID index, and trains/evaluates the
+60-epoch static-intersection downstream model with legacy5 PCSC. A formal Beauty run is:
 
 ```bash
 DATASET=Beauty SEED=42 GPU=0 EPOCHS=60 NUM_BEAMS=20 \
-RUN_DOWNSTREAM=1 RUN_SUFFIX=paper60 \
-bash scripts/utils/example.sh
+RUN_SUFFIX=paper60 FORCE=1 \
+bash scripts/run_chord_main.sh
 ```
 
 Useful knobs:
@@ -69,21 +69,21 @@ you explicitly request best-eval-loss checkpoint selection.
 
 ```bash
 RUN_VERIFY=1 RUN_ST5=1 RUN_CF=1 RUN_RESIDUAL=1 RUN_PLS=1 RUN_SID=1 RUN_DOWNSTREAM=0 RUN_AUDIT=1 \
-bash scripts/utils/example.sh
+bash scripts/run_chord_main.sh
 ```
 
 Verify only:
 
 ```bash
 RUN_ST5=0 RUN_CF=0 RUN_RESIDUAL=0 RUN_PLS=0 RUN_SID=0 RUN_DOWNSTREAM=0 \
-bash scripts/utils/example.sh
+bash scripts/run_chord_main.sh
 ```
 
 Downstream smoke test:
 
 ```bash
-RUN_DOWNSTREAM=1 EPOCHS=1 NUM_BEAMS=5 GPU=0 RUN_SUFFIX=smoke \
-bash scripts/utils/example.sh
+EPOCHS=1 NUM_BEAMS=5 GPU=0 RUN_SUFFIX=smoke FORCE=1 \
+bash scripts/run_chord_main.sh
 ```
 
 ## Direct Stage Commands

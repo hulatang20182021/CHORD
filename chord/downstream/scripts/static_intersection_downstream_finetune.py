@@ -39,6 +39,18 @@ def pcsc_schedule(epoch, max_factor=1.0, schedule_type="warmup_hold_decay", tota
     raise ValueError(f"Unknown pcsc_schedule_type: {schedule_type}")
 
 
+
+
+class StopAtEpochCallback(transformers.TrainerCallback):
+    def __init__(self, stop_after_epoch=0):
+        self.stop_after_epoch = float(stop_after_epoch or 0)
+
+    def on_epoch_end(self, args, state, control, **kwargs):
+        if self.stop_after_epoch > 0 and state.epoch is not None and float(state.epoch) >= self.stop_after_epoch - 1e-6:
+            control.should_training_stop = True
+        return control
+
+
 class HardOnlyTrainer(transformers.Trainer):
     def __init__(
         self, *args, metrics_path=None, formal_epochs=60,
@@ -201,6 +213,10 @@ def main(args):
         except Exception as exc:
             print(f"[wandb] disabled because init failed: {exc}", flush=True)
 
+    callbacks = []
+    if getattr(args, "stop_after_epoch", 0):
+        callbacks.append(StopAtEpochCallback(args.stop_after_epoch))
+
     trainer = HardOnlyTrainer(
         model=model,
         train_dataset=train_data,
@@ -234,12 +250,13 @@ def main(args):
         tokenizer=tokenizer,
         data_collator=collator,
         metrics_path=args.training_metrics,
-        formal_epochs=args.epochs,
+        formal_epochs=(args.schedule_total_epochs if args.schedule_total_epochs > 0 else args.epochs),
         pcsc_max_factor=args.pcsc_max_factor,
         pcsc_schedule_type=args.pcsc_schedule_type,
+        callbacks=callbacks,
     )
     model.config.use_cache = False
-    trainer.train()
+    trainer.train(resume_from_checkpoint=(args.resume_from_checkpoint or None))
     trainer.save_state()
     trainer.save_model(args.output_dir)
     if args.use_wandb:
@@ -255,6 +272,9 @@ def main(args):
                 "mode": "hard_only_static_intersection",
                 "seed": args.seed,
                 "formal_epochs": args.epochs,
+                "schedule_total_epochs": (args.schedule_total_epochs if args.schedule_total_epochs > 0 else args.epochs),
+                "resume_from_checkpoint": args.resume_from_checkpoint,
+                "stop_after_epoch": args.stop_after_epoch,
                 "completed_epochs": trainer.state.epoch,
                 "global_step": trainer.state.global_step,
                 "best_checkpoint": trainer.state.best_model_checkpoint,
@@ -307,6 +327,9 @@ if __name__ == "__main__":
     parser.add_argument("--lambda_comp", type=float, default=1.0)
     parser.add_argument("--training_metrics", required=True)
     parser.add_argument("--run_summary", required=True)
+    parser.add_argument("--schedule_total_epochs", type=int, default=0)
+    parser.add_argument("--stop_after_epoch", type=float, default=0.0)
+    parser.add_argument("--resume_from_checkpoint", default=None)
     parser.add_argument("--use_wandb", action="store_true")
     parser.add_argument("--wandb_project", default="pls-sd128-dpos-pcsc")
     parser.add_argument("--wandb_entity", default="")

@@ -51,6 +51,8 @@ fi
 
 large_files="$(find . -type f -size +50M \
   -not -path './.git/*' \
+  -not -path './results/*' \
+  -not -path './data/*' \
   -not -path './release_assets/*' \
   -not -path './models/Sentence-T5/sentence-t5-base/*' \
   -print)"

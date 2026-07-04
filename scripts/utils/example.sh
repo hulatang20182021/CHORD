@@ -6,8 +6,6 @@ set -euo pipefail
 # Edit variables below, then run:
 #   bash scripts/utils/example.sh
 #
-# For paper reproduction, prefer scripts/run_chord_main.sh.
-#
 # Notes:
 # - This is not old-machine historical bit-level reproduction.
 # - PPMI CSR can be reproduced bit-identically on the new machine.
