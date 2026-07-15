@@ -166,6 +166,34 @@ def main(args):
     else:
         set_seed(args.seed)
     ensure_dir(args.output_dir)
+    contract = {
+        "version": MatchedCurriculumLETTER.PCSC_CONTRACT_VERSION,
+        "alignment": args.pcsc_alignment,
+        "sid_component_order": args.sid_component_order,
+        "h12_mode": args.pcsc_h12_mode,
+        "contract": (
+            MatchedCurriculumLETTER.POSITIONAL_PCSC_CONTRACT
+            if args.pcsc_alignment == "positional"
+            else "component_mapped_legacy5"
+        ),
+    }
+    if args.resume_from_checkpoint and args.pcsc_alignment == "positional":
+        resume_path = Path(args.resume_from_checkpoint).resolve()
+        candidates = [resume_path / "pcsc_contract.json", resume_path.parent / "pcsc_contract.json"]
+        existing = next((path for path in candidates if path.is_file()), None)
+        if existing is None:
+            raise RuntimeError(
+                "Refusing to resume positional PCSC from an unversioned checkpoint. "
+                "Old checkpoints use the incorrect CF-first positional mapping."
+            )
+        previous = json.loads(existing.read_text(encoding="utf-8"))
+        if previous != contract:
+            raise RuntimeError(
+                f"Refusing incompatible positional PCSC resume: expected {contract}, got {previous}"
+            )
+    Path(args.output_dir, "pcsc_contract.json").write_text(
+        json.dumps(contract, indent=2) + "\n", encoding="utf-8"
+    )
     config = T5Config.from_pretrained(args.base_model)
     tokenizer = T5Tokenizer.from_pretrained(args.base_model, model_max_length=512)
     train_data, valid_data = load_datasets(args)
@@ -310,6 +338,9 @@ def main(args):
                 "pcsc_aux": args.pcsc_aux,
                 "pcsc_alignment": args.pcsc_alignment,
                 "sid_component_order": args.sid_component_order,
+                "pcsc_h12_mode": args.pcsc_h12_mode,
+                "pcsc_contract_version": contract["version"],
+                "pcsc_contract": contract["contract"],
                 "pcsc_max_factor": args.pcsc_max_factor,
                 "pcsc_schedule_type": args.pcsc_schedule_type,
                 "lambda_cf": args.lambda_cf,

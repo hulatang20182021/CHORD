@@ -12,6 +12,12 @@ from modeling_letter import LETTER
 
 
 class MatchedCurriculumLETTER(LETTER):
+    PCSC_CONTRACT_VERSION = 2
+    POSITIONAL_PCSC_CONTRACT = (
+        "c1=shared;c2=semantic_gap;c3=cf_gap;"
+        "h1+h2->semantic_full;h1+h3->cf_full"
+    )
+
     def __init__(
         self,
         config,
@@ -41,6 +47,13 @@ class MatchedCurriculumLETTER(LETTER):
                 "shared,cfres,semres"
             )
         self._component_position = {name: idx for idx, name in enumerate(self.sid_component_order)}
+        if self.pcsc_alignment == "positional":
+            if self.sid_component_order != ("shared", "semres", "cfres"):
+                raise ValueError(
+                    "positional PCSC requires semantic-first SID order: shared,semres,cfres"
+                )
+            if self.pcsc_h12_mode != "sum":
+                raise ValueError("positional PCSC requires pcsc_h12_mode=sum")
         self.pcsc_lambdas = {
             "cf": float(lambda_cf),
             "cfres": float(lambda_cfres),
@@ -54,6 +67,11 @@ class MatchedCurriculumLETTER(LETTER):
         self._hash_base = 0
         self.last_curriculum_metrics = {}
         self._last_item_records = []
+        self.register_buffer(
+            "_pcsc_contract_version",
+            torch.tensor(self.PCSC_CONTRACT_VERSION, dtype=torch.int64),
+            persistent=True,
+        )
 
         if mode == "zcf":
             self.soft_projector = nn.Linear(128, config.d_model)
@@ -90,6 +108,7 @@ class MatchedCurriculumLETTER(LETTER):
         self.pcsc_cfres_head = nn.Sequential(nn.Linear(config.d_model, 256), nn.ReLU(), nn.Linear(256, 128))
         self.pcsc_base_head = nn.Sequential(nn.Linear(config.d_model, 512), nn.ReLU(), nn.Linear(512, 768))
         self.pcsc_res_head = nn.Sequential(nn.Linear(config.d_model, 512), nn.ReLU(), nn.Linear(512, 768))
+        self.pcsc_sem_head = nn.Sequential(nn.Linear(config.d_model, 512), nn.ReLU(), nn.Linear(512, 768))
 
     def configure_items(
         self,
@@ -297,7 +316,8 @@ class MatchedCurriculumLETTER(LETTER):
         )).mean()
 
     def _pcsc_loss(self, hidden):
-        hard_h_shared_cf, hard_h_cfres, hard_h_semres, target_rows = [], [], [], []
+        hard_h_shared, hard_h_sem_context, hard_h_cf_context = [], [], []
+        hard_h_cfres, hard_h_semres, target_rows = [], [], []
         soft_skipped = 0
         for batch_rows, start, rows, is_hard in self._last_item_records:
             soft_skipped += int((~is_hard).sum())
@@ -305,10 +325,12 @@ class MatchedCurriculumLETTER(LETTER):
                 continue
             selected_batch, selected_rows = batch_rows[is_hard], rows[is_hard]
             if self.pcsc_alignment == "positional":
-                # Keep the legacy five-loss contract tied to SID positions.
+                # Semantic-first positional contract: c1=shared, c2=semantic gap, c3=CF gap.
                 h_shared = hidden[selected_batch, start]
-                h_cfres = hidden[selected_batch, start + 1]
-                h_semres = hidden[selected_batch, start + 2]
+                h_semres = hidden[selected_batch, start + 1]
+                h_cfres = hidden[selected_batch, start + 2]
+                h_sem_context = h_shared + h_semres
+                h_cf_context = h_shared + h_cfres
             else:
                 component_hidden = {
                     name: hidden[selected_batch, start + offset]
@@ -317,13 +339,17 @@ class MatchedCurriculumLETTER(LETTER):
                 h_shared = component_hidden["shared"]
                 h_cfres = component_hidden["cfres"]
                 h_semres = component_hidden["semres"]
-            if self.pcsc_h12_mode == "mean":
-                h12 = (h_shared + h_cfres) / 2
-            elif self.pcsc_h12_mode == "sum":
-                h12 = h_shared + h_cfres
-            else:
-                h12 = h_cfres
-            hard_h_shared_cf.append(h12)
+                if self.pcsc_h12_mode == "mean":
+                    h_cf_context = (h_shared + h_cfres) / 2
+                elif self.pcsc_h12_mode == "sum":
+                    h_cf_context = h_shared + h_cfres
+                else:
+                    h_cf_context = h_cfres
+                h_sem_context = None
+            hard_h_shared.append(h_shared)
+            if h_sem_context is not None:
+                hard_h_sem_context.append(h_sem_context)
+            hard_h_cf_context.append(h_cf_context)
             hard_h_cfres.append(h_cfres)
             hard_h_semres.append(h_semres)
             target_rows.append(selected_rows)
@@ -336,14 +362,20 @@ class MatchedCurriculumLETTER(LETTER):
                 "pcsc_l_cfres": 0.0, "pcsc_l_base": 0.0,
                 "pcsc_l_res": 0.0, "pcsc_l_comp": 0.0,
             }
-        h12 = torch.cat(hard_h_shared_cf)
-        h2 = torch.cat(hard_h_cfres)
-        h3 = torch.cat(hard_h_semres)
+        h_shared = torch.cat(hard_h_shared)
+        h_cf_context = torch.cat(hard_h_cf_context)
+        h_cfres = torch.cat(hard_h_cfres)
+        h_semres = torch.cat(hard_h_semres)
         rows = torch.cat(target_rows)
-        cf_hat = self.pcsc_cf_head(h12)
-        cfres_hat = self.pcsc_cfres_head(h2)
-        base_hat = self.pcsc_base_head(h12)
-        res_hat = self.pcsc_res_head(h3)
+        cf_hat = self.pcsc_cf_head(h_cf_context)
+        cfres_hat = self.pcsc_cfres_head(h_cfres)
+        res_hat = self.pcsc_res_head(h_semres)
+        if self.pcsc_alignment == "positional":
+            base_hat = self.pcsc_base_head(h_shared)
+            sem_hat = self.pcsc_sem_head(torch.cat(hard_h_sem_context))
+        else:
+            base_hat = self.pcsc_base_head(h_cf_context)
+            sem_hat = base_hat + res_hat
         zcf = self._pcsc_zcf[rows]
         cfres = self._pcsc_cfres[rows]
         zsem = self._pcsc_zsem[rows]
@@ -354,7 +386,7 @@ class MatchedCurriculumLETTER(LETTER):
             "cf": self._cosine_loss(cf_hat, zcf),
             "cfres": self._cosine_loss(cfres_hat, cfres),
             "base": self._cosine_loss(base_hat, zbase),
-            "comp": self._cosine_loss(base_hat + res_hat, zsem),
+            "comp": self._cosine_loss(sem_hat, zsem),
             "res": self._cosine_loss(res_hat[valid_res], ures[valid_res]) if valid_res.any() else hidden.sum() * 0,
         }
         total = sum(self._pcsc_factor * self.pcsc_lambdas[k] * losses[k] for k in losses)
