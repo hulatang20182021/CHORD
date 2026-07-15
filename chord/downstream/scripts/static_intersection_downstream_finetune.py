@@ -154,7 +154,17 @@ class HardOnlyTrainer(transformers.Trainer):
 
 
 def main(args):
-    set_seed(args.seed)
+    data_seed = args.data_seed if args.data_seed >= 0 else args.seed
+    if args.full_determinism:
+        os.environ.setdefault("PYTHONHASHSEED", str(args.seed))
+        os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+        torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
+        transformers.enable_full_determinism(args.seed, warn_only=args.determinism_warn_only)
+    else:
+        set_seed(args.seed)
     ensure_dir(args.output_dir)
     config = T5Config.from_pretrained(args.base_model)
     tokenizer = T5Tokenizer.from_pretrained(args.base_model, model_max_length=512)
@@ -169,6 +179,8 @@ def main(args):
         mode="zcf",
         pcsc_aux=args.pcsc_aux,
         pcsc_h12_mode=args.pcsc_h12_mode,
+        pcsc_alignment=args.pcsc_alignment,
+        sid_component_order=args.sid_component_order,
         lambda_cf=args.lambda_cf,
         lambda_cfres=args.lambda_cfres,
         lambda_base=args.lambda_base,
@@ -223,6 +235,11 @@ def main(args):
         eval_dataset=valid_data,
         args=transformers.TrainingArguments(
             seed=args.seed,
+            data_seed=data_seed,
+            full_determinism=(args.full_determinism and not args.determinism_warn_only),
+            dataloader_num_workers=args.dataloader_num_workers,
+            dataloader_pin_memory=(not args.disable_dataloader_pin_memory),
+            ignore_data_skip=False,
             per_device_train_batch_size=args.per_device_batch_size,
             per_device_eval_batch_size=args.per_device_batch_size,
             gradient_accumulation_steps=args.gradient_accumulation_steps,
@@ -271,6 +288,11 @@ def main(args):
             {
                 "mode": "hard_only_static_intersection",
                 "seed": args.seed,
+                "data_seed": data_seed,
+                "full_determinism": args.full_determinism,
+                "determinism_warn_only": args.determinism_warn_only,
+                "dataloader_num_workers": args.dataloader_num_workers,
+                "dataloader_pin_memory": (not args.disable_dataloader_pin_memory),
                 "formal_epochs": args.epochs,
                 "schedule_total_epochs": (args.schedule_total_epochs if args.schedule_total_epochs > 0 else args.epochs),
                 "resume_from_checkpoint": args.resume_from_checkpoint,
@@ -286,6 +308,8 @@ def main(args):
                 "tokenizer_checkpoint_loaded": False,
                 "rqvae_checkpoint_loaded": False,
                 "pcsc_aux": args.pcsc_aux,
+                "pcsc_alignment": args.pcsc_alignment,
+                "sid_component_order": args.sid_component_order,
                 "pcsc_max_factor": args.pcsc_max_factor,
                 "pcsc_schedule_type": args.pcsc_schedule_type,
                 "lambda_cf": args.lambda_cf,
@@ -317,9 +341,11 @@ if __name__ == "__main__":
     parser.add_argument("--sem_base", required=True)
     parser.add_argument("--sem_res_raw", required=True)
     parser.add_argument("--pcsc_aux", action="store_true")
+    parser.add_argument("--sid_component_order", default="shared,cfres,semres")
     parser.add_argument("--pcsc_max_factor", type=float, default=1.0)
     parser.add_argument("--pcsc_schedule_type", choices=["warmup_hold", "warmup_hold_decay"], default="warmup_hold_decay")
-    parser.add_argument("--pcsc_h12_mode", choices=["mean", "h2"], default="mean")
+    parser.add_argument("--pcsc_h12_mode", choices=["mean", "sum", "h2"], default="mean")
+    parser.add_argument("--pcsc_alignment", choices=["component", "positional"], default="component")
     parser.add_argument("--lambda_cf", type=float, default=1.0)
     parser.add_argument("--lambda_cfres", type=float, default=1.0)
     parser.add_argument("--lambda_base", type=float, default=1.0)
@@ -329,6 +355,11 @@ if __name__ == "__main__":
     parser.add_argument("--run_summary", required=True)
     parser.add_argument("--schedule_total_epochs", type=int, default=0)
     parser.add_argument("--stop_after_epoch", type=float, default=0.0)
+    parser.add_argument("--full_determinism", action="store_true")
+    parser.add_argument("--determinism_warn_only", action="store_true")
+    parser.add_argument("--data_seed", type=int, default=-1)
+    parser.add_argument("--dataloader_num_workers", type=int, default=0)
+    parser.add_argument("--disable_dataloader_pin_memory", action="store_true")
     parser.add_argument("--use_wandb", action="store_true")
     parser.add_argument("--wandb_project", default="pls-sd128-dpos-pcsc")
     parser.add_argument("--wandb_entity", default="")

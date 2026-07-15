@@ -13,6 +13,41 @@ CHORD builds static semantic IDs from train-only collaborative resources and ite
 5. Build a DPOS collision-suffix SID index.
 6. Train/evaluate the downstream hard-SID recommender with legacy5 PCSC.
 
+## MLP Sem-First Mainline
+
+The paper mainline on this branch uses an explicit nonlinear cross-view decomposition and
+component-ordered SID:
+
+```text
+c1 = PLS shared consensus
+c2 = semantic residual from CF-to-semantic MLP prediction
+c3 = collaborative residual from semantic-to-CF MLP prediction
+c4 = deterministic distance-ordered collision suffix
+```
+
+Its downstream setting keeps the legacy five PCSC targets tied to SID positions, uses
+`h1+h2` without averaging, and records deterministic seed/resume settings. First build the
+standard train-only CHORD resources, then run:
+
+```bash
+DATASET=Beauty SEED=42 K=1024 GPU=0 \
+LETTER_ROOT=/path/to/LETTER \
+bash scripts/run_chord_mlp_semfirst_mainline.sh
+```
+
+For the Instruments K256 configuration:
+
+```bash
+DATASET=Instruments SEED=42 K=256 GPU=0 \
+LETTER_ROOT=/path/to/LETTER \
+bash scripts/run_chord_mlp_semfirst_mainline.sh
+```
+
+The defaults train continuously to epoch 60 under a 100-epoch learning-rate schedule, then
+evaluate epochs 60 through 70 with full test coverage, beam size 20, and deterministic
+sharding. Set `RESUME_EXISTING=1` to continue an interrupted run. Generated resources,
+checkpoints, and metrics remain under `RESULT_BASE` and are not committed.
+
 ## Required Inputs
 
 Place raw data under `data/<Dataset>/`, or set `DATA_ROOT` / config paths explicitly.

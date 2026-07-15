@@ -18,6 +18,8 @@ class MatchedCurriculumLETTER(LETTER):
         mode,
         pcsc_aux=False,
         pcsc_h12_mode="mean",
+        pcsc_alignment="component",
+        sid_component_order="shared,cfres,semres",
         lambda_cf=0.003,
         lambda_cfres=0.001,
         lambda_base=0.002,
@@ -28,6 +30,17 @@ class MatchedCurriculumLETTER(LETTER):
         self.mode = mode
         self.pcsc_aux = bool(pcsc_aux)
         self.pcsc_h12_mode = pcsc_h12_mode
+        if pcsc_alignment not in {"component", "positional"}:
+            raise ValueError("pcsc_alignment must be one of: component, positional")
+        self.pcsc_alignment = pcsc_alignment
+        self.sid_component_order = tuple(x.strip() for x in str(sid_component_order).split(",") if x.strip())
+        expected = {"shared", "cfres", "semres"}
+        if len(self.sid_component_order) != 3 or set(self.sid_component_order) != expected:
+            raise ValueError(
+                "sid_component_order must be a comma-separated permutation of "
+                "shared,cfres,semres"
+            )
+        self._component_position = {name: idx for idx, name in enumerate(self.sid_component_order)}
         self.pcsc_lambdas = {
             "cf": float(lambda_cf),
             "cfres": float(lambda_cfres),
@@ -284,19 +297,35 @@ class MatchedCurriculumLETTER(LETTER):
         )).mean()
 
     def _pcsc_loss(self, hidden):
-        hard_h12, hard_h2, hard_h3, target_rows = [], [], [], []
+        hard_h_shared_cf, hard_h_cfres, hard_h_semres, target_rows = [], [], [], []
         soft_skipped = 0
         for batch_rows, start, rows, is_hard in self._last_item_records:
             soft_skipped += int((~is_hard).sum())
             if not is_hard.any():
                 continue
             selected_batch, selected_rows = batch_rows[is_hard], rows[is_hard]
-            h1 = hidden[selected_batch, start]
-            h2 = hidden[selected_batch, start + 1]
-            h3 = hidden[selected_batch, start + 2]
-            hard_h12.append((h1 + h2) / 2 if self.pcsc_h12_mode == "mean" else h2)
-            hard_h2.append(h2)
-            hard_h3.append(h3)
+            if self.pcsc_alignment == "positional":
+                # Keep the legacy five-loss contract tied to SID positions.
+                h_shared = hidden[selected_batch, start]
+                h_cfres = hidden[selected_batch, start + 1]
+                h_semres = hidden[selected_batch, start + 2]
+            else:
+                component_hidden = {
+                    name: hidden[selected_batch, start + offset]
+                    for name, offset in self._component_position.items()
+                }
+                h_shared = component_hidden["shared"]
+                h_cfres = component_hidden["cfres"]
+                h_semres = component_hidden["semres"]
+            if self.pcsc_h12_mode == "mean":
+                h12 = (h_shared + h_cfres) / 2
+            elif self.pcsc_h12_mode == "sum":
+                h12 = h_shared + h_cfres
+            else:
+                h12 = h_cfres
+            hard_h_shared_cf.append(h12)
+            hard_h_cfres.append(h_cfres)
+            hard_h_semres.append(h_semres)
             target_rows.append(selected_rows)
         if not target_rows:
             zero = hidden.sum() * 0
@@ -307,9 +336,9 @@ class MatchedCurriculumLETTER(LETTER):
                 "pcsc_l_cfres": 0.0, "pcsc_l_base": 0.0,
                 "pcsc_l_res": 0.0, "pcsc_l_comp": 0.0,
             }
-        h12 = torch.cat(hard_h12)
-        h2 = torch.cat(hard_h2)
-        h3 = torch.cat(hard_h3)
+        h12 = torch.cat(hard_h_shared_cf)
+        h2 = torch.cat(hard_h_cfres)
+        h3 = torch.cat(hard_h_semres)
         rows = torch.cat(target_rows)
         cf_hat = self.pcsc_cf_head(h12)
         cfres_hat = self.pcsc_cfres_head(h2)
