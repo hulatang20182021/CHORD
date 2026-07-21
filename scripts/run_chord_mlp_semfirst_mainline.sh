@@ -18,6 +18,7 @@ NUM_BEAMS=${NUM_BEAMS:-20}
 EVAL_NUM_SHARDS=${EVAL_NUM_SHARDS:-4}
 EVAL_THREADS_PER_SHARD=${EVAL_THREADS_PER_SHARD:-2}
 DATALOADER_NUM_WORKERS=${DATALOADER_NUM_WORKERS:-4}
+DATALOADER_PERSISTENT_WORKERS=${DATALOADER_PERSISTENT_WORKERS:-1}
 MLP_HIDDEN=${MLP_HIDDEN:-256}
 MLP_MAX_ITER=${MLP_MAX_ITER:-120}
 
@@ -49,6 +50,9 @@ if [[ ! -s "$index_path" ]]; then
 fi
 
 extra_args=()
+if [[ "$DATALOADER_PERSISTENT_WORKERS" == 1 ]]; then
+  extra_args+=(--dataloader_persistent_workers)
+fi
 if [[ ${RESUME_EXISTING:-0} == 1 ]]; then
   extra_args+=(--resume_existing)
 elif [[ ${FORCE:-0} == 1 ]]; then
@@ -75,6 +79,7 @@ exec "$PY" "$PROJECT/scripts/window_sweep_static_intersection.py" \
   --index_name "$VARIANT_NAME" \
   --base_name "$VARIANT_NAME" \
   --resource_subdir "$RESOURCE_SUBDIR" \
+  --training_script static_intersection_downstream_finetune_crossview.py \
   --sid_component_order shared,semres,cfres \
   --pcsc_h12_mode sum \
   --pcsc_alignment positional \

@@ -12,10 +12,12 @@ from modeling_letter import LETTER
 
 
 class MatchedCurriculumLETTER(LETTER):
-    PCSC_CONTRACT_VERSION = 2
+    """CHORD downstream model with cross-view compositional PCSC."""
+
+    PCSC_CONTRACT_VERSION = "crossview-compositional-positional-v1"
     POSITIONAL_PCSC_CONTRACT = (
-        "c1=shared;c2=semantic_gap;c3=cf_gap;"
-        "h1+h2->semantic_full;h1+h3->cf_full"
+        "h1+h2_to_cf_and_sem_base;h2_to_cf_residual;"
+        "h3_to_semantic_residual;base_plus_residual_to_semantic_full"
     )
 
     def __init__(
@@ -31,15 +33,13 @@ class MatchedCurriculumLETTER(LETTER):
         lambda_base=0.002,
         lambda_res=0.001,
         lambda_comp=0.003,
-        pcsc_cross_transfer=False,
-        pcsc_additive_consistency=False,
     ):
         super().__init__(config)
         self.mode = mode
         self.pcsc_aux = bool(pcsc_aux)
         self.pcsc_h12_mode = pcsc_h12_mode
-        if pcsc_alignment not in {"component", "positional", "role"}:
-            raise ValueError("pcsc_alignment must be one of: component, positional, role")
+        if pcsc_alignment not in {"component", "positional"}:
+            raise ValueError("pcsc_alignment must be one of: component, positional")
         self.pcsc_alignment = pcsc_alignment
         self.sid_component_order = tuple(x.strip() for x in str(sid_component_order).split(",") if x.strip())
         expected = {"shared", "cfres", "semres"}
@@ -49,13 +49,6 @@ class MatchedCurriculumLETTER(LETTER):
                 "shared,cfres,semres"
             )
         self._component_position = {name: idx for idx, name in enumerate(self.sid_component_order)}
-        if self.pcsc_alignment == "positional":
-            if self.sid_component_order != ("shared", "semres", "cfres"):
-                raise ValueError(
-                    "positional PCSC requires semantic-first SID order: shared,semres,cfres"
-                )
-            if self.pcsc_h12_mode != "sum":
-                raise ValueError("positional PCSC requires pcsc_h12_mode=sum")
         self.pcsc_lambdas = {
             "cf": float(lambda_cf),
             "cfres": float(lambda_cfres),
@@ -63,23 +56,12 @@ class MatchedCurriculumLETTER(LETTER):
             "res": float(lambda_res),
             "comp": float(lambda_comp),
         }
-        self.pcsc_cross_transfer = bool(pcsc_cross_transfer)
-        self.pcsc_additive_consistency = bool(pcsc_additive_consistency)
-        if (
-            self.pcsc_cross_transfer or self.pcsc_additive_consistency
-        ) and self.pcsc_alignment not in {"positional", "role"}:
-            raise ValueError("factorial PCSC objectives require positional or role-aware alignment")
         self._pcsc_factor = 0.0
         self._p_sid = 1.0
         self._force_soft = False
         self._hash_base = 0
         self.last_curriculum_metrics = {}
         self._last_item_records = []
-        self.register_buffer(
-            "_pcsc_contract_version",
-            torch.tensor(self.PCSC_CONTRACT_VERSION, dtype=torch.int64),
-            persistent=True,
-        )
 
         if mode == "zcf":
             self.soft_projector = nn.Linear(128, config.d_model)
@@ -116,7 +98,6 @@ class MatchedCurriculumLETTER(LETTER):
         self.pcsc_cfres_head = nn.Sequential(nn.Linear(config.d_model, 256), nn.ReLU(), nn.Linear(256, 128))
         self.pcsc_base_head = nn.Sequential(nn.Linear(config.d_model, 512), nn.ReLU(), nn.Linear(512, 768))
         self.pcsc_res_head = nn.Sequential(nn.Linear(config.d_model, 512), nn.ReLU(), nn.Linear(512, 768))
-        self.pcsc_sem_head = nn.Sequential(nn.Linear(config.d_model, 512), nn.ReLU(), nn.Linear(512, 768))
 
     def configure_items(
         self,
@@ -329,12 +310,11 @@ class MatchedCurriculumLETTER(LETTER):
             zero = hidden.sum() * 0
             return zero, {
                 "pcsc_item_count": 0, "pcsc_hard_item_ratio": 0.0,
-                "pcsc_soft_item_skipped": 0,
+                "pcsc_soft_item_skipped": soft_skipped,
                 "pcsc_res_valid_count": 0, "pcsc_l_cf": 0.0,
                 "pcsc_l_cfres": 0.0, "pcsc_l_base": 0.0,
                 "pcsc_l_res": 0.0, "pcsc_l_comp": 0.0,
             }
-
         batch_rows = torch.cat([record[0] for record in records])
         rows = torch.cat([record[2] for record in records])
         hard_mask = torch.cat([record[3] for record in records])
@@ -357,23 +337,8 @@ class MatchedCurriculumLETTER(LETTER):
                 "pcsc_l_res": 0.0, "pcsc_l_comp": 0.0,
             }
 
-        if self.pcsc_alignment in {"positional", "role"}:
-            if self.pcsc_alignment == "positional":
-                offsets = torch.arange(3, device=hidden.device, dtype=torch.long)
-            else:
-                offsets = torch.tensor(
-                    [
-                        self._component_position["shared"],
-                        self._component_position["semres"],
-                        self._component_position["cfres"],
-                    ],
-                    device=hidden.device,
-                    dtype=torch.long,
-                )
-            gathered = hidden[batch_rows[:, None], starts[:, None] + offsets[None, :]]
-            h_shared, h_semres, h_cfres = gathered.unbind(dim=1)
-            h_sem_context = h_shared + h_semres
-            h_cf_context = h_shared + h_cfres
+        if self.pcsc_alignment == "positional":
+            offsets = torch.arange(3, device=hidden.device, dtype=torch.long)
         else:
             offsets = torch.tensor(
                 [
@@ -384,25 +349,18 @@ class MatchedCurriculumLETTER(LETTER):
                 device=hidden.device,
                 dtype=torch.long,
             )
-            gathered = hidden[batch_rows[:, None], starts[:, None] + offsets[None, :]]
-            h_shared, h_cfres, h_semres = gathered.unbind(dim=1)
-            if self.pcsc_h12_mode == "mean":
-                h_cf_context = (h_shared + h_cfres) / 2
-            elif self.pcsc_h12_mode == "sum":
-                h_cf_context = h_shared + h_cfres
-            else:
-                h_cf_context = h_cfres
-            h_sem_context = None
-
-        cf_hat = self.pcsc_cf_head(h_cf_context)
-        cfres_hat = self.pcsc_cfres_head(h_cfres)
-        res_hat = self.pcsc_res_head(h_semres)
-        if self.pcsc_alignment in {"positional", "role"}:
-            base_hat = self.pcsc_base_head(h_shared)
-            sem_hat = self.pcsc_sem_head(h_sem_context)
+        gathered = hidden[batch_rows[:, None], starts[:, None] + offsets[None, :]]
+        h_shared, h2, h3 = gathered.unbind(dim=1)
+        if self.pcsc_h12_mode == "mean":
+            h12 = (h_shared + h2) / 2
+        elif self.pcsc_h12_mode == "sum":
+            h12 = h_shared + h2
         else:
-            base_hat = self.pcsc_base_head(h_cf_context)
-            sem_hat = base_hat + res_hat
+            h12 = h2
+        cf_hat = self.pcsc_cf_head(h12)
+        cfres_hat = self.pcsc_cfres_head(h2)
+        base_hat = self.pcsc_base_head(h12)
+        res_hat = self.pcsc_res_head(h3)
         zcf = self._pcsc_zcf[rows]
         cfres = self._pcsc_cfres[rows]
         zsem = self._pcsc_zsem[rows]
@@ -413,48 +371,16 @@ class MatchedCurriculumLETTER(LETTER):
             "cf": self._cosine_loss(cf_hat, zcf),
             "cfres": self._cosine_loss(cfres_hat, cfres),
             "base": self._cosine_loss(base_hat, zbase),
-            "comp": self._cosine_loss(sem_hat, zsem),
+            "comp": self._cosine_loss(base_hat + res_hat, zsem),
             "res": self._cosine_loss(res_hat[valid_res], ures[valid_res]) if valid_res.any() else hidden.sum() * 0,
         }
-        cross_losses = {}
-        additive_loss = hidden.sum() * 0
-        if self.pcsc_cross_transfer:
-            cross_losses = {
-                "cf": self._cosine_loss(self.pcsc_cf_head(h_sem_context), zcf),
-                "cfres": self._cosine_loss(self.pcsc_cfres_head(h_semres), cfres),
-                "comp": self._cosine_loss(self.pcsc_sem_head(h_cf_context), zsem),
-                "res": self._cosine_loss(
-                    self.pcsc_res_head(h_cfres)[valid_res], ures[valid_res]
-                ) if valid_res.any() else hidden.sum() * 0,
-            }
-        if self.pcsc_additive_consistency:
-            additive_loss = self._cosine_loss(base_hat + res_hat, zsem)
-
-        if not self.pcsc_cross_transfer and not self.pcsc_additive_consistency:
-            # Preserve the established contract-v2 arithmetic exactly.
-            total = sum(self._pcsc_factor * self.pcsc_lambdas[k] * losses[k] for k in losses)
-        else:
-            role_budget = sum(self.pcsc_lambdas.values())
-            groups = [sum(self.pcsc_lambdas[k] * losses[k] for k in losses)]
-            if cross_losses:
-                cross_budget = sum(self.pcsc_lambdas[k] for k in cross_losses)
-                groups.append(
-                    sum(self.pcsc_lambdas[k] * cross_losses[k] for k in cross_losses)
-                    * role_budget / max(cross_budget, 1e-12)
-                )
-            if self.pcsc_additive_consistency:
-                groups.append(additive_loss * role_budget)
-            total = self._pcsc_factor * sum(groups) / len(groups)
-        item_count = int(rows.numel())
+        total = sum(self._pcsc_factor * self.pcsc_lambdas[k] * losses[k] for k in losses)
         return total, {
-            "pcsc_item_count": item_count,
-            "pcsc_hard_item_ratio": item_count / max(item_count + soft_skipped, 1),
+            "pcsc_item_count": int(rows.numel()),
+            "pcsc_hard_item_ratio": rows.numel() / max(rows.numel() + soft_skipped, 1),
             "pcsc_soft_item_skipped": soft_skipped,
             "pcsc_res_valid_count": int(valid_res.sum()),
             **{f"pcsc_l_{k}": float(v.detach()) for k, v in losses.items()},
-            **{f"pcsc_l_cross_{k}": float(v.detach()) for k, v in cross_losses.items()},
-            "pcsc_l_additive": float(additive_loss.detach()),
-            "pcsc_objective_group_count": 1 + int(bool(cross_losses)) + int(self.pcsc_additive_consistency),
         }
 
     def forward(self, input_ids=None, attention_mask=None, labels=None, **kwargs):

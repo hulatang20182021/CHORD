@@ -25,9 +25,13 @@ c3 = collaborative residual from semantic-to-CF MLP prediction
 c4 = deterministic distance-ordered collision suffix
 ```
 
-Its downstream setting keeps the legacy five PCSC targets tied to SID positions, uses
-`h1+h2` without averaging, and records deterministic seed/resume settings. First build the
-standard train-only CHORD resources, then run:
+Its downstream setting uses cross-view compositional PCSC. With
+`(c1,c2,c3)=(shared, semantic gap, CF gap)`, it supervises `h1+h2` toward CF information,
+the semantic-gap state toward the CF gap, and the CF-gap state toward semantic residual
+information. A directional base-plus-residual composition predicts the full semantic
+view. These auxiliary heads are used only during training, leaving standard
+autoregressive inference unchanged. The runner records deterministic seed/resume
+settings. First build the standard train-only CHORD resources, then run:
 
 ```bash
 DATASET=Beauty SEED=42 K=1024 GPU=0 \
@@ -43,10 +47,15 @@ LETTER_ROOT=/path/to/LETTER \
 bash scripts/run_chord_mlp_semfirst_mainline.sh
 ```
 
-The defaults train continuously to epoch 60 under a 100-epoch learning-rate schedule, then
-evaluate epochs 60 through 70 with full test coverage, beam size 20, and deterministic
-sharding. Set `RESUME_EXISTING=1` to continue an interrupted run. Generated resources,
-checkpoints, and metrics remain under `RESULT_BASE` and are not committed.
+The defaults use the audited cross-view implementation in
+`static_intersection_downstream_finetune_crossview.py`, train under a 100-epoch
+learning-rate schedule, and evaluate epochs 60 through 70 with full test coverage, beam
+size 20, and deterministic sharding. Set `START_EPOCH=60 END_EPOCH=60` for the fixed
+epoch-60 protocol, or `RESUME_EXISTING=1` to continue an interrupted run. Generated
+resources, checkpoints, and metrics remain under `RESULT_BASE` and are not committed.
+
+Exploratory controls are kept outside the default pipeline. In particular, SID component
+order experiments live under `experiments/order_ablation/`.
 
 ## Required Inputs
 

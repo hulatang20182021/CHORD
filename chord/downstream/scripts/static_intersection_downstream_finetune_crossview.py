@@ -10,7 +10,7 @@ import transformers
 from transformers import T5Config, T5Tokenizer
 
 from collator import Collator
-from modeling_matched_curriculum_letter import MatchedCurriculumLETTER
+from modeling_matched_curriculum_crossview import MatchedCurriculumLETTER
 from utils import (
     ensure_dir,
     load_datasets,
@@ -111,19 +111,6 @@ class HardOnlyTrainer(transformers.Trainer):
         if key not in self._persistent_eval_dataloaders:
             self._persistent_eval_dataloaders[key] = super().get_eval_dataloader(eval_dataset)
         return self._persistent_eval_dataloaders[key]
-
-    def _load_rng_state(self, checkpoint):
-        original_load = torch.load
-
-        def load_trusted_rng(*args, **kwargs):
-            kwargs.setdefault("weights_only", False)
-            return original_load(*args, **kwargs)
-
-        torch.load = load_trusted_rng
-        try:
-            return super()._load_rng_state(checkpoint)
-        finally:
-            torch.load = original_load
 
     def compute_loss(self, model, inputs, return_outputs=False, **kwargs):
         epoch = min(self.formal_epochs, int(self.state.epoch or 0) + 1)
@@ -233,32 +220,25 @@ def main(args):
         "alignment": args.pcsc_alignment,
         "sid_component_order": args.sid_component_order,
         "h12_mode": args.pcsc_h12_mode,
-        "cross_transfer": args.pcsc_cross_transfer,
-        "additive_consistency": args.pcsc_additive_consistency,
         "contract": (
             MatchedCurriculumLETTER.POSITIONAL_PCSC_CONTRACT
             if args.pcsc_alignment == "positional"
-            else (
-                "role_mapped_contract_v2"
-                if args.pcsc_alignment == "role"
-                else "component_mapped_legacy5"
-            )
+            else "component_mapped_legacy5"
         ),
     }
-    if args.resume_from_checkpoint and args.pcsc_alignment in {"positional", "role"}:
+    if args.resume_from_checkpoint and args.pcsc_alignment == "positional":
         resume_path = Path(args.resume_from_checkpoint).resolve()
         candidates = [resume_path / "pcsc_contract.json", resume_path.parent / "pcsc_contract.json"]
         existing = next((path for path in candidates if path.is_file()), None)
-        if existing is None:
+        if existing is None and not args.allow_unversioned_legacy_resume:
             raise RuntimeError(
-                f"Refusing to resume {args.pcsc_alignment} PCSC from an unversioned checkpoint. "
-                "The hidden-state routing contract cannot be verified."
+                "Refusing to resume cross-view PCSC from an unversioned checkpoint. "
+                "Use an explicitly versioned checkpoint for formal runs."
             )
-        previous = json.loads(existing.read_text(encoding="utf-8"))
+        previous = json.loads(existing.read_text(encoding="utf-8")) if existing else contract
         if previous != contract:
             raise RuntimeError(
-                f"Refusing incompatible {args.pcsc_alignment} PCSC resume: "
-                f"expected {contract}, got {previous}"
+                f"Refusing incompatible positional PCSC resume: expected {contract}, got {previous}"
             )
     Path(args.output_dir, "pcsc_contract.json").write_text(
         json.dumps(contract, indent=2) + "\n", encoding="utf-8"
@@ -283,26 +263,19 @@ def main(args):
         lambda_base=args.lambda_base,
         lambda_res=args.lambda_res,
         lambda_comp=args.lambda_comp,
-        pcsc_cross_transfer=args.pcsc_cross_transfer,
-        pcsc_additive_consistency=args.pcsc_additive_consistency,
     )
     model.set_hyper(args.temperature)
     model.resize_token_embeddings(len(tokenizer))
-    configure_kwargs = dict(
-        rqvae_checkpoint_path=None,
-        cf_res_path=args.cf_res,
-        sem_base_path=args.sem_base,
-        sem_res_raw_path=args.sem_res_raw,
-    )
-    if args.shared_emb:
-        configure_kwargs["shared_path"] = args.shared_emb
     model.configure_items(
         tokenizer,
         args.index,
         args.item_order,
         args.cf_emb,
         args.sem_emb,
-        **configure_kwargs,
+        rqvae_checkpoint_path=None,
+        cf_res_path=args.cf_res,
+        sem_base_path=args.sem_base,
+        sem_res_raw_path=args.sem_res_raw,
     )
     model.set_curriculum(1.0, force_soft=False)
     model.set_pcsc_schedule_factor(0.0)
@@ -423,11 +396,8 @@ def main(args):
                 "pcsc_alignment": args.pcsc_alignment,
                 "sid_component_order": args.sid_component_order,
                 "pcsc_h12_mode": args.pcsc_h12_mode,
-                "pcsc_cross_transfer": args.pcsc_cross_transfer,
-                "pcsc_additive_consistency": args.pcsc_additive_consistency,
                 "pcsc_contract_version": contract["version"],
                 "pcsc_contract": contract["contract"],
-                "shared_emb": args.shared_emb,
                 "pcsc_max_factor": args.pcsc_max_factor,
                 "pcsc_schedule_type": args.pcsc_schedule_type,
                 "lambda_cf": args.lambda_cf,
@@ -446,7 +416,7 @@ def main(args):
     )
 
 
-def build_parser():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser = parse_global_args(parser)
     parser = parse_train_args(parser)
@@ -458,24 +428,17 @@ def build_parser():
     parser.add_argument("--cf_res", required=True)
     parser.add_argument("--sem_base", required=True)
     parser.add_argument("--sem_res_raw", required=True)
-    parser.add_argument("--shared_emb", default="")
     parser.add_argument("--pcsc_aux", action="store_true")
     parser.add_argument("--sid_component_order", default="shared,cfres,semres")
     parser.add_argument("--pcsc_max_factor", type=float, default=1.0)
     parser.add_argument("--pcsc_schedule_type", choices=["warmup_hold", "warmup_hold_decay"], default="warmup_hold_decay")
     parser.add_argument("--pcsc_h12_mode", choices=["mean", "sum", "h2"], default="mean")
-    parser.add_argument(
-        "--pcsc_alignment",
-        choices=["component", "positional", "role"],
-        default="component",
-    )
+    parser.add_argument("--pcsc_alignment", choices=["component", "positional"], default="component")
     parser.add_argument("--lambda_cf", type=float, default=1.0)
     parser.add_argument("--lambda_cfres", type=float, default=1.0)
     parser.add_argument("--lambda_base", type=float, default=1.0)
     parser.add_argument("--lambda_res", type=float, default=1.0)
     parser.add_argument("--lambda_comp", type=float, default=1.0)
-    parser.add_argument("--pcsc_cross_transfer", action="store_true")
-    parser.add_argument("--pcsc_additive_consistency", action="store_true")
     parser.add_argument("--training_metrics", required=True)
     parser.add_argument("--run_summary", required=True)
     parser.add_argument("--schedule_total_epochs", type=int, default=0)
@@ -486,6 +449,7 @@ def build_parser():
     parser.add_argument("--dataloader_num_workers", type=int, default=0)
     parser.add_argument("--dataloader_persistent_workers", action="store_true")
     parser.add_argument("--disable_train_eval", action="store_true")
+    parser.add_argument("--allow_unversioned_legacy_resume", action="store_true")
     parser.add_argument("--disable_dataloader_pin_memory", action="store_true")
     parser.add_argument("--use_wandb", action="store_true")
     parser.add_argument("--wandb_project", default="pls-sd128-dpos-pcsc")
@@ -501,8 +465,4 @@ def build_parser():
         default="",
         help="Comma-separated 1-based epochs to save; overrides epoch saves at all other epochs.",
     )
-    return parser
-
-
-if __name__ == "__main__":
-    main(build_parser().parse_args())
+    main(parser.parse_args())

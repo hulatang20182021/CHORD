@@ -151,6 +151,14 @@ def main():
     ap.add_argument("--index_name", default="")
     ap.add_argument("--base_name", default="")
     ap.add_argument("--resource_subdir", default="")
+    ap.add_argument(
+        "--training_script",
+        default="static_intersection_downstream_finetune.py",
+        choices=[
+            "static_intersection_downstream_finetune.py",
+            "static_intersection_downstream_finetune_crossview.py",
+        ],
+    )
     ap.add_argument("--sid_component_order", default="shared,cfres,semres")
     ap.add_argument("--pcsc_h12_mode", choices=["mean", "sum", "h2"], default="mean")
     ap.add_argument("--pcsc_alignment", choices=["component", "positional"], default="component")
@@ -158,6 +166,7 @@ def main():
     ap.add_argument("--no_deterministic_train", action="store_true")
     ap.add_argument("--determinism_strict", action="store_true")
     ap.add_argument("--dataloader_num_workers", type=int, default=0)
+    ap.add_argument("--dataloader_persistent_workers", action="store_true")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--resume_existing", action="store_true")
     args = ap.parse_args()
@@ -267,7 +276,7 @@ def main():
         )
         train_cmd = [
             FORMAL_PYTHON,
-            FORMAL_SCRIPT_DIR / "static_intersection_downstream_finetune.py",
+            FORMAL_SCRIPT_DIR / args.training_script,
             "--output_dir",
             ckpt_dir,
             "--dataset",
@@ -351,6 +360,8 @@ def main():
                 "--dataloader_num_workers",
                 str(args.dataloader_num_workers),
             ]
+            if args.dataloader_persistent_workers:
+                train_cmd += ["--dataloader_persistent_workers"]
             if not args.determinism_strict:
                 train_cmd += ["--determinism_warn_only"]
         if resume_epoch is not None and resume_epoch >= epoch:
