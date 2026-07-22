@@ -139,6 +139,7 @@ def main():
     ap.add_argument("--run_name_override", default="")
     ap.add_argument("--start_epoch", type=int, default=55)
     ap.add_argument("--end_epoch", type=int, default=70)
+    ap.add_argument("--epoch_step", type=int, default=1)
     ap.add_argument("--schedule_total_epochs", type=int, default=100)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--gpu", default="0")
@@ -157,6 +158,7 @@ def main():
         choices=[
             "static_intersection_downstream_finetune.py",
             "static_intersection_downstream_finetune_crossview.py",
+            "static_intersection_downstream_finetune_strict_symmetric.py",
         ],
     )
     ap.add_argument("--sid_component_order", default="shared,cfres,semres")
@@ -170,6 +172,9 @@ def main():
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--resume_existing", action="store_true")
     args = ap.parse_args()
+
+    if args.epoch_step <= 0:
+        raise SystemExit("--epoch_step must be positive")
 
     result_base = Path(args.result_base)
     index_name = args.index_name or f"{args.dataset}_chord_seed{args.seed}"
@@ -263,7 +268,7 @@ def main():
     else:
         summary.write_text("epoch\tHR@1\tHR@5\tHR@10\tNDCG@1\tNDCG@5\tNDCG@10\n", encoding="utf-8")
 
-    for epoch in range(args.start_epoch, args.end_epoch + 1):
+    for epoch in range(args.start_epoch, args.end_epoch + 1, args.epoch_step):
         if epoch in completed_epochs:
             print(f"[{args.label}] skip completed epoch={epoch}", flush=True)
             continue
