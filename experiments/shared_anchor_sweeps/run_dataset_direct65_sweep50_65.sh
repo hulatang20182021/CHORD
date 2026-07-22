@@ -63,7 +63,7 @@ for offset in "${!CKPTS[@]}"; do
   result=$RUN/test_epoch_${epoch}.json
   "$PY" "$PROJECT/scripts/parallel_letter_tiger_eval.py" \
     --test_script "$PROJECT/scripts/evaluate_static_intersection_split.py" --python "$PY" \
-    --num_shards 2 --gpu_id 0 --threads_per_shard 3 --results_file "$result" \
+    --num_shards 3 --gpu_id 0 --threads_per_shard 2 --results_file "$result" \
     --log_dir "$RUN/test_epoch_${epoch}_logs" -- --letter_tiger_dir "$LETTER" \
     --eval_split test --base_model "$LETTER/ckpt/TIGER" --ckpt_path "$ckpt" \
     --dataset "$RUN_NAME" --data_path "$OUT/data" --test_batch_size 64 --num_beams 20 \

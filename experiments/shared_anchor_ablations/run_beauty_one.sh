@@ -75,7 +75,7 @@ CKPT=$RUN/checkpoints/checkpoint-30840
 [[ -s "$CKPT/model.safetensors" ]] || { echo "missing epoch60 checkpoint" >&2; exit 4; }
 "$PY" "$PROJECT/scripts/parallel_letter_tiger_eval.py" \
   --test_script "$PROJECT/scripts/evaluate_static_intersection_split.py" --python "$PY" \
-  --num_shards 2 --gpu_id 0 --threads_per_shard 3 --results_file "$RUN/test_epoch60.json" \
+  --num_shards 3 --gpu_id 0 --threads_per_shard 2 --results_file "$RUN/test_epoch60.json" \
   --log_dir "$RUN/test_epoch60_logs" -- --letter_tiger_dir "$LETTER" --eval_split test \
   --base_model "$LETTER/ckpt/TIGER" --ckpt_path "$CKPT" --dataset "$RUN_NAME" \
   --data_path "$OUT/data" --test_batch_size 64 --num_beams 20 --sample_num -1 \
