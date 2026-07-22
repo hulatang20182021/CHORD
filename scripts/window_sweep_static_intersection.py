@@ -159,6 +159,7 @@ def main():
             "static_intersection_downstream_finetune.py",
             "static_intersection_downstream_finetune_crossview.py",
             "static_intersection_downstream_finetune_strict_symmetric.py",
+            "static_intersection_downstream_finetune_strict_symmetric_shared_anchor.py",
         ],
     )
     ap.add_argument("--sid_component_order", default="shared,cfres,semres")
@@ -204,6 +205,7 @@ def main():
     required = [
         result_base / "index" / index_name / f"{index_name}.index.json",
         result_base / "base" / base_name / "item_order.json",
+        result_base / "base" / base_name / "z_shared.npy",
         result_base / "resources" / resource_subdir / f"{args.dataset}_trainonly_cf_svd.npy",
         result_base / "st5" / args.dataset / f"{args.dataset}_st5_rqvae_input_embeddings.npy",
         result_base / "resources" / resource_subdir / f"{args.dataset}_cf_residual.npy",
@@ -328,6 +330,8 @@ def main():
             result_base / "resources" / resource_subdir / f"{args.dataset}_semantic_base.npy",
             "--sem_res_raw",
             result_base / "resources" / resource_subdir / f"{args.dataset}_semantic_residual.npy",
+            "--shared_emb",
+            result_base / "base" / base_name / "z_shared.npy",
             "--sid_component_order",
             args.sid_component_order,
             "--pcsc_max_factor",

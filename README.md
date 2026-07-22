@@ -11,9 +11,9 @@ CHORD builds static semantic IDs from train-only collaborative resources and ite
 3. Build CF/semantic residual resources.
 4. Build PLS shared/private representations.
 5. Build a DPOS collision-suffix SID index.
-6. Train/evaluate the downstream hard-SID recommender with strict symmetric cross-view PCSC.
+6. Train/evaluate the downstream hard-SID recommender with shared-anchored symmetric cross-view PCSC.
 
-## Strict Symmetric Mainline
+## Shared-Anchored Symmetric Mainline
 
 The paper mainline on this branch uses an explicit nonlinear cross-view decomposition and
 component-ordered SID:
@@ -25,19 +25,20 @@ c3 = collaborative residual from semantic-to-CF MLP prediction
 c4 = deterministic distance-ordered collision suffix
 ```
 
-Its downstream setting uses four symmetric cross-view objectives. With
+Its downstream setting uses one shared anchor and four symmetric cross-view objectives. With
 `(c1,c2,c3)=(shared, semantic gap, CF gap)`, it applies exactly:
 
 ```text
+h1      -> PLS shared consensus
 h1 + h2 -> CF full
 h2      -> CF residual
 h1 + h3 -> semantic full
 h3      -> semantic residual
 ```
 
-There is no semantic-base objective and no additive semantic-full objective. The four
-active losses preserve the total auxiliary-loss budget of the legacy five-objective
-configuration. These heads are used only during training, leaving standard
+There is no semantic-base objective and no additive semantic-full objective. The five
+unit-weight objectives have the same total auxiliary-loss budget as the legacy
+five-objective configuration. These heads are used only during training, leaving standard
 autoregressive inference unchanged. Run:
 
 ```bash
@@ -54,7 +55,7 @@ LETTER_ROOT=/path/to/LETTER \
 bash scripts/run_chord_strict_symmetric_main.sh
 ```
 
-The defaults use `static_intersection_downstream_finetune_strict_symmetric.py`, train
+The defaults use `static_intersection_downstream_finetune_strict_symmetric_shared_anchor.py`, train
 under a 100-epoch learning-rate schedule through epoch 60, then runs one fixed epoch-60
 test with beam size 20 and deterministic sharding. Set `START_EPOCH=50 END_EPOCH=60
 EPOCH_STEP=5` only for an explicitly declared 50/55/60 diagnostic sweep, or
@@ -62,9 +63,10 @@ EPOCH_STEP=5` only for an explicitly declared 50/55/60 diagnostic sweep, or
 and metrics remain under `RESULT_BASE` and are not committed. The exact objective and
 audited Beauty results are recorded in `reports/strict_symmetric_mainline.md`.
 
-The previous five-objective cross-view compositional implementation remains available as
-`static_intersection_downstream_finetune_crossview.py` for historical comparison; it is
-not the default method on this branch.
+The four-objective no-anchor implementation remains available as
+`static_intersection_downstream_finetune_strict_symmetric.py`, while the legacy
+cross-view compositional implementation remains available as
+`static_intersection_downstream_finetune_crossview.py`. Neither is the default method.
 
 Exploratory controls are kept outside the default pipeline. In particular, SID component
 order experiments live under `experiments/order_ablation/`.

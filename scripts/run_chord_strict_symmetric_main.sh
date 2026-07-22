@@ -24,7 +24,7 @@ MLP_MAX_ITER=${MLP_MAX_ITER:-120}
 
 SOURCE_BASE_NAME=${SOURCE_BASE_NAME:-${DATASET}_chord_seed${SEED}}
 VARIANT_NAME=${VARIANT_NAME:-${DATASET}_chord_seed${SEED}_mlp_predictor_order_shared_semres_cfres_k${K}}
-RUN_SUFFIX=${RUN_SUFFIX:-strict_symmetric_cv_pcsc_k${K}_seed${SEED}}
+RUN_SUFFIX=${RUN_SUFFIX:-strict_symmetric_shared_anchor_cv_pcsc_k${K}_seed${SEED}}
 RESOURCE_SUBDIR=${RESOURCE_SUBDIR:-${DATASET}_${VARIANT_NAME}}
 
 export PROJECT FORMAL_PYTHON="$PY"
@@ -61,7 +61,7 @@ fi
 
 exec "$PY" "$PROJECT/scripts/window_sweep_static_intersection.py" \
   --dataset "$DATASET" \
-  --label "STRICT_SYMMETRIC_CV_PCSC_${DATASET}_K${K}" \
+  --label "STRICT_SYMMETRIC_SHARED_ANCHOR_CV_PCSC_${DATASET}_K${K}" \
   --result_base "$RESULT_BASE" \
   --run_suffix "$RUN_SUFFIX" \
   --start_epoch "$START_EPOCH" \
@@ -80,7 +80,7 @@ exec "$PY" "$PROJECT/scripts/window_sweep_static_intersection.py" \
   --index_name "$VARIANT_NAME" \
   --base_name "$VARIANT_NAME" \
   --resource_subdir "$RESOURCE_SUBDIR" \
-  --training_script static_intersection_downstream_finetune_strict_symmetric.py \
+  --training_script static_intersection_downstream_finetune_strict_symmetric_shared_anchor.py \
   --sid_component_order shared,semres,cfres \
   --pcsc_h12_mode sum \
   --pcsc_alignment positional \
