@@ -11,17 +11,17 @@ esac
 PROJECT=/hy-tmp/llmNrec/CHORD_github_stable_0p08_rerun
 PY=/root/venvs/chord_py311_torch211_cu128/bin/python
 LETTER=/hy-tmp/llmNrec/LETTER-master/LETTER-TIGER
-OUT=$PROJECT/results/strict_symmetric_shared_anchor_sweep/${DATASET}_k1024_seed42_direct65_sweep50_65_v1
+OUT=$PROJECT/results/strict_symmetric_shared_anchor_sweep/${DATASET}_k1024_seed42_direct70_sweep50_70_step5_v1
 RUN=$OUT/run
 LOG=$OUT/logs
-RUN_NAME=${DATASET}_strict_symmetric_shared_anchor_seed42_direct65_sweep50_65_k1024_v1
+RUN_NAME=${DATASET}_strict_symmetric_shared_anchor_seed42_direct70_sweep50_70_step5_k1024_v1
 INDEX_NAME=${DATASET}_chord_seed42_mlp_predictor_order_shared_semres_cfres_k1024
 RESOURCE=${DATASET}_${INDEX_NAME}
 INDEX=$SOURCE_ROOT/index/$INDEX_NAME/$INDEX_NAME.index.json
 BASE=$SOURCE_ROOT/base/$INDEX_NAME
 RES=$SOURCE_ROOT/resources/$RESOURCE
 TRAIN_SCRIPT=$PROJECT/experiments/strict_symmetric_shared_anchor/static_intersection_downstream_finetune_shared_anchor.py
-SAVE_EPOCHS=$(seq -s, 50 65)
+SAVE_EPOCHS=50,55,60,65,70
 
 [[ ! -e "$RUN" ]] || { echo "refusing to overwrite $RUN" >&2; exit 3; }
 mkdir -p "$RUN" "$LOG" "$OUT/data"
@@ -37,10 +37,10 @@ export OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
 "$PY" "$TRAIN_SCRIPT" \
   --output_dir "$RUN/checkpoints" --dataset "$RUN_NAME" --data_path "$OUT/data" \
   --base_model "$LETTER/ckpt/TIGER" --per_device_batch_size 256 --learning_rate 5e-4 \
-  --epochs 100 --schedule_total_epochs 100 --stop_after_epoch 65 \
+  --epochs 100 --schedule_total_epochs 100 --stop_after_epoch 70 \
   --gradient_accumulation_steps 1 --logging_step 50 --train_data_sample_num -1 \
   --valid_prompt_sample_num 1 --save_and_eval_strategy epoch --disable_train_eval \
-  --save_epochs "$SAVE_EPOCHS" --save_total_limit 16 --index_file .index.json \
+  --save_epochs "$SAVE_EPOCHS" --save_total_limit 5 --index_file .index.json \
   --temperature 1.0 --seed 42 --data_seed 42 --index "$INDEX" \
   --item_order "$BASE/item_order.json" --cf_emb "$RES/${DATASET}_trainonly_cf_svd.npy" \
   --sem_emb "$SOURCE_ROOT/st5/$DATASET/${DATASET}_st5_rqvae_input_embeddings.npy" \
@@ -54,11 +54,11 @@ export OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
   --dataloader_persistent_workers >"$LOG/train.log" 2>&1
 
 mapfile -t CKPTS < <(find "$RUN/checkpoints" -mindepth 1 -maxdepth 1 -type d -name 'checkpoint-*' | sort -V)
-[[ ${#CKPTS[@]} -eq 16 ]] || { echo "expected 16 checkpoints, got ${#CKPTS[@]}" >&2; exit 4; }
+[[ ${#CKPTS[@]} -eq 5 ]] || { echo "expected 5 checkpoints, got ${#CKPTS[@]}" >&2; exit 4; }
 printf 'epoch\tHR@1\tHR@5\tHR@10\tNDCG@1\tNDCG@5\tNDCG@10\tcheckpoint\n' >"$RUN/sweep_results.tsv"
 
 for offset in "${!CKPTS[@]}"; do
-  epoch=$((50 + offset))
+  epoch=$((50 + offset * 5))
   ckpt=${CKPTS[$offset]}
   result=$RUN/test_epoch_${epoch}.json
   "$PY" "$PROJECT/scripts/parallel_letter_tiger_eval.py" \

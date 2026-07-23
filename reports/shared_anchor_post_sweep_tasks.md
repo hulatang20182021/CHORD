@@ -1,6 +1,6 @@
 # Shared-Anchor Post-Sweep Tasks
 
-These tasks run only after the Beauty/Instruments/Yelp epoch-50--65 diagnostic
+These tasks run only after the Beauty/Instruments/Yelp epoch-50--70 step-5 diagnostic
 sweeps finish. The formal checkpoint policy remains fixed at epoch 60.
 
 ## 1. Multi-Seed Stability
