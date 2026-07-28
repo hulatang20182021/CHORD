@@ -45,6 +45,8 @@ class MatchedCurriculumLETTER(_Base):
             cf_res_path=cf_res_path, sem_base_path=sem_base_path,
             sem_res_raw_path=sem_res_raw_path,
         )
+        if self.pcsc_ablation_variant == "a0_ceonly":
+            return
         if shared_path is None:
             raise ValueError("Shared-anchor ablations require --shared_emb")
         index = json.loads(Path(index_path).read_text(encoding="utf-8"))

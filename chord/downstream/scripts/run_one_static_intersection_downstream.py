@@ -10,17 +10,17 @@ from pathlib import Path
 
 PROJECT = Path(os.environ.get("PROJECT", Path(__file__).resolve().parents[3]))
 FORMAL_SCRIPT_DIR = Path(os.environ.get("FORMAL_SCRIPT_DIR", Path(__file__).resolve().parent))
-ROOT = Path(os.environ.get("LETTER_ROOT", "/home/huangxin/llmNrec/LETTER-master"))
-CONDA = Path(os.environ.get("CONDA_EXE", "/home/huangxin/miniconda3/bin/conda"))
+ROOT = Path(os.environ.get("LETTER_ROOT", PROJECT / "runtime_root/LETTER-master"))
+CONDA = Path(os.environ.get("CONDA_EXE", "conda"))
 TIGER = Path(os.environ.get("TIGER", str(ROOT / "LETTER-TIGER")))
 FORMAL_CONDA_ENV = os.environ.get("FORMAL_CONDA_ENV", "chord_formal_oldpipe")
 FORMAL_PYTHON = os.environ.get("FORMAL_PYTHON", "").strip()
 TEST_WRAPPER = Path(os.environ.get(
     "TEST_WRAPPER",
-    "/home/huangxin/llmNrec/component_relation_sid/scripts/run_letter_script_patience_override.py",
+    ROOT / "component_relation_sid/scripts/run_letter_script_patience_override.py",
 ))
 RESULT_BASE = Path(os.environ.get("RESULT_BASE", PROJECT / "results/chord"))
-DATA_ROOT = Path(os.environ.get("DATA_ROOT", ROOT / "data"))
+DATA_ROOT = Path(os.environ.get("DATA_ROOT", PROJECT / "data"))
 
 
 def read_json(path: Path):

@@ -14,10 +14,11 @@ case "$ORDER" in
   *) echo "unsupported order: $ORDER" >&2; exit 2 ;;
 esac
 
-PROJECT=/hy-tmp/llmNrec/CHORD_github_stable_0p08_rerun
-PY=/root/venvs/chord_py311_torch211_cu128/bin/python
-LETTER=/hy-tmp/llmNrec/LETTER-master/LETTER-TIGER
-ROOT=/hy-tmp/llmNrec/CHORD_capacity_k1024_beauty_seed42/results/chord
+PROJECT=${PROJECT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}
+PY=${FORMAL_PYTHON:-${PY:-python}}
+LETTER_ROOT=${LETTER_ROOT:-$PROJECT/runtime_root/LETTER-master}
+LETTER=$LETTER_ROOT/LETTER-TIGER
+ROOT=${RESULT_BASE:-$PROJECT/results/chord}
 SOURCE=Beauty_chord_seed42_mlp_predictor_order_shared_semres_cfres_k1024
 RESOURCE=Beauty_${SOURCE}
 if [[ "$ORDER" == "shared,semres,cfres" ]]; then
@@ -32,13 +33,13 @@ else
 fi
 
 RUN_NAME=Beauty_shared_anchor_ablation_${VARIANT}_order_${ORDER_TAG}_fixed60_v1
-OUT=$PROJECT/results/shared_anchor_ablations/$RUN_NAME
+OUT=${ABLATION_RESULT_BASE:-$PROJECT/results/shared_anchor_ablations}/$RUN_NAME
 RUN=$OUT/run
 LOG=$OUT/logs
 [[ ! -e "$RUN" ]] || { echo "refusing to overwrite $RUN" >&2; exit 3; }
 mkdir -p "$RUN" "$LOG" "$OUT/data"
 
-export DATA_ROOT=/hy-tmp/llmNrec/CHORD_dpos_pcsc5_dev/data
+export DATA_ROOT=${DATA_ROOT:-$PROJECT/data}
 export PYTHONPATH="$PROJECT/experiments/shared_anchor_ablations:$PROJECT/chord/downstream/scripts:$PROJECT/scripts:$LETTER:$PROJECT${PYTHONPATH:+:$PYTHONPATH}"
 export TOKENIZERS_PARALLELISM=false TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
 export OMP_NUM_THREADS=4 MKL_NUM_THREADS=4
@@ -68,14 +69,17 @@ pcsc_flags=()
   --pcsc_schedule_type warmup_hold_decay --pcsc_h12_mode sum --pcsc_alignment positional \
   --lambda_cf 1.0 --lambda_cfres 1.0 --lambda_base 1.0 --lambda_res 1.0 --lambda_comp 1.0 \
   --training_metrics "$RUN/training_metrics.jsonl" --run_summary "$RUN/run_summary.json" \
-  --full_determinism --determinism_warn_only --dataloader_num_workers 12 \
+  --full_determinism --determinism_warn_only \
+  --dataloader_num_workers "${DATALOADER_NUM_WORKERS:-12}" \
   --dataloader_persistent_workers "${pcsc_flags[@]}" >"$LOG/train.log" 2>&1
 
 CKPT=$RUN/checkpoints/checkpoint-30840
 [[ -s "$CKPT/model.safetensors" ]] || { echo "missing epoch60 checkpoint" >&2; exit 4; }
 "$PY" "$PROJECT/scripts/parallel_letter_tiger_eval.py" \
   --test_script "$PROJECT/scripts/evaluate_static_intersection_split.py" --python "$PY" \
-  --num_shards 3 --gpu_id 0 --threads_per_shard 2 --results_file "$RUN/test_epoch60.json" \
+  --num_shards "${EVAL_NUM_SHARDS:-3}" --gpu_id "${GPU:-0}" \
+  --threads_per_shard "${EVAL_THREADS_PER_SHARD:-2}" \
+  --results_file "$RUN/test_epoch60.json" \
   --log_dir "$RUN/test_epoch60_logs" -- --letter_tiger_dir "$LETTER" --eval_split test \
   --base_model "$LETTER/ckpt/TIGER" --ckpt_path "$CKPT" --dataset "$RUN_NAME" \
   --data_path "$OUT/data" --test_batch_size 64 --num_beams 20 --sample_num -1 \

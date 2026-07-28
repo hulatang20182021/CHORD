@@ -36,32 +36,14 @@ if [[ "$C4_MODE" != "dpos" && "$C4_MODE" != "item_order" ]]; then
   exit 2
 fi
 
-# Use convenient local defaults when running on Hengyuan/5060Ti mirrors; callers can override.
-if [[ -d /hy-tmp/llmNrec/LETTER-master ]]; then
-  export LETTER_ROOT=${LETTER_ROOT:-/hy-tmp/llmNrec/LETTER-master}
-  export TIGER=${TIGER:-/hy-tmp/llmNrec/LETTER-master/LETTER-TIGER}
-  export TEST_WRAPPER=${TEST_WRAPPER:-/hy-tmp/llmNrec/LETTER-master/component_relation_sid/scripts/run_letter_script_patience_override.py}
-fi
-if [[ -d /hy-tmp/llmNrec/CHORD_dpos_pcsc5_dev/data ]]; then
-  export DATA_ROOT=${DATA_ROOT:-/hy-tmp/llmNrec/CHORD_dpos_pcsc5_dev/data}
-fi
-if [[ -d /hy-tmp/llmNrec/CHORD_dpos_pcsc5_dev/models/Sentence-T5/sentence-t5-base ]]; then
-  export MODEL_PATH=${MODEL_PATH:-/hy-tmp/llmNrec/CHORD_dpos_pcsc5_dev/models/Sentence-T5/sentence-t5-base}
-fi
-if [[ -x /hy-tmp/venvs/chord5060/bin/python ]]; then
-  export PY=${PY:-/hy-tmp/venvs/chord5060/bin/python}
-  export ST5_PY=${ST5_PY:-/hy-tmp/venvs/chord5060/bin/python}
-  export FORMAL_PYTHON=${FORMAL_PYTHON:-/hy-tmp/venvs/chord5060/bin/python}
-  export FORMAL_STRICT_ENV_CHECK=${FORMAL_STRICT_ENV_CHECK:-0}
-fi
-
-if [[ -x /hy-tmp/venvs/chord_oldsk_py310/bin/python ]]; then
-  # Keep the paper main preset on the same numerical stack as the reproduced high-score chain.
-  # oldsk can still be selected explicitly by setting CF_PY/PLS_PY/SID_PY in the environment.
-  export CF_PY=${CF_PY:-${PY:-/hy-tmp/venvs/chord5060/bin/python}}
-  export PLS_PY=${PLS_PY:-${PY:-/hy-tmp/venvs/chord5060/bin/python}}
-  export SID_PY=${SID_PY:-${PY:-/hy-tmp/venvs/chord5060/bin/python}}
-fi
+export LETTER_ROOT=${LETTER_ROOT:-$PROJECT/runtime_root/LETTER-master}
+export TIGER=${TIGER:-$LETTER_ROOT/LETTER-TIGER}
+export TEST_WRAPPER=${TEST_WRAPPER:-$LETTER_ROOT/component_relation_sid/scripts/run_letter_script_patience_override.py}
+export DATA_ROOT=${DATA_ROOT:-$PROJECT/data}
+export MODEL_PATH=${MODEL_PATH:-$PROJECT/models/Sentence-T5/sentence-t5-base}
+export PY=${PY:-python}
+export ST5_PY=${ST5_PY:-$PY}
+export FORMAL_PYTHON=${FORMAL_PYTHON:-$PY}
 
 export EPOCHS=${EPOCHS:-60}
 export NUM_BEAMS=${NUM_BEAMS:-20}

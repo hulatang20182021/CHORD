@@ -4,88 +4,88 @@ set -euo pipefail
 PROJECT=${PROJECT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}
 cd "$PROJECT"
 
-status="GITHUB_READY"
+status=GITHUB_READY
 
 warn() {
   echo "[warn] $*" >&2
-  if [[ "$status" == "GITHUB_READY" ]]; then status="GITHUB_READY_WITH_WARNINGS"; fi
+  [[ "$status" == GITHUB_NOT_READY ]] || status=GITHUB_READY_WITH_WARNINGS
 }
 
 fail() {
   echo "[error] $*" >&2
-  status="GITHUB_NOT_READY"
+  status=GITHUB_NOT_READY
 }
 
-if [[ ! -s .gitignore ]]; then
-  fail ".gitignore missing"
-fi
+required_files=(
+  LICENSE
+  THIRD_PARTY_NOTICES.md
+  REPRODUCIBILITY.md
+  requirements-paper.txt
+  configs/paper_k1024.env
+  scripts/run_paper_main.sh
+  scripts/setup/download_chord_data.sh
+  scripts/setup/download_sentence_t5.sh
+  scripts/setup/download_letter_runtime.sh
+)
+for path in "${required_files[@]}"; do
+  if [[ -s "$path" ]]; then
+    echo "[ok] required: $path"
+  else
+    fail "missing required release file: $path"
+  fi
+done
 
 required_ignored=(
-  "results/"
-  "data/Beauty/"
-  "models/Sentence-T5/sentence-t5-base/"
-  "backups/"
-  "release_assets/"
-  "wandb/"
-  "checkpoints/"
+  results/
+  data/__release_check__/
+  models/Sentence-T5/sentence-t5-base/
+  backups/
+  release_assets/
+  wandb/
+  checkpoints/
 )
+for path in "${required_ignored[@]}"; do
+  if git check-ignore --no-index -q "$path"; then
+    echo "[ok] ignored: $path"
+  else
+    fail "not ignored: $path"
+  fi
+done
 
-if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  for p in "${required_ignored[@]}"; do
-    if git check-ignore -q "$p"; then
-      echo "[ok] ignored: $p"
-    else
-      warn "not ignored by git check-ignore: $p"
-    fi
-  done
-else
-  echo "[info] not inside a git worktree; checking .gitignore text only"
-  for pat in results/ "data/*" "models/*" backups/ release_assets/ wandb/ checkpoints/; do
-    if grep -Fxq "$pat" .gitignore; then
-      echo "[ok] .gitignore contains: $pat"
-    else
-      fail ".gitignore missing pattern: $pat"
-    fi
-  done
-fi
-
-large_files="$(find . -type f -size +50M \
+large_files=$(find . -type f -size +50M \
   -not -path './.git/*' \
   -not -path './results/*' \
   -not -path './data/*' \
   -not -path './release_assets/*' \
-  -not -path './models/Sentence-T5/sentence-t5-base/*' \
-  -print)"
+  -not -path './models/*' \
+  -not -path './runtime_root/*' \
+  -print)
 if [[ -n "$large_files" ]]; then
   echo "$large_files" >&2
-  fail "large files found outside allowed local asset/model paths"
+  fail "large files found outside ignored artifact paths"
 else
-  echo "[ok] no large files in commit area"
+  echo "[ok] no large files in the commit area"
 fi
 
-scan_paths=(
-  scripts
-  configs
-  chord/st5_embedding/build_st5_embeddings.py
-  chord/pls_resources/build_pls_shared_private_resources.py
-  chord/downstream/build_data.py
-  chord/downstream/dataset.py
-  chord/downstream/eval_beam.py
-  chord/downstream/eval_portable.py
-  chord/downstream/metrics.py
-  chord/downstream/static_intersection_downstream_finetune.py
-  chord/downstream/train_portable.py
-  chord/downstream/trie.py
-  chord/downstream/utils.py
-)
-if rg -n "/home/huangxin/llmNrec/pls_sd128_dpos_pcsc_pipeline|/home/huangxin/llmNrec/Letter|component_relation_sid" "${scan_paths[@]}" --glob '!scripts/utils/check_github_ready.sh' >/tmp/chord_github_ready_paths.txt 2>/dev/null; then
+absolute_pattern='/home/|/hy-tmp/|/root/venvs/'
+if git grep -nE "$absolute_pattern" -- \
+  '*.py' '*.sh' '*.yaml' '*.yml' '*.json' ':!scripts/utils/check_github_ready.sh' \
+  >/tmp/chord_github_ready_paths.txt 2>/dev/null; then
   cat /tmp/chord_github_ready_paths.txt >&2
-  fail "old absolute/component_relation runtime references found in active paths"
+  fail "machine-specific absolute paths found in tracked release files"
 else
-  echo "[ok] no old runtime path references in active scripts"
+  echo "[ok] no machine-specific absolute paths in tracked release files"
+fi
+
+if git grep -nE 'YOUR_NAME/YOUR_REPO|<USER>/<REPO>|Type your response here' -- \
+  ':!scripts/setup/download_sentence_t5.sh' \
+  ':!scripts/utils/check_github_ready.sh' \
+  >/tmp/chord_github_ready_placeholders.txt 2>/dev/null; then
+  cat /tmp/chord_github_ready_placeholders.txt >&2
+  warn "release placeholders remain"
+else
+  echo "[ok] no unresolved release placeholders"
 fi
 
 echo "classification=$status"
-if [[ "$status" == "GITHUB_NOT_READY" ]]; then
-  exit 1
-fi
+[[ "$status" != GITHUB_NOT_READY ]]

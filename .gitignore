@@ -48,6 +48,13 @@ release_assets/
 
 # Backups
 backups/
+.baseline_patch_stage/
+recovered/
+
+# Machine-local orchestration and logs
+*.log
+*.pid
+*.lock
 
 # OS/editor
 .DS_Store

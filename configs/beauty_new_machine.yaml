@@ -1,10 +1,12 @@
+# Portable stage-by-stage Beauty example. The formal downstream runner uses
+# configs/paper_k1024.env.
 dataset: Beauty
 seed: 42
 
 paths:
-  data_root: /home/huangxin/llmNrec/data
-  output_root: /home/huangxin/llmNrec/repro_outputs/Beauty_new_machine_full_pipeline
-  model_path: /home/huangxin/llmNrec/chord_new_machine_repro/models/Sentence-T5/sentence-t5-base
+  data_root: ./data
+  output_root: ./results/chord
+  model_path: ./models/Sentence-T5/sentence-t5-base
 
 st5:
   batch_size: 32
@@ -13,7 +15,7 @@ st5:
   device: cuda:0
 
 legacy_cf:
-  mode: clean_weighted_window
+  mode: legacy_biview
   window_size: 5
   svd_dim: 128
   ridge_alpha: 10.0
@@ -22,6 +24,6 @@ legacy_cf:
 pls:
   shared_dim: 128
   private_dim: 64
-  k1: 256
-  k2: 256
-  k3: 256
+  k1: 1024
+  k2: 1024
+  k3: 1024

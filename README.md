@@ -1,162 +1,130 @@
-# CHORD Main Pipeline
+# CHORD
 
-This branch contains the clean CHORD main-method pipeline for paper reproduction.
-It intentionally excludes historical CF-SVD origin traces, debug audits, old backup scripts,
-and exploratory ablations. Those materials stay on the reproduction/debug branches.
+CHORD is a static item tokenizer for generative recommendation. It constructs
+component-ordered semantic IDs (SIDs) from item text and train-only collaborative
+signals, then uses training-only cross-view supervision in a standard
+autoregressive recommender.
 
-CHORD builds static semantic IDs from train-only collaborative resources and item text:
+This repository is the paper reproduction snapshot. Historical debugging queues,
+machine migration scripts, checkpoints, and generated arrays are intentionally
+excluded.
 
-1. Build item-order-aligned, normalized Sentence-T5 item embeddings.
-2. Build train-only CF/PPMI/SVD resources from training interactions only.
-3. Build CF/semantic residual resources.
-4. Build PLS shared/private representations.
-5. Build a DPOS collision-suffix SID index.
-6. Train/evaluate the downstream hard-SID recommender with shared-anchored symmetric cross-view PCSC.
+## Paper Method
 
-## Shared-Anchored Symmetric Mainline
-
-The paper mainline on this branch uses an explicit nonlinear cross-view decomposition and
-component-ordered SID:
+The released mainline uses:
 
 ```text
-c1 = PLS shared consensus
-c2 = semantic residual from CF-to-semantic MLP prediction
-c3 = collaborative residual from semantic-to-CF MLP prediction
-c4 = deterministic distance-ordered collision suffix
+c1 = PLS consensus
+c2 = semantic prediction gap from a CF-to-semantic MLP
+c3 = collaborative prediction gap from a semantic-to-CF MLP
+c4 = deterministic distance-ordered collision suffix (DOCS)
 ```
 
-Its downstream setting uses one shared anchor and four symmetric cross-view objectives. With
-`(c1,c2,c3)=(shared, semantic gap, CF gap)`, it applies exactly:
+Each of the first three components is independently quantized. The downstream
+model receives five training-only cosine objectives:
 
 ```text
-h1      -> PLS shared consensus
-h1 + h2 -> CF full
-h2      -> CF residual
-h1 + h3 -> semantic full
-h3      -> semantic residual
+h1      -> PLS consensus
+h1 + h2 -> collaborative full representation
+h2      -> collaborative prediction gap
+h1 + h3 -> semantic full representation
+h3      -> semantic prediction gap
 ```
 
-There is no semantic-base objective and no additive semantic-full objective. The five
-unit-weight objectives have the same total auxiliary-loss budget as the legacy
-five-objective configuration. These heads are used only during training, leaving standard
-autoregressive inference unchanged. Run:
+The auxiliary heads are removed from the inference path. Recommendation remains
+trie-constrained autoregressive SID decoding.
+
+## Reproduction Protocol
+
+- Datasets: Beauty, Instruments, and Yelp, following the released LETTER
+  preprocessing and chronological leave-one-out splits.
+- Collaborative features: equal-weight `legacy_biview` window co-occurrence
+  computed only from `sequence[:-2]`, followed by PPMI-SVD.
+- Semantic features: normalized Sentence-T5 item embeddings.
+- SID capacity: `K1=K2=K3=1024`, plus DOCS.
+- SID order: `consensus, semantic gap, collaborative gap, DOCS`.
+- Seeds: `42`, `1000`, and `2026`.
+- Schedule horizon: 100 epochs.
+- Predeclared formal checkpoints: Beauty epoch 60, Instruments epoch 50, Yelp
+  epoch 60.
+- Evaluation: all test users, valid-SID trie, beam width 20, HR@5/10 and
+  NDCG@5/10. The released generative protocol does not add an extra seen-item
+  mask.
+
+The test checkpoint is fixed before reading test metrics; the diagnostic epoch
+sweeps are not used for test-set model selection.
+
+## Quick Start
+
+Create the paper environment:
 
 ```bash
-DATASET=Beauty SEED=42 K=1024 GPU=0 \
-LETTER_ROOT=/path/to/LETTER \
-bash scripts/run_chord_strict_symmetric_main.sh
+conda env create -f environment.yml
+conda activate chord-paper
 ```
 
-For the Instruments K256 configuration:
+Install `requirements-analysis.txt` as well when regenerating diagnostic plots
+or running the test suite.
+
+Download the released inputs:
 
 ```bash
-DATASET=Instruments SEED=42 K=256 GPU=0 \
-LETTER_ROOT=/path/to/LETTER \
-bash scripts/run_chord_strict_symmetric_main.sh
+bash scripts/setup/download_chord_data.sh
+bash scripts/setup/download_sentence_t5.sh
+bash scripts/setup/download_letter_runtime.sh
 ```
 
-The defaults use `static_intersection_downstream_finetune_strict_symmetric_shared_anchor.py`, train
-under a 100-epoch learning-rate schedule through epoch 60, then runs one fixed epoch-60
-test with beam size 20 and deterministic sharding. Set `START_EPOCH=50 END_EPOCH=60
-EPOCH_STEP=5` only for an explicitly declared 50/55/60 diagnostic sweep, or
-`RESUME_EXISTING=1` to continue an interrupted run. Generated resources, checkpoints,
-and metrics remain under `RESULT_BASE` and are not committed. The exact objective and
-audited Beauty results are recorded in `reports/strict_symmetric_mainline.md`.
-
-The four-objective no-anchor implementation remains available as
-`static_intersection_downstream_finetune_strict_symmetric.py`, while the legacy
-cross-view compositional implementation remains available as
-`static_intersection_downstream_finetune_crossview.py`. Neither is the default method.
-
-Exploratory controls are kept outside the default pipeline. In particular, SID component
-order experiments live under `experiments/order_ablation/`.
-
-## Required Inputs
-
-Place raw data under `data/<Dataset>/`, or set `DATA_ROOT` / config paths explicitly.
-The expected files are:
-
-- `<Dataset>.inter.json`
-- `<Dataset>.index.json`
-- `<Dataset>.item.json`
-
-Sentence-T5 weights are not committed. Place the model at:
-
-`models/Sentence-T5/sentence-t5-base`
-
-or set `MODEL_PATH`.
-
-## Recommended Entry Point
+Run one formal seed:
 
 ```bash
-bash scripts/run_chord_strict_symmetric_main.sh
+DATASET=Beauty SEED=42 GPU=0 bash scripts/run_paper_main.sh
 ```
 
-The strict-symmetric runner builds missing MLP sem-first resources and then trains and
-tests the four-objective main method. A formal fixed-epoch Beauty run is:
+The wrapper reads `configs/paper_k1024.env`. Override only paths and hardware
+knobs when reproducing the paper:
 
 ```bash
-DATASET=Beauty SEED=42 K=1024 GPU=0 \
-START_EPOCH=60 END_EPOCH=60 NUM_BEAMS=20 FORCE=1 \
-bash scripts/run_chord_strict_symmetric_main.sh
+DATA_ROOT=/path/to/data \
+LETTER_ROOT=/path/to/LETTER-runtime \
+RESULT_BASE=/path/to/results/chord \
+DATALOADER_NUM_WORKERS=8 \
+DATASET=Instruments SEED=1000 GPU=0 \
+bash scripts/run_paper_main.sh
 ```
 
-Useful knobs:
+Generated resources, checkpoints, and metrics are written below `RESULT_BASE`
+and are never committed.
 
-```bash
-DATASET=Beauty|Instruments|Yelp
-SEED=42
-GPU=0
-START_EPOCH=60
-END_EPOCH=60
-EPOCH_STEP=5
-SCHEDULE_TOTAL_EPOCHS=100
-NUM_BEAMS=20
-K=1024
-DATALOADER_NUM_WORKERS=12
-RESULT_BASE=/path/to/results/chord
-```
+## Paper Experiments
 
-The protocol does not select a checkpoint by validation. For formal reporting, choose
-the fixed test epoch before inspecting test metrics.
+| Experiment | Entry point |
+|---|---|
+| Main method | `scripts/run_paper_main.sh` |
+| A0-A7 PCSC ablation | `experiments/shared_anchor_ablations/run_beauty_one.sh` |
+| SID order ablation | `experiments/order_ablation/run_beauty_k1024_order_ablation.sh` |
+| Prefix contribution inconsistency | `scripts/run_reconstruction_role_mixture_audit.py` |
+| Quantized complementarity | `scripts/run_quantized_complementarity_probe.py` |
+| Held-out cross-view probe | `scripts/run_heldout_cross_view_predictability_probe.py` |
+| Fan-in, collision, DOCS | `scripts/analyze_chord_fanin_collision.py` |
+| Prefix hit and retention | `experiments/shared_anchor_retention/run_beauty_final_shared_anchor_retention.sh` |
 
-## Resource Pipeline
+See [REPRODUCIBILITY.md](REPRODUCIBILITY.md) for data provenance, environment,
+checkpoint policy, expected artifacts, and paper-table mapping. Development
+ranges are listed in [HYPERPARAMETERS.md](HYPERPARAMETERS.md), and baseline
+source revisions are frozen in [BASELINES.md](BASELINES.md).
 
-The original staged resource builder remains available through `scripts/run_chord_main.sh`.
-Its stage controls are:
+## Important Scope Notes
 
-```bash
-RUN_VERIFY=1 RUN_ST5=1 RUN_CF=1 RUN_RESIDUAL=1 RUN_PLS=1 RUN_SID=1 RUN_DOWNSTREAM=0 RUN_AUDIT=1 \
-bash scripts/run_chord_main.sh
-```
+- `data/<Dataset>/<Dataset>.index.json` is an upstream item-universe/mapping
+  file. It is not used as an RQ, TIGER, or LETTER baseline tokenizer.
+- Every CHORD SID index is newly generated under `RESULT_BASE/index/`.
+- The old untraceable RQ index is not part of this release.
+- Traditional recommenders use direct catalog scoring, while generative
+  recommenders use trie-constrained beam decoding. They share users, targets,
+  item universe, splits, and metrics, but not an identical scoring algorithm.
 
-Verify only:
+## License and Upstream Code
 
-```bash
-RUN_ST5=0 RUN_CF=0 RUN_RESIDUAL=0 RUN_PLS=0 RUN_SID=0 RUN_DOWNSTREAM=0 \
-bash scripts/run_chord_main.sh
-```
-
-Downstream smoke test:
-
-```bash
-EPOCHS=1 NUM_BEAMS=5 GPU=0 RUN_SUFFIX=smoke FORCE=1 \
-bash scripts/run_chord_main.sh
-```
-
-## Direct Stage Commands
-
-```bash
-python scripts/00_verify_inputs.py --config configs/beauty_new_machine.yaml
-python scripts/01_build_st5_embeddings.py --config configs/beauty_new_machine.yaml --run
-python scripts/02_build_legacy_cf_ppmi_svd.py --config configs/beauty_new_machine.yaml --run
-python scripts/03_build_residual_resources.py --config configs/beauty_new_machine.yaml --run
-python scripts/04_build_pls_shared_private.py --config configs/beauty_new_machine.yaml --run
-python scripts/05_optional_build_sid_index.py --config configs/beauty_new_machine.yaml --run
-```
-
-## Output Policy
-
-Generated outputs go to `$RESULT_BASE` or to `$PROJECT/results/chord` by default.
-Do not commit raw datasets, model weights, `.npy` artifacts, checkpoints, wandb logs,
-or downstream outputs.
+Original CHORD code is released under the MIT License. Files adapted from
+upstream recommendation implementations remain subject to their upstream terms.
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

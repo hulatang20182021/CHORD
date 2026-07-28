@@ -1,0 +1,4 @@
+-r requirements-paper.txt
+matplotlib>=3.8,<4
+pillow>=10,<13
+pytest>=8,<9

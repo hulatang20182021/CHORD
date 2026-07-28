@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
-ROOT=${ROOT:-/home/huangxin/llmNrec/Letter/LETTER-master}
-PROJECT=${PROJECT:-$ROOT/component_relation_sid/rqvae_supervision/res/pls_sd128_dpos_pcsc_pipeline}
-PY=${PY:-/home/huangxin/anaconda3/envs/emotion_ml1m/bin/python}
+PROJECT=${PROJECT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}
+ROOT=${ROOT:-$PROJECT/runtime_root/LETTER-master}
+PY=${PY:-python}
 DATASETS=${DATASETS:-Beauty,Instruments,Yelp}
 SEED=${SEED:-42}
 WINDOW_SIZE=${WINDOW_SIZE:-5}
@@ -10,9 +10,9 @@ SVD_DIM=${SVD_DIM:-128}
 RIDGE_ALPHA=${RIDGE_ALPHA:-10.0}
 SHARED_DIM=${SHARED_DIM:-128}
 PRIVATE_DIM=${PRIVATE_DIM:-64}
-K1=${K1:-256}
-K2=${K2:-256}
-K3=${K3:-256}
+K1=${K1:-1024}
+K2=${K2:-1024}
+K3=${K3:-1024}
 FORCE=${FORCE:-0}
 BUNDLE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 force_args=()

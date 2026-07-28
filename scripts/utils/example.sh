@@ -12,11 +12,6 @@ set -euo pipefail
 # - TruncatedSVD is environment-dependent.
 # - New-machine CF-SVD may be 4ac176..., not old historical 6d75....
 
-if [[ -f /home/huangxin/miniconda3/etc/profile.d/conda.sh && "${SKIP_LOCAL_CONDA:-0}" != "1" ]]; then
-  source /home/huangxin/miniconda3/etc/profile.d/conda.sh
-  conda activate "${CONDA_ENV_NAME:-emotion_ml1m}"
-fi
-
 PROJECT=${PROJECT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}
 PY=${PY:-python}
 
@@ -74,9 +69,9 @@ RESOURCE_RANDOM_STATE=${RESOURCE_RANDOM_STATE:-42}
 # -----------------------------
 PLS_SHARED_DIM=${PLS_SHARED_DIM:-128}
 PLS_PRIVATE_DIM=${PLS_PRIVATE_DIM:-64}
-K1=${K1:-256}
-K2=${K2:-256}
-K3=${K3:-256}
+K1=${K1:-1024}
+K2=${K2:-1024}
+K3=${K3:-1024}
 
 # -----------------------------
 # Optional SID/downstream options
@@ -86,9 +81,9 @@ EPOCHS=${EPOCHS:-1}
 NUM_BEAMS=${NUM_BEAMS:-5}
 RUN_SUFFIX=${RUN_SUFFIX:-smoke}
 FORMAL_CONDA_ENV=${FORMAL_CONDA_ENV:-chord_formal_oldpipe}
-LETTER_ROOT=${LETTER_ROOT:-/home/huangxin/llmNrec/LETTER-master}
+LETTER_ROOT=${LETTER_ROOT:-$PROJECT/runtime_root/LETTER-master}
 TIGER=${TIGER:-$LETTER_ROOT/LETTER-TIGER}
-TEST_WRAPPER=${TEST_WRAPPER:-/home/huangxin/llmNrec/component_relation_sid/scripts/run_letter_script_patience_override.py}
+TEST_WRAPPER=${TEST_WRAPPER:-$LETTER_ROOT/component_relation_sid/scripts/run_letter_script_patience_override.py}
 FORMAL_ORDER=${FORMAL_ORDER:-cf_first}
 FORMAL_INDEX_NAME=${FORMAL_INDEX_NAME:-${DATASET}_chord_seed${SEED}}
 FORMAL_BASE_NAME=${FORMAL_BASE_NAME:-${DATASET}_chord_seed${SEED}}

@@ -12,7 +12,7 @@ from pathlib import Path
 
 PROJECT = Path(os.environ.get("PROJECT", Path(__file__).resolve().parents[1]))
 FORMAL_SCRIPT_DIR = Path(os.environ.get("FORMAL_SCRIPT_DIR", PROJECT / "chord/downstream/scripts"))
-ROOT = Path(os.environ.get("LETTER_ROOT", "/hy-tmp/llmNrec/LETTER-master"))
+ROOT = Path(os.environ.get("LETTER_ROOT", PROJECT / "runtime_root/LETTER-master"))
 TIGER = Path(os.environ.get("TIGER", ROOT / "LETTER-TIGER"))
 TEST_WRAPPER = Path(os.environ.get("TEST_WRAPPER", ROOT / "component_relation_sid/scripts/run_letter_script_patience_override.py"))
 RESULT_BASE = Path(os.environ.get("RESULT_BASE", PROJECT / "results/chord"))

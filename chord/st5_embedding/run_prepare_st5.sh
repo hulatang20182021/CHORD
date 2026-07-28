@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
-ROOT=${ROOT:-/home/huangxin/llmNrec/Letter/LETTER-master}
-PY=${PY:-/home/huangxin/anaconda3/envs/emotion_ml1m/bin/python}
-ST5_MODEL=${ST5_MODEL:-/home/huangxin/models/Sentence-T5/sentence-t5-base}
+PROJECT=${PROJECT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}
+ROOT=${ROOT:-$PROJECT}
+PY=${PY:-python}
+ST5_MODEL=${ST5_MODEL:-$PROJECT/models/Sentence-T5/sentence-t5-base}
 DATASETS=${DATASETS:-Beauty,Instruments,Yelp}
 GPU=${GPU:-0}
 BUNDLE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)

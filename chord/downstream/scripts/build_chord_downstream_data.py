@@ -7,9 +7,9 @@ import os
 import shutil
 from pathlib import Path
 
-ROOT = Path(os.environ.get("LETTER_ROOT", "/home/huangxin/llmNrec/LETTER-master"))
 PROJECT = Path(os.environ.get("PROJECT", Path(__file__).resolve().parents[3]))
-DATA_ROOT = Path(os.environ.get("DATA_ROOT", ROOT / "data"))
+ROOT = Path(os.environ.get("LETTER_ROOT", PROJECT / "runtime_root/LETTER-master"))
+DATA_ROOT = Path(os.environ.get("DATA_ROOT", PROJECT / "data"))
 RESULT_BASE = Path(os.environ.get("RESULT_BASE", PROJECT / "results/chord"))
 
 

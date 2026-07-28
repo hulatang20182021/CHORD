@@ -51,18 +51,18 @@ RESOURCE_RANDOM_STATE=${RESOURCE_RANDOM_STATE:-42}
 
 PLS_SHARED_DIM=${PLS_SHARED_DIM:-128}
 PLS_PRIVATE_DIM=${PLS_PRIVATE_DIM:-64}
-K1=${K1:-256}
-K2=${K2:-256}
-K3=${K3:-256}
+K1=${K1:-1024}
+K2=${K2:-1024}
+K3=${K3:-1024}
 
 GPU=${GPU:-0}
 EPOCHS=${EPOCHS:-1}
 NUM_BEAMS=${NUM_BEAMS:-5}
 RUN_SUFFIX=${RUN_SUFFIX:-smoke}
 FORMAL_CONDA_ENV=${FORMAL_CONDA_ENV:-chord_formal_oldpipe}
-LETTER_ROOT=${LETTER_ROOT:-/home/huangxin/llmNrec/LETTER-master}
+LETTER_ROOT=${LETTER_ROOT:-$PROJECT/runtime_root/LETTER-master}
 TIGER=${TIGER:-$LETTER_ROOT/LETTER-TIGER}
-TEST_WRAPPER=${TEST_WRAPPER:-/home/huangxin/llmNrec/component_relation_sid/scripts/run_letter_script_patience_override.py}
+TEST_WRAPPER=${TEST_WRAPPER:-$LETTER_ROOT/component_relation_sid/scripts/run_letter_script_patience_override.py}
 FORMAL_SCRIPT_DIR=${FORMAL_SCRIPT_DIR:-$PROJECT/chord/downstream/scripts}
 STATIC_SCRIPT_DIR=${STATIC_SCRIPT_DIR:-$FORMAL_SCRIPT_DIR}
 FORMAL_ORDER=${FORMAL_ORDER:-cf_first}
@@ -103,11 +103,6 @@ if [[ "$CHORD_PRESET" == "stable_legacy_raw" ]]; then
   DOWNSTREAM_BACKEND=${DOWNSTREAM_BACKEND:-static_intersection}
   PCSC_MODE=${PCSC_MODE:-legacy5}
   LOAD_BEST_MODEL_AT_END=${LOAD_BEST_MODEL_AT_END:-false}
-  if [[ -x /hy-tmp/venvs/chord_oldsk_py310/bin/python ]]; then
-    if [[ -z "$CF_PY_USER" ]]; then CF_PY=/hy-tmp/venvs/chord_oldsk_py310/bin/python; fi
-    if [[ -z "$PLS_PY_USER" ]]; then PLS_PY=/hy-tmp/venvs/chord_oldsk_py310/bin/python; fi
-    if [[ -z "$SID_PY_USER" ]]; then SID_PY=/hy-tmp/venvs/chord_oldsk_py310/bin/python; fi
-  fi
 elif [[ "$CHORD_PRESET" != "custom" ]]; then
   echo "Unknown CHORD_PRESET=$CHORD_PRESET (expected stable_legacy_raw or custom)" >&2
   exit 2

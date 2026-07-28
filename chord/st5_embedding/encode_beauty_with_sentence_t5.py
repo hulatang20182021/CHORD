@@ -106,9 +106,16 @@ def fallback_item_text(metadata: dict[str, Any]) -> str:
 
 
 def main() -> None:
+    default_project = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser()
-    parser.add_argument("--project_root", default=os.environ.get("ROOT", "/home/huangxin/llmNrec/Letter/LETTER-master"))
-    parser.add_argument("--model_path", default=os.environ.get("ST5_MODEL", "/home/huangxin/models/Sentence-T5/sentence-t5-base"))
+    parser.add_argument("--project_root", default=os.environ.get("ROOT", str(default_project)))
+    parser.add_argument(
+        "--model_path",
+        default=os.environ.get(
+            "ST5_MODEL",
+            str(default_project / "models/Sentence-T5/sentence-t5-base"),
+        ),
+    )
     parser.add_argument("--dataset", default="Beauty")
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--max_length", type=int, default=256)
