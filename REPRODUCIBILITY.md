@@ -1,5 +1,8 @@
 # Reproducibility Record
 
+This page records the original K1024 release. For the K256 same-view CIS
+revision, see [the separate protocol](reports/CIS_K256_20261026.md).
+
 ## Data and Split
 
 The released archive contains Beauty, Instruments, and Yelp in the data format

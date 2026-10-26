@@ -1,5 +1,19 @@
 # CHORD
 
+## Revision update (2026-10-26)
+
+The K=256 revision uses **Component-guided Item-state Supervision (CIS)** with
+same-view component and combination targets. See
+[the revision protocol and results](reports/CIS_K256_20261026.md).
+The shared-anchor trainer now accepts `--pcsc_route_control same_view`; its
+default remains `cross_view` for compatibility with the original release.
+
+The following original-release instructions describe **K=1024, cross-view
+PCSC, and fixed-epoch selection**. They are retained for reproducibility and
+must not be used as the K256 revision protocol.
+
+## Original release
+
 CHORD is a static item tokenizer for generative recommendation. It constructs
 component-ordered semantic IDs (SIDs) from item text and train-only collaborative
 signals, then uses training-only cross-view supervision in a standard

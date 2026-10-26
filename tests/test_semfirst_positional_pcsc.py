@@ -37,6 +37,8 @@ def test_semantic_first_positional_legacy5_hidden_contract():
     nn.Module.__init__(model)
     model.pcsc_alignment = "positional"
     model.pcsc_h12_mode = "sum"
+    model.pcsc_cross_transfer = False
+    model.pcsc_additive_consistency = False
     model._pcsc_factor = 1.0
     model.pcsc_lambdas = {name: 1.0 for name in ("cf", "cfres", "base", "res", "comp")}
 

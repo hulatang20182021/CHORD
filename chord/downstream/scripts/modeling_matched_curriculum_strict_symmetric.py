@@ -84,17 +84,31 @@ class MatchedCurriculumLETTER(LegacyCrossViewLETTER):
             h12 = h2
         h13 = h1 + h3
 
+        # State order is shared, semantic gap, collaborative gap. Keep the
+        # historical cross-view route as the default for old checkpoints.
+        route = getattr(self, "pcsc_route_control", "cross_view")
+        if route == "same_view":
+            if self.pcsc_alignment != "positional" or self.pcsc_h12_mode != "sum":
+                raise ValueError("Same-view CIS requires positional alignment and sum composition")
+            cf_full_input, cf_gap_input = h1 + h3, h3
+            sem_full_input, sem_gap_input = h1 + h2, h2
+        elif route == "cross_view":
+            cf_full_input, cf_gap_input = h12, h2
+            sem_full_input, sem_gap_input = h13, h3
+        else:
+            raise ValueError(f"Unknown route: {route}")
+
         zcf = self._pcsc_zcf[rows]
         cfres = self._pcsc_cfres[rows]
         zsem = self._pcsc_zsem[rows]
         semres = self._pcsc_usem_raw[rows]
         valid_res = semres.norm(dim=1) >= 1e-5
         losses = {
-            "cf": self._cosine_loss(self.pcsc_cf_head(h12), zcf),
-            "cfres": self._cosine_loss(self.pcsc_cfres_head(h2), cfres),
-            "comp": self._cosine_loss(self.pcsc_sem_full_head(h13), zsem),
+            "cf": self._cosine_loss(self.pcsc_cf_head(cf_full_input), zcf),
+            "cfres": self._cosine_loss(self.pcsc_cfres_head(cf_gap_input), cfres),
+            "comp": self._cosine_loss(self.pcsc_sem_full_head(sem_full_input), zsem),
             "res": self._cosine_loss(
-                self.pcsc_res_head(h3)[valid_res], semres[valid_res]
+                self.pcsc_res_head(sem_gap_input)[valid_res], semres[valid_res]
             ) if valid_res.any() else hidden.sum() * 0,
         }
         legacy_budget = float(sum(self.pcsc_lambdas.values()))

@@ -226,6 +226,14 @@ def main(args):
             else "component_mapped_legacy5"
         ),
     }
+    if args.pcsc_route_control == "same_view":
+        if args.pcsc_alignment != "positional" or args.pcsc_h12_mode != "sum":
+            raise ValueError("Same-view CIS requires --pcsc_alignment positional --pcsc_h12_mode sum")
+        contract.update(
+            version="sameview-component-combination-cis-v1",
+            route_control="same_view",
+            contract="h1_to_consensus;h2_to_sem_gap;h3_to_cf_gap;h1_plus_h2_to_sem;h1_plus_h3_to_cf",
+        )
     if args.resume_from_checkpoint and args.pcsc_alignment == "positional":
         resume_path = Path(args.resume_from_checkpoint).resolve()
         candidates = [resume_path / "pcsc_contract.json", resume_path.parent / "pcsc_contract.json"]
@@ -257,6 +265,7 @@ def main(args):
         pcsc_aux=args.pcsc_aux,
         pcsc_h12_mode=args.pcsc_h12_mode,
         pcsc_alignment=args.pcsc_alignment,
+        pcsc_route_control=args.pcsc_route_control,
         sid_component_order=args.sid_component_order,
         lambda_cf=args.lambda_cf,
         lambda_cfres=args.lambda_cfres,
@@ -437,6 +446,7 @@ if __name__ == "__main__":
     parser.add_argument("--pcsc_schedule_type", choices=["warmup_hold", "warmup_hold_decay"], default="warmup_hold_decay")
     parser.add_argument("--pcsc_h12_mode", choices=["mean", "sum", "h2"], default="mean")
     parser.add_argument("--pcsc_alignment", choices=["component", "positional"], default="component")
+    parser.add_argument("--pcsc_route_control", choices=["cross_view", "same_view"], default="cross_view")
     parser.add_argument("--lambda_cf", type=float, default=1.0)
     parser.add_argument("--lambda_cfres", type=float, default=1.0)
     parser.add_argument("--lambda_base", type=float, default=1.0)
