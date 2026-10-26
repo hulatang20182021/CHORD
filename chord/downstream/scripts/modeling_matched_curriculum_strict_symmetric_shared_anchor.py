@@ -23,6 +23,9 @@ class MatchedCurriculumLETTER(_StrictSymmetricPCSC):
     )
 
     def __init__(self, *args, **kwargs):
+        self.pcsc_route_control = kwargs.pop("pcsc_route_control", "cross_view")
+        if self.pcsc_route_control not in {"cross_view", "same_view"}:
+            raise ValueError(f"Unknown route: {self.pcsc_route_control}")
         super().__init__(*args, **kwargs)
         self.register_buffer("_pcsc_consensus", torch.empty(0, 128), persistent=False)
         self.pcsc_consensus_head = nn.Sequential(
